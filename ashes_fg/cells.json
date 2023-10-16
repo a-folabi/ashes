@@ -1,0 +1,142 @@
+{
+  "BPF": 
+    { "type": "both", "Gain Bias": 30e-8, "Gain Bias n":30e-8, "Gain Bias p": 30e-8, "Feedback bias": 30e-8, "Feedback bias n": 30e-8, "Feedback bias p": 30e-8,  "Input cap": 2, "foundry": "skywater", "process_node": "130nm" },
+  "AmpDetect":
+    { "type": "ASIC","threshold": 40, "foundry": "skywater", "process_node": "130nm" },
+  "SHblock1":
+    {"type": "FPAA", "board": ["3.0", "3.0a"], "SHblock1_ls": 0, "SHblock1_Ibias": 0.000003, "SHblock1_cap0_1x_cs": 1},
+  "switchint1":
+    {"type": "FPAA", "board": ["3.0", "3.0a"], "switchint1_ls": 0, "switchint1_Ibias1": 0.000003, "switchint1_cap0_1x_cs":1},
+  "lpfota":
+    {"type": "FPAA", "board": ["3.0", "3.0a"], "ota_bias": 0.000000000101},
+  "?Matmul":
+    {"type": "FPAA", "board": ["3.0", "3.0a"]},
+  "hhn_debug":
+    {"type": "FPAA", "board": ["3.0", "3.0a"], "hhn_debug_ls":0,"hhn_debug_fgswc_ibias":"5.000D-08", "hhn_debug_fgota1_ibias":0.000002, "hhn_debug_fgota1_pbias":0.000002,"hhn_debug_fgota1_nbias":0.000002,"hhn_debug_fgota0_ibias":0.000002,"hhn_debug_fgota0_pbias":0.000002,"hhn_debug_fgota0_nbias":0.000002,"hhn_debug_ota0_ibias":0.000002,"hhn_debug_ota1_ibias":0.000002,"hhn_debug_cap0_1x_cs":1},
+  "HH_RG_2s":
+    {"type": "FPAA", "board": ["3.0", "3.0a"], "HH_RG_2s_ls":0,"HH_RG_2s_Nafb_ibias":"5.000D-08","HH_RG_2s_syn0_ibias":"5.000D-08","HH_RG_2s_syn1_ibias":"5.000D-08","HH_RG_2s_pfet_ibias":"5.000D-08","HH_RG_2s_nmr_ibias":"5.000D-08","HH_RG_2s_Na_ibias":0.000002,"HH_RG_2s_Na_pbias":0.000002,"HH_RG_2s_Na_nbias":0.000002,"HH_RG_2s_K_ibias":0.000002,"HH_RG_2s_K_pbias":0.000002,"HH_RG_2s_K_nbias":0.000002,"HH_RG_2s_buf_ibias":0.000002,"HH_RG_2s_comp_ibias":0.000002,"HH_RG_2s_cap0_1x_cs":1},
+  "subbandArray":
+    {"type": "FPAA", "board": ["3.0", "3.0a"], "SubbandArray_ls":0,"SubbandArray_FBbias":"5.000D-10","SubbandArray_FBpbias":"5.000D-08","SubbandArray_FBnbias":"5.000D-08","SubbandArray_FFbias":"5.000D-08","SubbandArray_FFpbias":"5.000D-08","SubbandArray_FFnbias":"5.000D-08","SubbandArray_Maxota":"5.000D-08","SubbandArray_LPF":"3.000D-09","SubbandArray_FFcap_1x_cs":1,"SubbandArray_FBcap_1x_cs":1},
+  "common_drain":
+    {"type": "FPAA", "board": ["3.0", "3.0a"],"common_drain_ls":0,"common_drain_fgswc_ibias":"5.000D-08"},
+  "Senseamp1":
+    {"type": "FPAA", "board": ["3.0", "3.0a"],"Senseamp1_ls":0,"Senseamp1_fgota0_ibias":0.0000005,"Senseamp1_fgota0_pbias":0.0000002,"Senseamp1_fgota0_nbias":0.0000002,"Senseamp1_ota0_ibias":0.000003},
+  "Hyst_diff":
+    {"type": "FPAA", "board": ["3.0", "3.0a"],"Hyst_diff_ls":0,"Hyst_diff_ota1_ibias":0.000002},
+  "common_drain_nfet":
+    {"type": "FPAA", "board": ["3.0", "3.0a"],"common_drain_nfet_ls":0,"common_drain_nfet_ibias":"5.000D-08"},
+  "ota_buf":
+    {"type": "FPAA", "board": ["3.0", "3.0a"],"ota_buf_bias":0.00001},
+  "hhn":
+    {"type": "FPAA", "board": ["3.0", "3.0a"],"hhn_ls":0,"hhn_fgswc_ibias":"5.000D-08","hhn_fgota1_ibias":0.000002,"hhn_fgota1_pbias":0.000002,"hhn_fgota1_nbias":0.000002,"hhn_fgota0_ibias":0.000002,"hhn_fgota0_pbias":0.000002,"hhn_fgota0_nbias":0.000002,"hhn_ota0_ibias":0.000002,"hhn_ota1_ibias":0.000002,"hhn_cap0_1x_cs":1},
+  "Min_detect":
+    {"type": "FPAA", "board": ["3.0", "3.0a"],"Min_detect_ls":0,"Min_detect_fgswc_ibias":"5.000D-08","Min_detect_ota0_ibias":0.000002},
+  "signalmult":
+    {"type": "FPAA", "board": ["3.0", "3.0a"],"signalmult_fg":0.000001,"signalmult_v1p":50e-9,"signalmult_v1n":50e-9},
+  "common_source":
+    {"type": "FPAA", "board": ["3.0", "3.0a"],"common_source_ls":0,"common_source_ibias":"5.000D-08"},
+  "VolDivide1":
+    {"type": "FPAA", "board": ["3.0", "3.0a"],"VolDivide1_ls":0,"VolDivide1_fgota0_ibias":0.000002,"VolDivide1_fgota0_pbias":0.000002,"VolDivide1_fgota0_nbias":0.000002,"VolDivide1_ota0_ibias":0.000002},
+  "HH_RG_3s":
+    {"type": "FPAA", "board": ["3.0", "3.0a"],"HH_RG_3s_ls":0,"HH_RG_3s_Nafb_ibias":"5.000D-08","HH_RG_3s_syn0_ibias":"5.000D-08","HH_RG_3s_syn1_ibias":"5.000D-08","HH_RG_3s_syn2_ibias":"5.000D-08","HH_RG_3s_pfet_ibias":"5.000D-08","HH_RG_3s_nmr_ibias":"5.000D-08","HH_RG_3s_Na_ibias":0.000002,"HH_RG_3s_Na_pbias":0.000002,"HH_RG_3s_Na_nbias":0.000002,"HH_RG_3s_K_ibias":0.000002,"HH_RG_3s_K_pbias":0.000002,"HH_RG_3s_K_nbias":0.000002,"HH_RG_3s_buf_ibias":0.000002,"HH_RG_3s_comp_ibias":0.000002,"HH_RG_3s_cap0_1x_cs":1},
+  "switchcapint1":
+    {"type": "FPAA", "board": ["3.0", "3.0a"],"switchcapint1_Bias":0.000003,"switchcapint1_cap0_1x_cs":1},
+  "switchAmplifier1":
+    {"type": "FPAA", "board": ["3.0", "3.0a"],"switchAmplifier1_ls":0,"switchAmplifier1_ota0_ibias":0.000003,"switchAmplifier1_cap0_1x_cs":1,"switchAmplifier1_cap1_1x_cs":1},
+  "SOSLPF":
+    {"type": "FPAA", "board": ["3.0", "3.0a"],"SOSLPF_ls":0,"SOSLPF_Ibias2":0.0000002,"SOSLPF_FG2p":0.000001,"SOSLPF_FG2n":0.000001,"SOSLPF_Ibias1":0.0000002,"SOSLPF_FG1p":0.000001,"SOSLPF_FG1n":0.000001,"SOSLPF_Feedback":"4.000D-09","SOSLPF_Buffer":0.000001},
+  "Max_detect":
+    {"type": "FPAA", "board": ["3.0", "3.0a"],"Max_detect_ls":0,"Max_detect_fgswc_ibias":"5.000D-08","Max_detect_ota0_ibias":0.000002},
+  "MSOS02":
+    {"type": "FPAA", "board": ["3.0", "3.0a"],"MSOS02_ls":0,"MSOS02_Ibias2":0.0000002,"MSOS02_Wbp":0.000001,"MSOS02_Wbn":0.000001,"MSOS02_Ibias1":0.0000002,"MSOS02_Wap":0.000001,"MSOS02_Wan":0.000001,"MSOS02_Feedback":"4.000D-09","MSOS02_Buffer":0.000003},
+  "?vmmwta":
+    {"type": "FPAA", "board": ["3.0", "3.0a"]},
+  "c4_sp":
+    {"type": "FPAA", "board": ["3.0", "3.0a"],"c4_sp_ota_bias[0]":3.000e-06,"c4_sp_ota_bias[1]":3.000e-09,"c4_sp_fg[0]":0,"c4_sp_ota_small_cap[0]":0,"c4_sp_ota_small_cap[1]":0,"c4_sp_ota_p_bias[0]":1.000e-06,"c4_sp_ota_n_bias[0]":1.000e-06,"c4_sp_ota_p_bias[1]":1.000e-09,"c4_sp_ota_n_bias[1]":1.000e-09,"c4_sp_cap_3x[0]":0,"c4_sp_cap_2x[0]":0,"c4_sp_cap_1x[0]":0},
+  "HH_RG":
+    {"type": "FPAA", "board": ["3.0", "3.0a"],"HH_RG_ls":0,"HH_RG_Nafb_ibias":"5.000D-08","HH_RG_in0_ibias":"5.000D-08","HH_RG_pfet_ibias":"5.000D-08","HH_RG_nmr_ibias":"5.000D-08","HH_RG_Na_ibias":0.000002,"HH_RG_Na_pbias":0.000002,"HH_RG_Na_nbias":0.000002,"HH_RG_K_ibias":0.000002,"HH_RG_K_pbias":0.000002,"HH_RG_K_nbias":0.000002,"HH_RG_buf_ibias":0.000002,"HH_RG_comp_ibias":0.000002,"HH_RG_cap0_1x_cs":1},
+  "?gpio_in":
+    {"type": "FPAA", "board": ["3.0", "3.0a"]},
+  "?dac":
+    {"type": "FPAA", "board": ["3.0", "3.0a"]},
+  "?dc_in":
+    {"type": "FPAA", "board": ["3.0", "3.0a"]},
+  "?GENARB_f":
+    {"type": "FPAA", "board": ["3.0", "3.0a"]},
+  "?Ramp_ADC":
+    {"type": "FPAA", "board": ["3.0", "3.0a"]},
+  "?meas_volt":
+    {"type": "FPAA", "board": ["3.0", "3.0a"]},
+  "?adc_ip":
+    {"type": "FPAA", "board": ["3.0", "3.0a"]},
+  "cap":
+    {"type": "FPAA", "board": ["3.0", "3.0a"],"cap_1x_cs":1},
+  "I_SenseAmp":
+    {"type": "FPAA", "board": ["3.0", "3.0a"],"I_SenseAmp_ls":0,"I_SenseAmp_fgota0_ibias":0.000002,"I_SenseAmp_fgota0_pbias":0.000002,"I_SenseAmp_fgota0_nbias":0.000002,"I_SenseAmp_ota0_ibias":0.000002,"I_SenseAmp_cap0_1x_cs":1,"I_SenseAmp_cap1_1x_cs":1},
+  "ota":
+    {"type": "FPAA", "board": ["3.0", "3.0a"],"ota_bias":0.000001},
+  "tgate2":
+    {"type": "FPAA", "board": ["3.0", "3.0a"]},
+  "pfet":
+    {"type": "FPAA", "board": ["3.0", "3.0a"]},
+  "nfet":
+    {"type": "FPAA", "board": ["3.0", "3.0a"]},
+  "?TIA":
+    {"type": "FPAA", "board": ["3.0", "3.0a"]},
+  "mite_FG":
+    {"type": "FPAA", "board": ["3.0", "3.0a"],"mite_fg0":"1.000D-07"},
+  "wta_new":
+    {"type": "FPAA", "board": ["3.0", "3.0a"],"wta_new_ls":0,"wta_new_wta_bias":"1.000D-08","wta_new_buf_bias":0.000002},
+  "vmm12x1_wowta":
+    {"type": "FPAA", "board": ["3.0", "3.0a"],"vmm12x1_wowta_fg":0,"vmm12x1_target":[0.000004,"1.000D-09","1.000D-09","1.000D-09","1.000D-09",0.000003,0.000003,"1.000D-09","1.000D-09","1.000D-09","1.000D-09","1.000D-09"],"vmm12x1_offsetbias":"5.000D-09"},
+  "fgswitch":
+    {"type": "FPAA", "board": ["3.0", "3.0a"],"fgswitch_ls":0,"fgswitch_fgswc_ibias":"5.000D-08"},
+  "fgota":
+    {"type": "FPAA", "board": ["3.0", "3.0a"],"fgota_bias":"1.000D-08","fgota_p_bias":1.9,"fgota_n_bias":1.9,"fgota_small_cap":1},
+  "tgate":
+    {"type": "FPAA", "board": ["3.0", "3.0a"]},
+  "nmirror_w_bias":
+    {"type": "FPAA", "board": ["3.0", "3.0a"],"nmirror_w_bias_ls":0,"nmirror_w_bias_ibias":"5.000D-08"},
+  "ota2":
+    {"type": "FPAA", "board": ["3.0", "3.0a"],"ota2_bias":0.000001},
+  "nmirror":
+    {"type": "FPAA", "board": ["3.0", "3.0a"]},
+  "?gpio_in_fixloc":
+    {"type": "FPAA", "board": ["3.0", "3.0a"]},
+  "vdd_i":
+    {"type": "FPAA", "board": ["3.0", "3.0a"]},
+  "gnd_dig":
+    {"type": "FPAA", "board": ["3.0", "3.0a"]},
+  "?output_f":
+    {"type": "FPAA", "board": ["3.0", "3.0a"]},
+  "gnd_i":
+    {"type": "FPAA", "board": ["3.0", "3.0a"]},
+  "vdd_dig":
+    {"type": "FPAA", "board": ["3.0", "3.0a"]},
+  "vdd_out":
+    {"type": "FPAA", "board": ["3.0", "3.0a"]},
+  "gnd_out":
+    {"type": "FPAA", "board": ["3.0", "3.0a"]},
+  "?sr_ni_1o":
+    {"type": "FPAA", "board": ["3.0", "3.0a"]},
+  "?sr_1i_16o_nodeset":
+    {"type": "FPAA", "board": ["3.0", "3.0a"]},
+  "?sr_4i_1o":
+    {"type": "FPAA", "board": ["3.0", "3.0a"]},
+  "?sr_1i_16o_nv":
+    {"type": "FPAA", "board": ["3.0", "3.0a"]},
+  "?sr_16i_1o":
+    {"type": "FPAA", "board": ["3.0", "3.0a"]},
+  "?sr_16i_1o_nv":
+    {"type": "FPAA", "board": ["3.0", "3.0a"]},
+  "?sr_1i_16o":
+    {"type": "FPAA", "board": ["3.0", "3.0a"]},
+  "in2in_x6":
+    {"type": "FPAA", "board": ["3.0", "3.0a"]},
+  "?sft_reg":
+    {"type": "FPAA", "board": ["3.0", "3.0a"]},
+  "in2in_x1":
+    {"type": "FPAA", "board": ["3.0", "3.0a"]},
+  "?sr_1i_no":
+    {"type": "FPAA", "board": ["3.0", "3.0a"]}
+}

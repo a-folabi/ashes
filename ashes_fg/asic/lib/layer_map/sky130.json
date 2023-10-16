@@ -1,0 +1,21 @@
+{
+    "64,20": {"layer": "nwell", "purpose": "drawing"},
+    "65,20": {"layer": "diffusion", "purpose": "drawing"},
+    "65,44": {"layer": "diffusion" ,"purpose": "drawing" },
+    "66,20": {"layer": "poly", "purpose": "drawing"},
+    "66,44": {"layer": "contact" ,"purpose": "drawing" },
+    "67,20": {"layer": "metal1", "purpose": "drawing"},
+    "67,44": {"layer": "via1" ,"purpose": "drawing" },
+    "68,20": {"layer": "metal2", "purpose": "drawing"},
+    "68,44": {"layer": "via2" ,"purpose": "drawing" },
+    "69,20": {"layer": "metal3", "purpose": "drawing"},
+    "69,44": {"layer": "via3" ,"purpose": "drawing" },
+    "70,20": {"layer": "metal4", "purpose": "drawing"},
+    "70,44": {"layer": "via4" ,"purpose": "drawing" },
+    "71,20": {"layer": "metal5", "purpose": "drawing"},
+    "71,44": {"layer": "via5" ,"purpose": "drawing" },
+    "72,20": {"layer": "metal6", "purpose": "drawing"},
+    "72,44": {"layer": "via6" ,"purpose": "drawing" },
+    "93,44": {"layer": "np_select" ,"purpose": "drawing" },
+    "94,20": {"layer": "pp_select", "purpose": "drawing"}
+}
