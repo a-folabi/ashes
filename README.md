@@ -11,8 +11,6 @@ The project is designed to be cross-platform and run across Unix and Windows env
 pip install python-gdsii numpy verilog-parser
 ```
 
-## Installation
-
 ## Usage
 
 1. Use examples to program a system to the FPAA or generate ASIC layout.
@@ -29,3 +27,5 @@ af.asic.compile(the_small_asic_v2, project_name='asic_alice')
 - FPAA Synthesis: .blif netlist
 - ASIC Synthesis: global router files (.guide, .lef, .def) and placed .gds
     - To view, download [klayout](https://www.klayout.de/)
+
+- Note: for routed .gds and switchlist files, dependencies like TritonRoute and VPR are required. Link to Virtual Machine with tools pre-installed is coming soon.  
