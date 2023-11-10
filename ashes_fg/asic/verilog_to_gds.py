@@ -28,11 +28,11 @@ from ashes_fg.asic.utils import *
 verbose = False
 pypath = sys.executable
 
-def gds_synthesis(tech_process, dbu, track_spacing, x_offset, y_offset, design_area, ver_file_name, routed_def=False):
-    verilog_file_name = ver_file_name + '.v'
-    file_name_no_ext = ver_file_name
+def gds_synthesis(tech_process, dbu, track_spacing, x_offset, y_offset, design_area, proj_name, routed_def=False):
+    verilog_file_name = proj_name + '.v'
+    file_name_no_ext = proj_name
     file_path = os.path.join('.', file_name_no_ext)
-    ver_file = open(os.path.join('.', 'verilog_files', verilog_file_name), 'r')
+    ver_file = open(os.path.join('.', proj_name, 'verilog_files', verilog_file_name), 'r')
     ver_file_content = ver_file.read()
     ver_file.close()
     
@@ -43,10 +43,6 @@ def gds_synthesis(tech_process, dbu, track_spacing, x_offset, y_offset, design_a
     top_module, frame_module = None, None
     nets_table = {}
 
-    # Remove old files and make working directory
-    if not routed_def:
-        if os.path.exists(file_path): shutil.rmtree(file_path)
-        os.mkdir(file_path)
     text_layout_path = os.path.join(file_path, f'{file_name_no_ext}_gds.txt')
     gds_path = os.path.join(file_path, f'{file_name_no_ext}_placed.gds')
     lef_file_path = os.path.join(file_path, f'{file_name_no_ext}.lef')
