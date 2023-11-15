@@ -1,6 +1,6 @@
 # Analog Synthesis for High Level Systems (ASHES)
 
-![Architecture](figures/ashes_flow.jpg)
+![Architecture](figures/ashes_flow_v2.jpg)
 
 ## Project Requirements
 The project is designed to be cross-platform and run across Unix and Windows environments running `python 3.9` and above. 
