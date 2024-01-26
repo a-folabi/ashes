@@ -3,6 +3,7 @@ import ashes_fg.fpaa.new_converter as nc
 import ashes_fg.fpaa.verilog2blif as vb
 import ashes_fg.fpaa.gen_pads_30a
 import ashes_fg.fpaa.gen_pads_30
+import ashes_fg.fpaa.blif_to_switches as b2s
 import os
 
 def compile(system, project_name, board_type = '3.0a'):
@@ -15,4 +16,6 @@ def compile(system, project_name, board_type = '3.0a'):
         gen_pads_30a.gen_pads_30a(sys_name, verilog, project_name)
     elif board_type == '3.0':
         gen_pads_30.gen_pads_30(sys_name, project_name)
+    
+    b2s.b2swcs(project_name, board_type)
 
