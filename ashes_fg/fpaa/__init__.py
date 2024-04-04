@@ -17,5 +17,5 @@ def compile(system, project_name, board_type = '3.0a'):
     elif board_type == '3.0':
         gen_pads_30.gen_pads_30(sys_name, project_name)
     
-    b2s.b2swcs(project_name, board_type)
+    #b2s.b2swcs(project_name, board_type)
 
