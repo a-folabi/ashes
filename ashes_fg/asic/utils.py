@@ -130,7 +130,7 @@ def add_guide_to_def(file_path, blocks, nets, guide):
     '''
     with open(file_path, 'a') as def_file:
         def_file.write(blocks)
-        def_file.write(f';\n  - LAYER M4\n')
+        def_file.write(f';\n  - LAYER M1\n')
         for idx, box in enumerate(guide):
             if idx < ( len(guide) - 1):  
                 def_file.write(f'    RECT ( {box[0]} {box[1]} ) ( {box[2]} {box[3]} ) \n')
@@ -138,3 +138,19 @@ def add_guide_to_def(file_path, blocks, nets, guide):
                 def_file.write(f'    RECT ( {box[0]} {box[1]} ) ( {box[2]} {box[3]} ) ;\n')
         def_file.write(f'END BLOCKAGES\n\n')
         def_file.write(nets)
+
+def find_metal_in_lef(metal, file_name, dbu):
+    lef_file = open(f'{file_name}.lef')
+    store_metal = False
+    ret_val = None
+    for line in lef_file:
+        line = line.split(' ')
+        if len(line) > 1 and line[1] == f'{metal}\n' and line[0] == 'LAYER': 
+            store_metal = True
+        elif store_metal:
+            if line[2] == 'WIDTH': 
+                ret_val = float(line[3])*dbu
+                store_metal = False
+                lef_file.close()
+                return ret_val
+    lef_file.close()

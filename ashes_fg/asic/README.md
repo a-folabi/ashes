@@ -2,7 +2,7 @@
 External package dependencies. Run the following at a terminal
 
 ```
-pip install python-gdsii numpy verilog-parser
+pip install numpy verilog-parser
 ```
 
 ## Clone
