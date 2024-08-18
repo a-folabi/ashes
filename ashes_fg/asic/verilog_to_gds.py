@@ -30,9 +30,8 @@ from ashes_fg.asic.utils import *
 # Qs:
 # - Why are island numbers zero indexed but row and cols are 1 indexed?
 
-verbose = False
+verbose = True
 pypath = sys.executable
-
 
 
 def gds_synthesis(tech_process, dbu, track_spacing, x_offset, y_offset, design_area, proj_name, routed_def=False):
@@ -83,6 +82,22 @@ def gds_synthesis(tech_process, dbu, track_spacing, x_offset, y_offset, design_a
                 if inst.module_name not in module_list:
                     module_list.add(inst.module_name)
     
+    # Add in angle brackets to the top module for cadence vectorization 
+    # - Replace the old port dictionary with an updated copy
+    excluded_ports = set(['island_num', 'row', 'col'])
+    for inst in top_module.module_instances:
+        port_copy = {} 
+        for p_key, p_value in inst.ports.items():
+            pattern = r'_(\d+)_'
+            matches = re.search(pattern, p_key)
+            if p_key not in excluded_ports and matches:
+                replacement = r'<\1>'
+                p_new_key = re.sub(pattern, replacement, p_key, count=1)
+                port_copy[p_new_key] = p_value
+            else:
+                port_copy[p_key] = p_value
+        inst.ports = port_copy
+
     # Instantiate cells in output layout based on modules used in verilog
     for inst in top_module.module_instances:
         if inst.module_name in module_list:
@@ -262,7 +277,7 @@ def parse_cell_gds(name, first_cell, cell_info, module_list, pin_list, layer_map
 
                 elif rec.tag_type == types.BITARRAY:
                     ret_string.append('%s: %s \n' % (rec.tag_name, str(rec.data)))
-                    if rec.tag_name == 'STRANS' and (rec.data & 0b1000000000000000):
+                    if rec.tag_name == 'STRANS' and (rec.data & 0b1000000000000000) and sref_name:
                         mirror_cell_x = True
                 else:
                     # Check to ensure record is not a header/lib tag
@@ -431,9 +446,9 @@ def generate_islands(island_info, cell_info, island_place, design_area, frame_mo
         avail_width = design_area[2] - design_area[0] - ip_widths - design_area[4]
         horz_spacing = round(avail_width/len(island_info))
         x_base = br_max + horz_spacing
-
+        '''
         # june run offset
-        x_base = br_max + 115000
+        x_base = br_max + 15000
         y_base = int(design_area[1] + design_area[5])
         '''
         # arbgen offset values
@@ -444,7 +459,7 @@ def generate_islands(island_info, cell_info, island_place, design_area, frame_mo
         else:
             x_base = br_max + 20000
             y_base = int(design_area[1] + design_area[5])
-        
+        '''
         
     return ''.join(ret_string)
 

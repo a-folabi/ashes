@@ -5,7 +5,7 @@ from collections import OrderedDict as OD
 from ashes_fg.asic.exceptions import *
 
 track_idx_margin = 2 # number of tracks to skip from edges of design
-verbose = False
+verbose = True
 
 def global_router(island_info, cell_info, nets_table, island_place, metal_layers, track_spacing, file_path, neighbor, design_area, frame_module):
     '''
@@ -255,7 +255,7 @@ def global_router(island_info, cell_info, nets_table, island_place, metal_layers
                             box_right = max(net_list[pin][5], track_right)
                             box_top = net_list[pin][6]
                             def_guide.append((box_left, box_bot, box_right, box_top))
-                            net_str.append(f'{box_left} {box_bot} {box_right} {box_top} {metal_layers[2]}\n')
+                            net_str.append(f'{box_left} {box_bot} {box_right} {box_top} {metal_layers[0]}\n')
                         routed_pins.update(merged_idx)
 
                     # Left facing steps
@@ -297,7 +297,7 @@ def global_router(island_info, cell_info, nets_table, island_place, metal_layers
                             box_right = max(net_list[pin][5], track_right)
                             box_top = net_list[pin][6]
                             def_guide.append((box_left, box_bot, box_right, box_top))
-                            net_str.append(f'{box_left} {box_bot} {box_right} {box_top} {metal_layers[2]}\n')
+                            net_str.append(f'{box_left} {box_bot} {box_right} {box_top} {metal_layers[0]}\n')
                         routed_pins.update(left_face_idx)
 
                 # Handle horizontal track placement and pin connections
@@ -314,7 +314,7 @@ def global_router(island_info, cell_info, nets_table, island_place, metal_layers
                 else:
                     max_height = track_bot - track_spacing
                 def_guide.append((track_left, track_bot, track_right, track_top))
-                net_str.append(f'{track_left} {track_bot} {track_right} {track_top} {metal_layers[2]}\n')
+                net_str.append(f'{track_left} {track_bot} {track_right} {track_top} {metal_layers[0]}\n')
                 iopad_track = (track_left, track_bot, track_right, track_top)
 
                 for pin in top_bot_idx:
@@ -353,7 +353,7 @@ def global_router(island_info, cell_info, nets_table, island_place, metal_layers
                 track_right = np.amax(net_matrix[:,5].astype(int)) # find right most pin
                 track_top = min_height + track_spacing if not bot_pins_only else max_height 
                 def_guide.append((track_left, track_bot, track_right, track_top))
-                net_str.append(f'{track_left} {track_bot} {track_right} {track_top} {metal_layers[2]}\n')
+                net_str.append(f'{track_left} {track_bot} {track_right} {track_top} {metal_layers[0]}\n')
                 iopad_track = (track_left, track_bot, track_right, track_top)
 
                 # Connect pins to track 
@@ -451,7 +451,7 @@ def global_router(island_info, cell_info, nets_table, island_place, metal_layers
                         box_right = max(int(pin[5]), track_right)
                         box_top = pin[6]
                         def_guide.append((box_left, box_bot, box_right, box_top))
-                        net_str.append(f'{box_left} {box_bot} {box_right} {box_top} {metal_layers[2]}\n')
+                        net_str.append(f'{box_left} {box_bot} {box_right} {box_top} {metal_layers[0]}\n')
                 
                 else: # Handle multi channel vertical nets
                     vert_min_x, vert_max_x = None, None
@@ -502,7 +502,7 @@ def global_router(island_info, cell_info, nets_table, island_place, metal_layers
                                 box_right = max(net_list[pin][5], track_right)
                                 box_top = net_list[pin][6]
                                 def_guide.append((box_left, box_bot, box_right, box_top))
-                                net_str.append(f'{box_left} {box_bot} {box_right} {box_top} {metal_layers[2]}\n')
+                                net_str.append(f'{box_left} {box_bot} {box_right} {box_top} {metal_layers[0]}\n')
                             routed_pins.update(merged_idx)
 
                         # Left facing steps
@@ -543,8 +543,10 @@ def global_router(island_info, cell_info, nets_table, island_place, metal_layers
                                 box_right = max(net_list[pin][5], track_right)
                                 box_top = net_list[pin][6]
                                 def_guide.append((box_left, box_bot, box_right, box_top))
-                                net_str.append(f'{box_left} {box_bot} {box_right} {box_top} {metal_layers[2]}\n')
+                                net_str.append(f'{box_left} {box_bot} {box_right} {box_top} {metal_layers[0]}\n')
                             routed_pins.update(left_face_idx)
+                            # subsequently update the max width each time
+                            vert_widths[num]['max_width'] = track_left - track_spacing
 
                     # Horizontal Handling
                     track_left = vert_min_x
@@ -552,7 +554,7 @@ def global_router(island_info, cell_info, nets_table, island_place, metal_layers
                     track_right = vert_max_x
                     track_top = min_height + track_spacing
                     def_guide.append((track_left, track_bot, track_right, track_top))
-                    net_str.append(f'{track_left} {track_bot} {track_right} {track_top} {metal_layers[2]}\n')
+                    net_str.append(f'{track_left} {track_bot} {track_right} {track_top} {metal_layers[0]}\n')
                     iopad_track = (track_left, track_bot, track_right, track_top)
                     min_height = min_height + 2*track_spacing
         
@@ -633,7 +635,7 @@ def global_router(island_info, cell_info, nets_table, island_place, metal_layers
                         poly_bot = poly_top - track_spacing
                         poly_right = int(island_pin[5])
                         def_guide.append((poly_left, poly_bot, poly_right, poly_top))
-                        net_str.append(f'{poly_left} {poly_bot} {poly_right} {poly_top} {metal_layers[2]}\n')
+                        net_str.append(f'{poly_left} {poly_bot} {poly_right} {poly_top} {metal_layers[0]}\n')
                         if far_left == min_net:
                             vert_widths[min_net_idx]['min_width'] = poly_left
                         if pin_island_number in horz_height:
@@ -649,7 +651,7 @@ def global_router(island_info, cell_info, nets_table, island_place, metal_layers
                         poly_left = int(island_pin[3])
                         poly_bot = poly_top - track_spacing
                         def_guide.append((poly_left, poly_bot, poly_right, poly_top))
-                        net_str.append(f'{int(poly_left)} {int(poly_bot)} {int(poly_right)} {int(poly_top)} {metal_layers[2]}\n')
+                        net_str.append(f'{int(poly_left)} {int(poly_bot)} {int(poly_right)} {int(poly_top)} {metal_layers[0]}\n')
                         if far_right == max_net:
                             vert_widths[max_net_idx]['min_width'] = poly_right
                         if pin_island_number in horz_height:
@@ -671,7 +673,7 @@ def global_router(island_info, cell_info, nets_table, island_place, metal_layers
                         poly_top = poly_bot + track_spacing
                         poly_right = int(island_pin[5])
                         def_guide.append((poly_left, poly_bot, poly_right, poly_top))
-                        net_str.append(f'{int(poly_left)} {int(poly_bot)} {int(poly_right)} {int(poly_top)} {metal_layers[2]}\n')
+                        net_str.append(f'{int(poly_left)} {int(poly_bot)} {int(poly_right)} {int(poly_top)} {metal_layers[0]}\n')
                         if far_left == min_net:
                             vert_widths[min_net_idx]['min_width'] = poly_left
                         if pin_island_number in horz_height:
@@ -687,7 +689,7 @@ def global_router(island_info, cell_info, nets_table, island_place, metal_layers
                         poly_left = int(island_pin[3])
                         poly_top = poly_bot + track_spacing
                         def_guide.append((poly_left, poly_bot, poly_right, poly_top))
-                        net_str.append(f'{int(poly_left)} {int(poly_bot)} {int(poly_right)} {int(poly_top)} {metal_layers[2]}\n')
+                        net_str.append(f'{int(poly_left)} {int(poly_bot)} {int(poly_right)} {int(poly_top)} {metal_layers[0]}\n')
                         if far_right == max_net:
                             vert_widths[max_net_idx]['min_width'] = poly_right
                         if pin_island_number in horz_height:
@@ -703,7 +705,7 @@ def global_router(island_info, cell_info, nets_table, island_place, metal_layers
                     far_left = min(island_place[pin_island_number][0], min_net) if min_net is not None else island_place[pin_island_number][0]
                     poly_left = round((far_left - design_area[0])/(2*track_spacing))*2*track_spacing - 2*track_spacing + design_area[0]
                     def_guide.append((poly_left, island_pin[4], island_pin[5], island_pin[6]))
-                    net_str.append(f'{poly_left} {island_pin[4]} {island_pin[5]} {island_pin[6]} {metal_layers[2]}\n')
+                    net_str.append(f'{poly_left} {island_pin[4]} {island_pin[5]} {island_pin[6]} {metal_layers[0]}\n')
                     if far_left == min_net:
                             vert_widths[pin_island_number]['min_width'] = poly_left
                     poly_bot = int(island_pin[4])
@@ -721,7 +723,7 @@ def global_router(island_info, cell_info, nets_table, island_place, metal_layers
                     poly_bot = int(island_pin[4])
                     poly_top = int(island_pin[6])
                     def_guide.append((poly_left, poly_bot, int(poly_right), poly_top))
-                    net_str.append(f'{poly_left} {poly_bot} {int(poly_right)} {poly_top} {metal_layers[2]}\n')
+                    net_str.append(f'{poly_left} {poly_bot} {int(poly_right)} {poly_top} {metal_layers[0]}\n')
                     if far_right == max_net:
                             vert_widths[pin_island_number]['min_width'] = poly_right
             
@@ -782,21 +784,23 @@ def global_router(island_info, cell_info, nets_table, island_place, metal_layers
                         stop = (poly_right, poly_bot, poly_right, poly_top)
                     else:
                         stop = (poly_left, poly_bot, poly_left, poly_top)
-                    ex_val = extend(start, stop, 'LEFT', obstacles, track_usage, design_area, track_spacing, prev_dir, prev_poly)
+                    ex_val = extend(start, stop, 'LEFT', obstacles, track_usage, design_area, track_spacing, prev_dir, prev_poly, metal_layers)
                     prev_dir = 'LEFT'
 
-                elif vert_track_left <= poly_left:
+                elif vert_track_left <= poly_right:
                     start = (vert_track_left, horz_track_bot, vert_track_right, horz_track_top)
                     if island_pin[2] == 'TOP' or island_pin[2] == 'BOT' or island_pin[2] == 'LEFT':
                         stop = (poly_left, poly_bot, poly_left + track_spacing, poly_top)
                     else:
                         stop = (poly_right, poly_bot, poly_right, poly_top)
-                    ex_val = extend(start, stop, 'RIGHT', obstacles, track_usage, design_area, track_spacing, prev_dir, prev_poly)
+                    ex_val = extend(start, stop, 'RIGHT', obstacles, track_usage, design_area, track_spacing, prev_dir, prev_poly, metal_layers)
                     prev_dir = 'RIGHT'
                
                 # Extend up or down to the pin
                 if verbose: 
-                    print(f'prev poly state:\n{prev_poly}\nwhen routing net {net_name}\n')
+                    print(f'\nprev poly state:\n{prev_poly} \nand direction {prev_dir} \nwhen routing net {net_name}')
+                    print(f'vert track left: {vert_track_left} and poly left {poly_left} and poly right {poly_right}')
+                    print(f'iopad_pin {iopad_pin}')
                 curr_poly = prev_poly[-1]
                 if horz_track_bot > int(poly_top):
                     if prev_dir == 'LEFT':
@@ -805,7 +809,7 @@ def global_router(island_info, cell_info, nets_table, island_place, metal_layers
                     elif prev_dir == 'RIGHT':
                         start = (curr_poly[2] - track_spacing, curr_poly[1], curr_poly[2], curr_poly[3])
                         stop = (curr_poly[2] - track_spacing, poly_bot, curr_poly[2], poly_top)
-                    ex_val = extend(start, stop, 'BOT', obstacles, track_usage, design_area, track_spacing, prev_dir, prev_poly)
+                    ex_val = extend(start, stop, 'BOT', obstacles, track_usage, design_area, track_spacing, prev_dir, prev_poly, metal_layers)
 
                 elif horz_track_top < poly_bot:
                     if prev_dir == 'LEFT':
@@ -815,7 +819,7 @@ def global_router(island_info, cell_info, nets_table, island_place, metal_layers
                         start = (curr_poly[2] - track_spacing, curr_poly[1], curr_poly[2], curr_poly[3])
                         stop = (curr_poly[2] - track_spacing, poly_bot, curr_poly[2], poly_top)
 
-                    ex_val = extend(start, stop, 'TOP', obstacles, track_usage, design_area, track_spacing, prev_dir, prev_poly)
+                    ex_val = extend(start, stop, 'TOP', obstacles, track_usage, design_area, track_spacing, prev_dir, prev_poly, metal_layers)
                 
                 for item in prev_poly:
                     net_str.append(f'{int(item[0])} {int(item[1])} {int(item[2])} {int(item[3])} {item[4]}\n')
@@ -848,7 +852,7 @@ def max_placed_net(widths):
                 idx = key
     return ret, idx
 
-def extend(start, stop, routing_dir, obstacles, track_usage, design_area, track_spacing, prev_dir, prev_poly):
+def extend(start, stop, routing_dir, obstacles, track_usage, design_area, track_spacing, prev_dir, prev_poly, metal_layers):
     '''
     Return polygons connecting two points along a track in the specified routing direction while avoiding obstacles
     '''
@@ -919,9 +923,9 @@ def extend(start, stop, routing_dir, obstacles, track_usage, design_area, track_
                     elif increment_right and len(prev_poly) > 0 and prev_dir == 'LEFT':
                         prev_poly[-1][0] = new_left # adjust the last track, horizontal, to match the right of the new left
                     if (increment_right and prev_dir == 'RIGHT') or (not increment_right and prev_dir == 'LEFT'): # when to stitch vertical track back to horz
-                        prev_poly.append([stitch_left, start_bot, stitch_right, start_top, 'M3'])
-                    prev_poly.append([stitch_left, stop_bot, stitch_right, stop_top, 'M3'])  # stitch vertical track to island
-                    prev_poly.append([new_left, start_bot, new_right, stop_top, 'M2'])
+                        prev_poly.append([stitch_left, start_bot, stitch_right, start_top, metal_layers[0]])
+                    prev_poly.append([stitch_left, stop_bot, stitch_right, stop_top, metal_layers[0]])  # stitch vertical track to island
+                    prev_poly.append([new_left, start_bot, new_right, stop_top, metal_layers[1]])
                     track_usage['vert'][idx].append((start_bot, stop_top))
                     return
             else:
@@ -934,9 +938,9 @@ def extend(start, stop, routing_dir, obstacles, track_usage, design_area, track_
                 elif increment_right and len(prev_poly) > 0 and prev_dir == 'LEFT':
                     prev_poly[-1][0] = new_left # adjust the last track, horizontal, to match the right of the new left
                 if (increment_right and prev_dir == 'RIGHT') or (not increment_right and prev_dir == 'LEFT'): # when to stitch vertical track back to horz
-                    prev_poly.append([stitch_left, start_bot, stitch_right, start_top, 'M3'])
-                prev_poly.append([stitch_left, stop_bot, stitch_right, stop_top, 'M3'])
-                prev_poly.append([new_left, start_bot, new_right, stop_top, 'M2'])
+                    prev_poly.append([stitch_left, start_bot, stitch_right, start_top, metal_layers[0]])
+                prev_poly.append([stitch_left, stop_bot, stitch_right, stop_top, metal_layers[0]])
+                prev_poly.append([new_left, start_bot, new_right, stop_top, metal_layers[1]])
                 track_usage['vert'][idx] = [(start_bot, stop_top)]
                 return
     
@@ -983,9 +987,9 @@ def extend(start, stop, routing_dir, obstacles, track_usage, design_area, track_
                     elif increment_right and len(prev_poly) > 0 and prev_dir == 'LEFT':
                         prev_poly[-1][0] = new_left # adjust the last track, horizontal, to match the right of the new left
                     if (increment_right and prev_dir == 'RIGHT') or (not increment_right and prev_dir == 'LEFT'): # when to stitch vertical track back to horz
-                        prev_poly.append([stitch_left, start_bot, stitch_right, start_top, 'M3'])
-                    prev_poly.append([stitch_left, stop_bot, stitch_right, stop_top, 'M3'])  # stitch vertical track to island
-                    prev_poly.append([new_left, stop_bot, new_right, start_top, 'M2'])
+                        prev_poly.append([stitch_left, start_bot, stitch_right, start_top, metal_layers[0]])
+                    prev_poly.append([stitch_left, stop_bot, stitch_right, stop_top, metal_layers[0]])  # stitch vertical track to island
+                    prev_poly.append([new_left, stop_bot, new_right, start_top, metal_layers[1]])
                     track_usage['vert'][idx].append((stop_bot, start_top))
                     return
             else:
@@ -998,9 +1002,9 @@ def extend(start, stop, routing_dir, obstacles, track_usage, design_area, track_
                 elif increment_right and len(prev_poly) > 0 and prev_dir == 'LEFT':
                     prev_poly[-1][0] = new_left # adjust the last track, horizontal, to match the right of the new left
                 if (increment_right and prev_dir == 'RIGHT') or (not increment_right and prev_dir == 'LEFT'): # when to stitch vertical track back to horz
-                    prev_poly.append([stitch_left, start_bot, stitch_right, start_top, 'M3'])
-                prev_poly.append([stitch_left, stop_bot, stitch_right, stop_top, 'M3'])  # stitch vertical track to island
-                prev_poly.append([new_left, stop_bot, new_right, start_top, 'M2'])
+                    prev_poly.append([stitch_left, start_bot, stitch_right, start_top, metal_layers[0]])
+                prev_poly.append([stitch_left, stop_bot, stitch_right, stop_top, metal_layers[0]])  # stitch vertical track to island
+                prev_poly.append([new_left, stop_bot, new_right, start_top, metal_layers[1]])
                 track_usage['vert'][idx] = [(stop_bot, start_top)]
                 return
     
@@ -1028,8 +1032,8 @@ def extend(start, stop, routing_dir, obstacles, track_usage, design_area, track_
                     stitch_bot = min(new_bot, start_bot)
                     stitch_top = max(new_top, start_top)
                     stitch_right = max(start_left + track_spacing, start_right)
-                    prev_poly.append([start_left, stitch_bot, stitch_right, stitch_top, 'M2'])
-                    prev_poly.append([stop_left, new_bot, start_right, new_top, 'M3'])
+                    prev_poly.append([start_left, stitch_bot, stitch_right, stitch_top, metal_layers[1]])
+                    prev_poly.append([stop_left, new_bot, start_right, new_top, metal_layers[0]])
                     track_usage['horz'][idx].append((stop_left, start_right))
                     return
             else:
@@ -1039,8 +1043,8 @@ def extend(start, stop, routing_dir, obstacles, track_usage, design_area, track_
                 stitch_bot = min(new_bot, start_bot)
                 stitch_top = max(new_top, start_top)
                 stitch_right = max(start_left + track_spacing, start_right)
-                prev_poly.append([start_left, stitch_bot, stitch_right, stitch_top, 'M2'])
-                prev_poly.append([stop_left, new_bot, start_right, new_top, 'M3'])
+                prev_poly.append([start_left, stitch_bot, stitch_right, stitch_top, metal_layers[1]])
+                prev_poly.append([stop_left, new_bot, start_right, new_top, metal_layers[0]])
                 track_usage['horz'][idx] = [(stop_left, start_right)]
                 return
     
@@ -1068,8 +1072,8 @@ def extend(start, stop, routing_dir, obstacles, track_usage, design_area, track_
                     stitch_bot = min(new_bot, start_bot)
                     stitch_top = max(new_top, start_top)
                     stitch_right = max(start_left + track_spacing, start_right)
-                    prev_poly.append([start_left, stitch_bot, stitch_right, stitch_top, 'M2'])
-                    prev_poly.append([start_left, new_bot, stop_right, new_top, 'M3'])
+                    prev_poly.append([start_left, stitch_bot, stitch_right, stitch_top, metal_layers[1]])
+                    prev_poly.append([start_left, new_bot, stop_right, new_top, metal_layers[0]])
                     track_usage['horz'][idx].append((start_left, stop_right))
                     return
             else:
@@ -1079,8 +1083,8 @@ def extend(start, stop, routing_dir, obstacles, track_usage, design_area, track_
                 stitch_bot = min(new_bot, start_bot)
                 stitch_top = max(new_top, start_top)
                 stitch_right = max(start_left + track_spacing, start_right)
-                prev_poly.append([start_left, stitch_bot, stitch_right, stitch_top, 'M2'])
-                prev_poly.append([start_left, new_bot, stop_right, new_top, 'M3'])
+                prev_poly.append([start_left, stitch_bot, stitch_right, stitch_top, metal_layers[1]])
+                prev_poly.append([start_left, new_bot, stop_right, new_top, metal_layers[0]])
                 track_usage['horz'][idx] = [(start_left, stop_right)]
                 return
     
