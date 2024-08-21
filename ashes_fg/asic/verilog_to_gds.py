@@ -30,13 +30,11 @@ from ashes_fg.asic.utils import *
 # Qs:
 # - Why are island numbers zero indexed but row and cols are 1 indexed?
 
-verbose = True
+verbose = False
 pypath = sys.executable
 
 
-def gds_synthesis(tech_process, dbu, track_spacing, x_offset, y_offset, design_area, proj_name, routed_def=False):
-    
-
+def gds_synthesis(tech_process, dbu, track_spacing, x_offset, y_offset, design_area, proj_name, routed_def=False, router_tool='qrouter'):
     verilog_file_name = proj_name + '.v'
     file_name_no_ext = proj_name
     file_path = os.path.join('.', file_name_no_ext)
@@ -159,7 +157,7 @@ def gds_synthesis(tech_process, dbu, track_spacing, x_offset, y_offset, design_a
         generate_lef(module_list, cell_info, tech_process, lef_file_path, dbu)
 
         metal_layers = count_metal_layers(layer_map, tech_process)
-        def_blocks, def_nets = generate_def(island_info, cell_info, track_spacing, def_file_path, dbu, design_area, metal_layers, nets_table, file_name_no_ext, frame_module)
+        def_blocks, def_nets = generate_def(island_info, cell_info, track_spacing, def_file_path, dbu, design_area, metal_layers, nets_table, file_name_no_ext, frame_module, router_tool)
 
         island_info = sanitize_island_info(island_info)
         if verbose: print(f'Cleaned up island info:\n {island_info}\n')
@@ -171,7 +169,7 @@ def gds_synthesis(tech_process, dbu, track_spacing, x_offset, y_offset, design_a
     else:
         rev_layer_map = reverse_pdk_doc(layer_map)
         if verbose: print(f'Reversed layer map:\n {rev_layer_map}')
-        merge_def_with_gds(file_path, file_name_no_ext, rev_layer_map, cell_info, dbu, file_path)
+        merge_def_with_gds(file_path, file_name_no_ext, rev_layer_map, cell_info, dbu, file_path, router_tool)
         os.system(f'{pypath} {txt2gds_path} -o {merged_gds_file_path} {text_merged_layout_path}')
     
 
@@ -502,7 +500,7 @@ def generate_lef(module_list, cell_info, tech_process, file_path, dbu):
     lef_file.write('END LIBRARY')
     lef_file.close()
 
-def generate_def(island_info, cell_info, track_spacing, file_path, dbu, design_area, metal_layers, nets_table, file_name, frame_module):
+def generate_def(island_info, cell_info, track_spacing, file_path, dbu, design_area, metal_layers, nets_table, file_name, frame_module, router_tool):
     '''
     Create a def file for the design
     - Place def instances around the edge for matrices
@@ -512,7 +510,7 @@ def generate_def(island_info, cell_info, track_spacing, file_path, dbu, design_a
     # Calculate num of tracks based on die area 
     num_tracks = (round(design_area[2]/track_spacing), round(design_area[3]/track_spacing))
     track_corner = (0,0)
-    stop_layer = 3 # Metal layers to cover cells with (indicate which cells are Mx dense)
+    stop_layer = 2 # Metal layers to cover cells with (indicate which cells are Mx dense)
    
     header_str = 'VERSION 5.5 ;\nNAMESCASESENSITIVE ON ;\nDIVIDERCHAR "/" ;\nBUSBITCHARS "[]" ;\n\n'
     def_file = open(file_path, 'w')
@@ -560,7 +558,12 @@ def generate_def(island_info, cell_info, track_spacing, file_path, dbu, design_a
                 comp_string.append(f'- {inst.instance_name} {inst.module_name} + PLACED ( {loc[0]} {loc[1]} ) N ;\n')
                 comp_cnt += 1
             # generate blockages based on cell size
-            rect = f'    RECT ( {loc[0]} {loc[1]} ) ( {loc[2]} {loc[3]} )\n'
+            # to account for pin access, a constant time approach is pushing in all edges by .75um 
+            block_x1 = loc[0] + 1*dbu
+            block_y1 = loc[1] + 1*dbu
+            block_x2 = loc[2] - 1*dbu
+            block_y2 = loc[3] - 1*dbu
+            rect = f'    RECT ( {block_x1} {block_y1} ) ( {block_x2} {block_y2} )\n'
             rect_string.append(rect)
             # Track nets for both matrices and cells
             vals = inst.ports.values()
@@ -620,12 +623,25 @@ def generate_def(island_info, cell_info, track_spacing, file_path, dbu, design_a
     shutil.copy(file_path, file_path[:-4] + '_guide.def')
     def_file = open(file_path, 'a')
     rect_string[-1] = rect_string[-1][:-1] + ' ;\n'
-
-    def_file.write(f'BLOCKAGES {stop_layer} ;\n')
-    for num in range(stop_layer):
-        def_file.write(f'  - LAYER {metal_layers[num]}\n')
-        def_file.write(''.join(rect_string))
-    def_file.write(f'END BLOCKAGES\n\n')
+    # Change blockages syntax based on router. Qrouter accepts an older DEF syntax i believe.
+    if router_tool != 'qrouter':
+        def_file.write(f'BLOCKAGES {stop_layer} ;\n')
+        for num in range(stop_layer):
+            def_file.write(f'  - LAYER {metal_layers[num]}\n')
+            def_file.write(''.join(rect_string))
+        def_file.write(f'END BLOCKAGES\n\n')
+    else:
+        blocks_total = len(rect_string)*stop_layer
+        def_file.write(f'BLOCKAGES {blocks_total} ;\n')
+        for num in range(stop_layer):
+            for single_rect in rect_string:
+                def_file.write(f'  - {metal_layers[num]}\n')
+                def_file.write(f'    LAYER {metal_layers[num]} ;\n')
+                if single_rect[-2] != ';':
+                    single_rect = single_rect[:-1] + ' ;\n'
+                def_file.write(single_rect)
+                def_file.write(f'  END\n\n')
+        def_file.write(f'END BLOCKAGES\n\n')
     def_blocks = f'BLOCKAGES {stop_layer} ;\n'
     def_blocks += f'  - LAYER {metal_layers[0]}\n'
     rect_string[-1] = rect_string[-1][:-2] # These are for regenerating a def file with visible guide nets
@@ -649,14 +665,14 @@ def generate_def(island_info, cell_info, track_spacing, file_path, dbu, design_a
     return def_blocks, def_nets
  
 
-def merge_def_with_gds(file_path, file_name, layer_map, cell_info, dbu, pwd):
+def merge_def_with_gds(file_path, file_name, layer_map, cell_info, dbu, pwd, router_tool):
     '''
     Convert routed def into polygons for gds
     '''
-    def_file_name = f'{file_name}_routed.def'
+    def_file_name = f'{file_name}_routed.def' if router_tool != 'qrouter' else f'{file_name}_qroute.def'
     def_file_name = os.path.join(file_path, def_file_name)
     if not os.path.exists(def_file_name): 
-        raise CellNotFound(f'Routed def file cannot be found. Is it named {file_name}_routed.def ?')
+        raise CellNotFound(f'Routed def file cannot be found.')
     
     routed_str = []
     def_file = open(def_file_name)
@@ -664,7 +680,8 @@ def merge_def_with_gds(file_path, file_name, layer_map, cell_info, dbu, pwd):
     single_net = False
     via_doc, metal_widths = {}, {}
 
-    def update_routed_str(left, bottom, right, top, routing_layer, parse_vias=False):
+    # Only chose this pattern because I was learning and testing out nested python functions
+    def update_routed_str(left, bottom, right, top, routing_layer, layer_type, parse_vias=False):
         if not parse_vias:
             coord_start = (int(left), int(bottom))
             coord_end = (int(right), int(top))
@@ -695,77 +712,108 @@ def merge_def_with_gds(file_path, file_name, layer_map, cell_info, dbu, pwd):
                 top = int(top) + net_width
             prev_coords.add(coord_start)
             prev_coords.add(coord_end)
-
+        
+        routed_str.append('BOUNDARY\n')
         routed_str.append(f'LAYER: {layer_type[0]}\n')
         routed_str.append(f'DATATYPE: {layer_type[1]}\n')
         routed_str.append(f'XY: {left}, {bottom}, {right}, {bottom}, {right}, {top}, {left}, {top}, {left}, {bottom}\n')
         routed_str.append('ENDEL\n')
+
+    def merge_nonqrouter_def():
+        if len(line) > 11 and line[3] == 'ROUTED':
+            layer_type = layer_map[line[4]+'_drawing']['layer_type']
+            layer_type = layer_type.split(',')
+            left, bottom = line[6], line[7]
+            right = line[10] if line[8] != '0' else line[11]
+            top = line[11] if line[8] != '0' else line[12]
+            update_routed_str(left, bottom, right, top, line[4])
+        
+        elif len(line) > 11 and len(line) < 17 and line[4] == 'NEW':
+            layer_type = layer_map[line[5]+'_drawing']['layer_type']
+            layer_type = layer_type.split(',')
+            left, bottom = line[7], line[8]
+            right = line[11] if line[9] != '0' else line[12]
+            top = line[12] if line[9] != '0' else line[13]
+            update_routed_str(left, bottom, right, top, line[5])
+        
+        elif len(line) > 5 and len(line) < 12 and line[4] == 'NEW':
+            if line[10][:-1] in via_doc:
+                via_list = via_doc[line[10][:-1]]
+                for item in via_list:
+                    layer_type = layer_map[item[0]+'_drawing']['layer_type']
+                    layer_type = layer_type.split(',')
+                    left, bottom = int(line[7]) + int(item[1]), int(line[8]) + int(item[2])
+                    right, top = int(line[7]) + int(item[3]), int(line[8]) + int(item[4])
+                    update_routed_str(left, bottom, right, top, None, parse_vias=True)
+            else:
+                via_ref = line[10][:-1]
+                via_def = find_via_in_lef(via_ref, os.path.join(pwd, file_name), dbu)
+                via_doc[via_ref] = via_def
+                if verbose: print(f'VIA DOC {via_doc}')
+                for item in via_def:
+                    layer_type = layer_map[item[0]+'_drawing']['layer_type']
+                    layer_type = layer_type.split(',')
+                    left, bottom = int(line[7]) + int(item[1]), int(line[8]) + int(item[2])
+                    right, top = int(line[7]) + int(item[3]), int(line[8]) + int(item[4])
+                    update_routed_str(left, bottom, right, top, None, parse_vias=True)
+                    
+        elif len(line) >= 17 and line[4] == 'NEW':
+            # This case handles when routes are described with single coordinate + rectangle offsets
+            layer_type = layer_map[line[5]+'_drawing']['layer_type']
+            layer_type = layer_type.split(',')
+            left, bottom, right, top = int(line[7]) + int(line[12]), int(line[8]) + int(line[13]), int(line[7]) + int(line[14]), int(line[8]) + int(line[15])
+            update_routed_str(left, bottom, right, top, line[5])
+
+    def merge_qrouter_def():
+        key_def1 = line[0] == '+'
+        key_def2 = line[0] == '' and line[2] == 'NEW'
+        if key_def1 or key_def2:
+            route_name = line[2] if key_def1 else line[3]
+            layer_type = layer_map[route_name+'_drawing']['layer_type']
+            layer_type = layer_type.split(',')
+            num_coords = line.count('(')
+            cur_x, cur_y, prev_x, prev_y = None, None, None, None
+            for ind, el in enumerate(line):
+                if line[ind] == '(':
+                    cur_x = line[ind+1]
+                    cur_y = line[ind+2]
+                    cur_x = prev_x if cur_x == '*' else cur_x
+                    cur_y = prev_y if cur_y == '*' else cur_y
+                    if prev_x != None and num_coords >= 2:
+                        left = min(prev_x, cur_x)
+                        right = max(prev_x, cur_x)
+                        bot = min(prev_y, cur_y)
+                        top = max(prev_y, cur_y)
+                        update_routed_str(left, bot, right, top, route_name, layer_type)
+                    prev_x = cur_x
+                    prev_y = cur_y
+            if '_' in line[-2]:
+                via_ref = line[-2][:-2]
+                if via_ref not in via_doc:
+                    via_def = find_via_in_lef(via_ref, os.path.join(pwd, file_name), dbu)
+                    via_doc[via_ref] = via_def
+                via_def = via_doc[via_ref]
+                for via in via_def:
+                    layer_type = layer_map[via[0]+'_drawing']['layer_type']
+                    layer_type = layer_type.split(',')
+                    update_routed_str(int(cur_x)+int(via[1]), int(cur_y)+int(via[2]), int(cur_x)+int(via[3]), int(cur_y)+int(via[4]), None, layer_type, parse_vias=True)
 
     for line in def_file:
         line = line.split(' ')
         if line[0] == 'NETS':
             parse_nets = True
         elif parse_nets and line[0] == '-':
-            single_net = True
             prev_coords = set()
-        elif parse_nets and line[0] == ';':
-            single_net = False
+        elif parse_nets and (line[0] == ';' or line[-1] == ';'):
             prev_coords = None
         elif parse_nets:
-            parse_nets = False if line[0] == 'END' else parse_nets
-            if len(line) > 11 and line[3] == 'ROUTED':
-                routed_str.append('BOUNDARY\n')
-                layer_type = layer_map[line[4]+'_drawing']['layer_type']
-                layer_type = layer_type.split(',')
-                left, bottom = line[6], line[7]
-                right = line[10] if line[8] != '0' else line[11]
-                top = line[11] if line[8] != '0' else line[12]
-                update_routed_str(left, bottom, right, top, line[4])
-            
-            elif len(line) > 11 and len(line) < 17 and line[4] == 'NEW':
-                routed_str.append('BOUNDARY\n')
-                layer_type = layer_map[line[5]+'_drawing']['layer_type']
-                layer_type = layer_type.split(',')
-                left, bottom = line[7], line[8]
-                right = line[11] if line[9] != '0' else line[12]
-                top = line[12] if line[9] != '0' else line[13]
-                update_routed_str(left, bottom, right, top, line[5])
-            
-            elif len(line) > 5 and len(line) < 12 and line[4] == 'NEW':
-                if line[10][:-1] in via_doc:
-                    via_list = via_doc[line[10][:-1]]
-                    for item in via_list:
-                        routed_str.append('BOUNDARY\n')
-                        layer_type = layer_map[item[0]+'_drawing']['layer_type']
-                        layer_type = layer_type.split(',')
-                        left, bottom = int(line[7]) + int(item[1]), int(line[8]) + int(item[2])
-                        right, top = int(line[7]) + int(item[3]), int(line[8]) + int(item[4])
-                        update_routed_str(left, bottom, right, top, None, parse_vias=True)
-                else:
-                    via_ref = line[10][:-1]
-                    via_def = find_via_in_lef(via_ref, os.path.join(pwd, file_name), dbu)
-                    via_doc[via_ref] = via_def
-                    if verbose: print(f'VIA DOC {via_doc}')
-                    for item in via_def:
-                        routed_str.append('BOUNDARY\n')
-                        layer_type = layer_map[item[0]+'_drawing']['layer_type']
-                        layer_type = layer_type.split(',')
-                        left, bottom = int(line[7]) + int(item[1]), int(line[8]) + int(item[2])
-                        right, top = int(line[7]) + int(item[3]), int(line[8]) + int(item[4])
-                        update_routed_str(left, bottom, right, top, None, parse_vias=True)
-                        
-            elif len(line) >= 17 and line[4] == 'NEW':
-                # This case handles when routes are described with single coordinate + rectangle offsets
-                routed_str.append('BOUNDARY\n')
-                layer_type = layer_map[line[5]+'_drawing']['layer_type']
-                layer_type = layer_type.split(',')
-                left, bottom, right, top = int(line[7]) + int(line[12]), int(line[8]) + int(line[13]), int(line[7]) + int(line[14]), int(line[8]) + int(line[15])
-                update_routed_str(left, bottom, right, top, line[5])
-        
+            parse_nets = False if (line[0] == 'END' and parse_nets) else parse_nets
+            merge_nonqrouter_def() if (router_tool != 'qrouter') else merge_qrouter_def()
+        # VIAS keyword was generated by triton route. 
         elif line[0] == 'VIAS':
             parse_vias = True
         elif parse_vias:
-            parse_vias = False if line[0] == 'END' else parse_vias
+            parse_vias = False if (line[0] == 'END' and parse_vias) else parse_vias
             if len(line) == 3 and parse_vias: 
                 update_via_doc = True
                 via_name = line[1]
