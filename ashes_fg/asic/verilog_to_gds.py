@@ -180,6 +180,7 @@ def parse_cell_gds(name, first_cell, cell_info, module_list, pin_list, layer_map
     - Omit cell definitions for already defined cells
     - Track cell size and update cell info
     - Track cell pin location and update cell info
+    - Handle cell rotation, mirroring and translation
     """
     ret_string, cell_pin_names, cell_pin_boxes = [], [], []
     lib_tags = {'HEADER', 'BGNLIB', 'UNITS', 'LIBNAME', 'ENDLIB'}
@@ -558,12 +559,65 @@ def generate_def(island_info, cell_info, track_spacing, file_path, dbu, design_a
                 comp_string.append(f'- {inst.instance_name} {inst.module_name} + PLACED ( {loc[0]} {loc[1]} ) N ;\n')
                 comp_cnt += 1
             # generate blockages based on cell size
-            # to account for pin access, a constant time approach is pushing in all edges by .75um 
-            block_x1 = loc[0] + 1*dbu
-            block_y1 = loc[1] + 1*dbu
-            block_x2 = loc[2] - 1*dbu
-            block_y2 = loc[3] - 1*dbu
+            # to account for pin access, a constant time approach is pushing in all edges by some amount
+            pin_const = 1
+            block_x1 = loc[0] + pin_const*dbu
+            block_y1 = loc[1] + pin_const*dbu
+            block_x2 = loc[2] - pin_const*dbu
+            block_y2 = loc[3] - pin_const*dbu
             rect = f'    RECT ( {block_x1} {block_y1} ) ( {block_x2} {block_y2} )\n'
+            '''
+            # Split ports into sides
+            pin_spacing = 0.85*dbu
+            left_side, top_side, right_side, bot_side = [], [], [], []
+            cell_pins = cell_info[inst.module_name]['cell_pins']
+            for pin_item in cell_pins.values():
+                pin_left, pin_bot, pin_right, pin_top = loc[0] + int(pin_item['RECT'][0]), loc[1] + int(pin_item['RECT'][1]), loc[0] + int(pin_item['RECT'][2]), loc[1] + int(pin_item['RECT'][3])
+                extension_dirs = [abs(loc[0] - pin_left), abs(loc[1] - pin_bot), abs(loc[2] - pin_right), abs(loc[3] - pin_top)]
+                index_min = min(range(len(extension_dirs)), key=extension_dirs.__getitem__)
+                if index_min == 0:
+                    left_side.append([pin_left, pin_bot, pin_right,pin_top])
+                elif index_min == 1:
+                    bot_side.append([pin_left, pin_bot, pin_right,pin_top])
+                elif index_min == 2:
+                    right_side.append([pin_left, pin_bot, pin_right,pin_top])
+                elif index_min == 3:
+                    top_side.append([pin_left, pin_bot, pin_right,pin_top])
+            # Starting from the bottom left, trace out the cell shape excluding the ports
+            rect = f'    POLYGON ( {loc[0]} {loc[1]} )'
+            left_side.sort(key=lambda x:x[1])
+            for pin_coord in left_side:
+                pt1 = f' ( {loc[0]} {pin_coord[1] - pin_spacing} )'
+                pt2 = f' ( {pin_coord[2] + pin_spacing} {pin_coord[1] - pin_spacing} )'
+                pt3 = f' ( {pin_coord[2] + pin_spacing} {pin_coord[3] + pin_spacing} )'
+                pt4 = f' ( {loc[0]} {pin_coord[3] + pin_spacing} )'
+                rect += pt1 + pt2 + pt3 + pt4
+            rect += f' ( {loc[0]} {loc[3]} )'
+            top_side.sort(key=lambda x:x[0])
+            for pin_coord in top_side:
+                pt1 = f' ( {pin_coord[0] - pin_spacing} {loc[3]} )'
+                pt2 = f' ( {pin_coord[0] - pin_spacing} {pin_coord[1] - pin_spacing} )'
+                pt3 = f' ( {pin_coord[2] + pin_spacing} {pin_coord[1] - pin_spacing} )'
+                pt4 = f' ( {pin_coord[2] + pin_spacing} {loc[3]} )'
+                rect += pt1 + pt2 + pt3 + pt4
+            rect += f' ( {loc[2]} {loc[3]} )'
+            right_side.sort(key=lambda x:x[1], reverse=True)
+            for pin_coord in right_side:
+                pt1 = f' ( {loc[2]} {pin_coord[3] + pin_spacing} )'
+                pt2 = f' ( {pin_coord[0] - pin_spacing} {pin_coord[3] + pin_spacing} )'
+                pt3 = f' ( {pin_coord[0] - pin_spacing} {pin_coord[1] - pin_spacing} )'
+                pt4 = f' ( {loc[2]} {pin_coord[1] - pin_spacing} )'
+                rect += pt1 + pt2 + pt3 + pt4
+            rect += f' ( {loc[2]} {loc[1]} )'
+            bot_side.sort(key=lambda x:x[0], reverse=True)
+            for pin_coord in bot_side:
+                pt1 = f' ( {pin_coord[2] + pin_spacing} {loc[1]} )'
+                pt2 = f' ( {pin_coord[2] + pin_spacing} {pin_coord[3] + pin_spacing} )'
+                pt3 = f' ( {pin_coord[0] - pin_spacing} {pin_coord[3] + pin_spacing} )'
+                pt4 = f' ( {pin_coord[0] - pin_spacing} {loc[1]} )'
+                rect += pt1 + pt2 + pt3 + pt4
+            rect += '\n'
+            '''
             rect_string.append(rect)
             # Track nets for both matrices and cells
             vals = inst.ports.values()
