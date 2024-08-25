@@ -558,17 +558,18 @@ def generate_def(island_info, cell_info, track_spacing, file_path, dbu, design_a
             else:
                 comp_string.append(f'- {inst.instance_name} {inst.module_name} + PLACED ( {loc[0]} {loc[1]} ) N ;\n')
                 comp_cnt += 1
-            # generate blockages based on cell size
-            # to account for pin access, a constant time approach is pushing in all edges by some amount
+            # generate internal blockages based on cell size
             pin_const = 1
             block_x1 = loc[0] + pin_const*dbu
             block_y1 = loc[1] + pin_const*dbu
             block_x2 = loc[2] - pin_const*dbu
             block_y2 = loc[3] - pin_const*dbu
-            rect = f'    RECT ( {block_x1} {block_y1} ) ( {block_x2} {block_y2} )\n'
-            '''
+            rect_string.append(f'    RECT ( {block_x1} {block_y1} ) ( {block_x2} {block_y2} )\n')
+            # Insert blockages between pins around the edges
+            pin_spacing = 2.5*dbu
+            pin_threshold = 7*dbu
+            block_ext_len = 1*dbu
             # Split ports into sides
-            pin_spacing = 0.85*dbu
             left_side, top_side, right_side, bot_side = [], [], [], []
             cell_pins = cell_info[inst.module_name]['cell_pins']
             for pin_item in cell_pins.values():
@@ -583,42 +584,99 @@ def generate_def(island_info, cell_info, track_spacing, file_path, dbu, design_a
                     right_side.append([pin_left, pin_bot, pin_right,pin_top])
                 elif index_min == 3:
                     top_side.append([pin_left, pin_bot, pin_right,pin_top])
-            # Starting from the bottom left, trace out the cell shape excluding the ports
-            rect = f'    POLYGON ( {loc[0]} {loc[1]} )'
+            # For each side, insert a new rect blockage is theres space around the pins
             left_side.sort(key=lambda x:x[1])
-            for pin_coord in left_side:
-                pt1 = f' ( {loc[0]} {pin_coord[1] - pin_spacing} )'
-                pt2 = f' ( {pin_coord[2] + pin_spacing} {pin_coord[1] - pin_spacing} )'
-                pt3 = f' ( {pin_coord[2] + pin_spacing} {pin_coord[3] + pin_spacing} )'
-                pt4 = f' ( {loc[0]} {pin_coord[3] + pin_spacing} )'
-                rect += pt1 + pt2 + pt3 + pt4
-            rect += f' ( {loc[0]} {loc[3]} )'
+            prev_coord, pin_dist = None, None
+            temp_y = None
+            num_pins = len(left_side) - 1
+            for ind, pin_coord in enumerate(left_side):
+                if prev_coord == None:
+                    pin_dist = abs(pin_coord[1] - block_y1)
+                    temp_y = block_y1
+                else:
+                    pin_dist = abs(pin_coord[1] - prev_coord[3])
+                    temp_y = prev_coord[3] + pin_spacing
+                prev_coord = pin_coord
+                if pin_dist > pin_threshold:
+                    rect_string.append(f'    RECT ( {loc[0] - block_ext_len} {temp_y} ) ( {block_x1} {pin_coord[1] - pin_spacing} )\n')
+                # check how much space there was from last pin to edge of the side
+                if ind == num_pins:
+                    pin_dist = abs(pin_coord[3] - block_y2)
+                    if pin_dist > pin_threshold:
+                        rect_string.append(f'    RECT ( {loc[0] - block_ext_len} {pin_coord[3] + pin_spacing} ) ( {block_x1} {block_y2} )\n')
+            # check if there were no pins on left side
+            if prev_coord == None:
+                rect_string.append(f'    RECT ( {loc[0] - block_ext_len} {block_y1} ) ( {block_x1} {block_y2} )\n')
+
             top_side.sort(key=lambda x:x[0])
-            for pin_coord in top_side:
-                pt1 = f' ( {pin_coord[0] - pin_spacing} {loc[3]} )'
-                pt2 = f' ( {pin_coord[0] - pin_spacing} {pin_coord[1] - pin_spacing} )'
-                pt3 = f' ( {pin_coord[2] + pin_spacing} {pin_coord[1] - pin_spacing} )'
-                pt4 = f' ( {pin_coord[2] + pin_spacing} {loc[3]} )'
-                rect += pt1 + pt2 + pt3 + pt4
-            rect += f' ( {loc[2]} {loc[3]} )'
+            prev_coord, pin_dist = None, None
+            temp_x = None
+            num_pins = len(top_side) - 1
+            for ind, pin_coord in enumerate(top_side):
+                if prev_coord == None:
+                    pin_dist = abs(pin_coord[0] - block_x1)
+                    temp_x = block_x1
+                else:
+                    pin_dist = abs(pin_coord[0] - prev_coord[2])
+                    temp_x = prev_coord[2] + pin_spacing
+                prev_coord = pin_coord
+                if pin_dist > pin_threshold:
+                    rect_string.append(f'    RECT ( {temp_x} {block_y2} ) ( {pin_coord[0] - pin_spacing} {loc[3] + block_ext_len} )\n')
+                # check how much space there was from last pin to edge of the side
+                if ind == num_pins:
+                    pin_dist = abs(pin_coord[2] - block_x2)
+                    if pin_dist > pin_threshold:
+                        rect_string.append(f'    RECT ( {pin_coord[2] + pin_spacing} {block_y2} ) ( {block_x2} {loc[3] + block_ext_len} )\n')
+            # check if there were no pins on top side
+            if prev_coord == None:
+                rect_string.append( f'    RECT ( {block_x1} {block_y2} ) ( {block_x2} {loc[3] + block_ext_len} )\n')
+            
             right_side.sort(key=lambda x:x[1], reverse=True)
-            for pin_coord in right_side:
-                pt1 = f' ( {loc[2]} {pin_coord[3] + pin_spacing} )'
-                pt2 = f' ( {pin_coord[0] - pin_spacing} {pin_coord[3] + pin_spacing} )'
-                pt3 = f' ( {pin_coord[0] - pin_spacing} {pin_coord[1] - pin_spacing} )'
-                pt4 = f' ( {loc[2]} {pin_coord[1] - pin_spacing} )'
-                rect += pt1 + pt2 + pt3 + pt4
-            rect += f' ( {loc[2]} {loc[1]} )'
+            prev_coord, pin_dist = None, None
+            temp_y = None
+            num_pins = len(right_side) - 1
+            for ind, pin_coord in enumerate(right_side):
+                if prev_coord == None:
+                    pin_dist = abs(pin_coord[3] - block_y2)
+                    temp_y = block_y2
+                else:
+                    pin_dist = abs(pin_coord[3] - prev_coord[1])
+                    temp_y = prev_coord[1] - pin_spacing
+                prev_coord = pin_coord
+                if pin_dist > pin_threshold:
+                    rect_string.append(f'    RECT ( {block_x2} {pin_coord[3] + pin_spacing} ) ( {loc[2] + block_ext_len} {temp_y} )\n')
+                # check how much space there was from last pin to edge of the side
+                if ind == num_pins:
+                    pin_dist = abs(pin_coord[1] - block_y1)
+                    if pin_dist > pin_threshold:
+                        rect_string.append(f'    RECT ( {block_x2} {block_y1} ) ( {loc[2] + block_ext_len} {pin_coord[1] - pin_spacing} )\n')
+            # check if there were no pins on right side
+            if prev_coord == None:
+                rect_string.append(f'    RECT ( {block_x2} {block_y1} ) ( {loc[2] + block_ext_len} {block_y2} )\n')
+
             bot_side.sort(key=lambda x:x[0], reverse=True)
-            for pin_coord in bot_side:
-                pt1 = f' ( {pin_coord[2] + pin_spacing} {loc[1]} )'
-                pt2 = f' ( {pin_coord[2] + pin_spacing} {pin_coord[3] + pin_spacing} )'
-                pt3 = f' ( {pin_coord[0] - pin_spacing} {pin_coord[3] + pin_spacing} )'
-                pt4 = f' ( {pin_coord[0] - pin_spacing} {loc[1]} )'
-                rect += pt1 + pt2 + pt3 + pt4
-            rect += '\n'
-            '''
-            rect_string.append(rect)
+            prev_coord, pin_dist = None, None
+            temp_x = None
+            num_pins = len(bot_side) - 1
+            for ind, pin_coord in enumerate(bot_side):
+                if prev_coord == None:
+                    pin_dist = abs(pin_coord[2] - block_x2)
+                    temp_x = block_x2
+                else:
+                    pin_dist = abs(pin_coord[2] - prev_coord[0])
+                    temp_x = prev_coord[0] - pin_spacing
+                prev_coord = pin_coord
+                if pin_dist > pin_threshold:
+                    rect_string.append(f'    RECT ( {pin_coord[2] + pin_spacing} {loc[1] - block_ext_len} ) ( {temp_x} {block_y1} )\n')
+                # check how much space there was from last pin to edge of the side
+                if ind == num_pins:
+                    pin_dist = abs(pin_coord[0] - block_x1)
+                    if pin_dist > pin_threshold:
+                        rect_string.append(f'    RECT ( {block_x1} {loc[1] - block_ext_len} ) ( {pin_coord[0] - pin_spacing} {block_y1} )\n')
+            # check if there were no pins on bot side
+            if prev_coord == None:
+                rect_string.append(f'    RECT ( {block_x1} {loc[1] - block_ext_len} ) ( {block_x2} {block_y1} )\n')
+            
             # Track nets for both matrices and cells
             vals = inst.ports.values()
             # Convert all port values to string for substring search,
