@@ -1,4 +1,6 @@
 import numpy as np
+from collections import defaultdict
+import bisect
 
 def update_output_layout(text, file_path):
     '''
@@ -154,3 +156,88 @@ def find_metal_in_lef(metal, file_name, dbu):
                 lef_file.close()
                 return ret_val
     lef_file.close()
+
+
+class Rectangle:
+    def __init__(self, x1, y1, x2, y2, layer):
+        self.x1, self.y1 = min(x1, x2), min(y1, y2)
+        self.x2, self.y2 = max(x1, x2), max(y1, y2)
+        self.layer = layer
+
+class EdgeEvent:
+    def __init__(self, coord, start, end, is_start, rect, is_vertical):
+        self.coord = coord
+        self.start = start
+        self.end = end
+        self.is_start = is_start
+        self.rect = rect
+        self.is_vertical = is_vertical
+
+class HoleDetector:
+    def __init__(self, metal_width):
+        self.metal_width = metal_width
+        self.rectangles = []
+        self.layers = defaultdict(list)
+
+    def add_rectangle(self, x1, y1, x2, y2, layer):
+        rect = Rectangle(x1, y1, x2, y2, layer)
+        self.rectangles.append(rect)
+        self.layers[layer].append(rect)
+
+    def find_holes(self):
+        holes = []
+        for layer, rects in self.layers.items():
+            vertical_holes = self._find_direction_holes(rects, is_vertical=True)
+            horizontal_holes = self._find_direction_holes(rects, is_vertical=False)
+            holes.extend([(hole, layer, "vertical") for hole in vertical_holes])
+            holes.extend([(hole, layer, "horizontal") for hole in horizontal_holes])
+        return holes
+
+    def _find_direction_holes(self, rects, is_vertical):
+        events = []
+        for rect in rects:
+            if is_vertical:
+                events.append(EdgeEvent(rect.x1, rect.y1, rect.y2, True, rect, is_vertical))
+                events.append(EdgeEvent(rect.x2, rect.y1, rect.y2, False, rect, is_vertical))
+            else:
+                events.append(EdgeEvent(rect.y1, rect.x1, rect.x2, True, rect, is_vertical))
+                events.append(EdgeEvent(rect.y2, rect.x1, rect.x2, False, rect, is_vertical))
+        events.sort(key=lambda e: e.coord)
+
+        active_edges = []
+        holes = []
+
+        for i, event in enumerate(events):
+            if event.is_start:
+                self._insert_edge(active_edges, event)
+            else:
+                self._remove_edge(active_edges, event)
+
+            if i < len(events) - 1 and events[i+1].coord - event.coord <= self.metal_width:
+                new_holes = self._check_for_holes(active_edges, event.coord, events[i+1].coord, is_vertical)
+                holes.extend(new_holes)
+
+        return holes
+
+    def _insert_edge(self, active_edges, event):
+        bisect.insort(active_edges, (event.start, event.end, event.rect), key=lambda e: e[0])
+
+    def _remove_edge(self, active_edges, event):
+        active_edges.remove((event.start, event.end, event.rect))
+
+    def _check_for_holes(self, active_edges, coord1, coord2, is_vertical):
+        holes = []
+        for i in range(len(active_edges) - 1):
+            _, end1, _ = active_edges[i]
+            start2, _, _ = active_edges[i+1]
+            gap = start2 - end1
+            if 0 < gap <= self.metal_width:
+                if is_vertical:
+                    hole = ((coord1, end1), (coord2, start2))
+                else:
+                    hole = ((end1, coord1), (start2, coord2))
+                
+                # Ensure the hole has non-zero width and height
+                if hole[0][0] != hole[1][0] and hole[0][1] != hole[1][1]:
+                    holes.append(hole)
+        return holes
