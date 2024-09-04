@@ -8,6 +8,11 @@ import re
 import time
 import sys
 import tracemalloc
+from pathlib import Path
+
+# make sure our local fork of gdsii is added to system path
+path_root = Path(__file__).parents[0]
+sys.path.append(str(path_root))
 
 from verilog_parser.parser import parse_verilog 
 from gdsii import types, tags 
@@ -28,11 +33,12 @@ from ashes_fg.asic.utils import *
 verbose = False
 pypath = sys.executable
 
-def gds_synthesis(tech_process, dbu, track_spacing, x_offset, y_offset, design_area, ver_file_name, routed_def=False):
-    verilog_file_name = ver_file_name + '.v'
-    file_name_no_ext = ver_file_name
+
+def gds_synthesis(tech_process, dbu, track_spacing, x_offset, y_offset, design_area, proj_name, routed_def=False, router_tool='qrouter'):
+    verilog_file_name = proj_name + '.v'
+    file_name_no_ext = proj_name
     file_path = os.path.join('.', file_name_no_ext)
-    ver_file = open(os.path.join('.', 'verilog_files', verilog_file_name), 'r')
+    ver_file = open(os.path.join('.', proj_name, 'verilog_files', verilog_file_name), 'r')
     ver_file_content = ver_file.read()
     ver_file.close()
     
@@ -43,10 +49,6 @@ def gds_synthesis(tech_process, dbu, track_spacing, x_offset, y_offset, design_a
     top_module, frame_module = None, None
     nets_table = {}
 
-    # Remove old files and make working directory
-    if not routed_def:
-        if os.path.exists(file_path): shutil.rmtree(file_path)
-        os.mkdir(file_path)
     text_layout_path = os.path.join(file_path, f'{file_name_no_ext}_gds.txt')
     gds_path = os.path.join(file_path, f'{file_name_no_ext}_placed.gds')
     lef_file_path = os.path.join(file_path, f'{file_name_no_ext}.lef')
@@ -55,6 +57,14 @@ def gds_synthesis(tech_process, dbu, track_spacing, x_offset, y_offset, design_a
     merged_gds_file_path = os.path.join(file_path, f'{file_name_no_ext}_merged.gds')
     text_merged_layout_path = os.path.join(file_path, f'{file_name_no_ext}_merged.txt')
 
+    # Delete previously generated files if not merging routes
+    if not routed_def:
+        generated_files = [text_layout_path, gds_path, lef_file_path, def_file_path, guide_file_path, merged_gds_file_path, text_merged_layout_path]
+        for item in generated_files:
+            if os.path.isfile(item):
+                os.remove(item)
+
+    
     # Get pin list from technology layer map
     layer_map_path = os.path.join('.', 'ashes_fg', 'asic', 'lib', 'layer_map', tech_process + '.json')
     if not os.path.exists(layer_map_path): 
@@ -70,11 +80,27 @@ def gds_synthesis(tech_process, dbu, track_spacing, x_offset, y_offset, design_a
                 if inst.module_name not in module_list:
                     module_list.add(inst.module_name)
     
+    # Add in angle brackets to the top module for cadence vectorization 
+    # - Replace the old port dictionary with an updated copy
+    excluded_ports = set(['island_num', 'row', 'col'])
+    for inst in top_module.module_instances:
+        port_copy = {} 
+        for p_key, p_value in inst.ports.items():
+            pattern = r'_(\d+)_'
+            matches = re.search(pattern, p_key)
+            if p_key not in excluded_ports and matches:
+                replacement = r'<\1>'
+                p_new_key = re.sub(pattern, replacement, p_key, count=1)
+                port_copy[p_new_key] = p_value
+            else:
+                port_copy[p_key] = p_value
+        inst.ports = port_copy
+
     # Instantiate cells in output layout based on modules used in verilog
     for inst in top_module.module_instances:
         if inst.module_name in module_list:
-            cell_text = parse_cell_gds(inst.module_name, first_cell, cell_info, module_list, pin_list, layer_map)
-            update_output_layout(cell_text, text_layout_path)
+            cell_text = parse_cell_gds(inst.module_name, first_cell, cell_info, module_list, pin_list, layer_map, tech_process)
+            if not routed_def: update_output_layout(cell_text, text_layout_path)
             first_cell = False
 
     if verbose: print('Cell Info:')
@@ -131,7 +157,7 @@ def gds_synthesis(tech_process, dbu, track_spacing, x_offset, y_offset, design_a
         generate_lef(module_list, cell_info, tech_process, lef_file_path, dbu)
 
         metal_layers = count_metal_layers(layer_map, tech_process)
-        def_blocks, def_nets = generate_def(island_info, cell_info, track_spacing, def_file_path, dbu, design_area, metal_layers, nets_table, file_name_no_ext, frame_module)
+        def_blocks, def_nets = generate_def(island_info, cell_info, track_spacing, def_file_path, dbu, design_area, metal_layers, nets_table, file_name_no_ext, frame_module, router_tool)
 
         island_info = sanitize_island_info(island_info)
         if verbose: print(f'Cleaned up island info:\n {island_info}\n')
@@ -143,10 +169,168 @@ def gds_synthesis(tech_process, dbu, track_spacing, x_offset, y_offset, design_a
     else:
         rev_layer_map = reverse_pdk_doc(layer_map)
         if verbose: print(f'Reversed layer map:\n {rev_layer_map}')
-        merge_def_with_gds(file_path, file_name_no_ext, rev_layer_map, cell_info, dbu, file_path)
+        merge_def_with_gds(file_path, file_name_no_ext, rev_layer_map, cell_info, dbu, file_path, router_tool)
         os.system(f'{pypath} {txt2gds_path} -o {merged_gds_file_path} {text_merged_layout_path}')
     
-    
+
+def parse_cell_gds(name, first_cell, cell_info, module_list, pin_list, layer_map, tech_process):
+    """
+    Convert the cell gds to text
+    - Omit header and libary tags for subsequent cells
+    - Omit cell definitions for already defined cells
+    - Track cell size and update cell info
+    - Track cell pin location and update cell info
+    - Handle cell rotation, mirroring and translation
+    """
+    ret_string, cell_pin_names, cell_pin_boxes = [], [], []
+    lib_tags = {'HEADER', 'BGNLIB', 'UNITS', 'LIBNAME', 'ENDLIB'}
+    max_x, min_x, max_y, min_y, cell_width, cell_height = None, None, None, None, None, None
+    omit_record, track_pins, check_pin_text_layer, check_poly_layer, mirror_cell_x, mirror_cell_y = False, False, False, False, False, False
+    sub_cell_name, text_layer, text_name, text_loc_X, text_loc_Y, poly_pin_layer = None, None, None, None, None, None
+    poly_left, poly_bottom, poly_right, poly_top = None, None, None, None
+    sref_name, aref_flag = None, False
+
+    # add process variable 
+    try:
+        with open(os.path.join('.','ashes_fg','asic', 'lib', 'gds', tech_process, name + '.gds'),'rb') as bin_file:
+            for rec in Record.iterate(bin_file):
+                if omit_record:
+                    if rec.tag_name == 'ENDSTR':
+                        omit_record = False
+                elif rec.tag_type == types.NODATA:
+                    # Ignore all ENDLIB tags for individual cells
+                    if rec.tag_name != 'ENDLIB':
+                        ret_string.append(rec.tag_name + '\n')
+                    # Add cell to unique list and reset max cell dimensions from subcells
+                    if rec.tag_name == 'ENDSTR': 
+                        # Update cell info once individual cell parsing is done
+                        cell_width = max_x - min_x if max_x is not None and min_x is not None else 0
+                        cell_height = max_y - min_y if max_y is not None and min_y is not None else 0
+                        if verbose: print((f'Sub cell: {sub_cell_name} Min y: {min_y} Max y: {max_y}'))
+                        max_x, min_x, max_y, min_y = None, None, None, None
+                        cell_info.update({sub_cell_name: {'width': cell_width, 'height': cell_height}})
+                        # Stop tracking pins once end of cell is reached
+                        # Add pin list to cell info of cell
+                        if track_pins: 
+                            track_pins = False
+                            cell_pins = assign_pins_to_polygon(cell_pin_names, cell_pin_boxes, layer_map, pin_list[0][1])
+                            cell_info[sub_cell_name]['cell_pins'] = cell_pins
+                    # Inidicate a text record
+                    if rec.tag_name == 'TEXT' and track_pins:
+                        check_pin_text_layer = True
+                        text_layer, text_name, text_loc_X, text_loc_Y = None, None, None, None
+                    # Indicate a boundary record
+                    if rec.tag_name == 'BOUNDARY' and track_pins:
+                        check_poly_layer = True
+                        poly_pin_layer = None
+                        poly_left, poly_bottom, poly_right, poly_top = None, None, None, None
+                    # Indicate an AREF record. Track this to treat its XY values differently
+                    if rec.tag_name == 'AREF':
+                        aref_flag = True
+
+                    if rec.tag_name == 'ENDEL' and check_pin_text_layer:
+                        check_pin_text_layer = False
+                        if text_layer: cell_pin_names.append((text_layer, text_name, text_loc_X, text_loc_Y))
+                    
+                    if rec.tag_name == 'ENDEL' and check_poly_layer:
+                        check_poly_layer = False
+                        if poly_pin_layer: cell_pin_boxes.append((poly_pin_layer, poly_left, poly_bottom, poly_right, poly_top))
+                    
+                    if rec.tag_name == 'ENDEL' and (mirror_cell_x or mirror_cell_y):
+                        mirror_cell_x = False
+                        mirror_cell_y = False
+                    
+                    if rec.tag_name == 'ENDEL' and aref_flag:
+                        aref_flag = False
+
+                elif rec.tag_type == types.ASCII:
+                    # Keep track of current sub cell name that hasnt been defined
+                    sub_cell_name = rec.data.decode() if rec.tag_name == 'STRNAME' else sub_cell_name
+                    # Only place header/lib tags for the first cell
+                    if first_cell:
+                        ret_string.append('%s: "%s"\n' % (rec.tag_name, rec.data.decode()))
+                    elif rec.tag_name not in lib_tags:
+                        # Check that the cell has not been defined previously
+                        if rec.tag_name == 'STRNAME' and rec.data.decode() in cell_info:
+                                omit_record = True
+                                # This deletes the 'BGNSTR' line preceding the duplicate cell to omit
+                                ret_string.pop()
+                        else:
+                            ret_string.append('%s: "%s"\n' % (rec.tag_name, rec.data.decode()))
+                    
+                    # If cell is already defined and is being called, account for its width
+                    if rec.tag_name == 'SNAME':
+                        max_x = max(int(cell_info[rec.data.decode()]['width']), max_x) if max_x else int(cell_info[rec.data.decode()]['width'])
+                        # needs investigation
+                        # However, i havent run into a situation where i need it so it stays commented out
+                        #max_y = max(int(cell_info[rec.data.decode()]['height']), max_y)
+                        sref_name = rec.data.decode()
+
+                    # Start tracking pins for top level cells
+                    if rec.tag_name == 'STRNAME' and sub_cell_name in module_list:
+                        track_pins = True
+                    
+                    # If tracking pins and in a text record, add pin name only if layer was pin layer
+                    if rec.tag_name == 'STRING' and check_pin_text_layer and text_layer:
+                        text_name = rec.data.decode()
+
+                elif rec.tag_type == types.BITARRAY:
+                    ret_string.append('%s: %s \n' % (rec.tag_name, str(rec.data)))
+                    if rec.tag_name == 'STRANS' and (rec.data & 0b1000000000000000) and sref_name:
+                        mirror_cell_x = True
+                else:
+                    # Check to ensure record is not a header/lib tag
+                    if first_cell:
+                        ret_string.append('%s: %s\n' % (rec.tag_name, ', '.join('{0}'.format(i) for i in rec.data)))
+                    elif rec.tag_name not in lib_tags:
+                        ret_string.append('%s: %s\n' % (rec.tag_name, ', '.join('{0}'.format(i) for i in rec.data)))
+                    
+                    # If in a text record, check if layer is in pin list
+                    if rec.tag_name == 'LAYER' and check_pin_text_layer:
+                        text_layer = rec.data[0] if (str(rec.data[0]), pin_list[0][1]) in pin_list else text_layer
+                    
+                    # If in a boundary record, check if layer is in pin list
+                    if rec.tag_name == 'LAYER' and check_poly_layer:
+                        poly_pin_layer = rec.data[0] if (str(rec.data[0]), pin_list[0][1]) in pin_list else poly_pin_layer
+                    
+                    # If the datatype does not match pin list dataype, then reset poly pin layer
+                    if rec.tag_name == 'DATATYPE' and poly_pin_layer:
+                        poly_pin_layer = None if int(rec.data[0]) != int(pin_list[0][1]) else poly_pin_layer
+                    
+                    # Mirroring a cell across x axis and rotating 180 deg is same as mirror across y axis
+                    if rec.tag_name == 'ANGLE' and mirror_cell_x and rec.data[0] == 180:
+                        mirror_cell_y = True
+                        mirror_cell_x = False
+
+                    # Check for height and width of the cell
+                    # Get location of pin
+                    if rec.tag_name == 'XY':
+                        for idx, item in enumerate(rec.data):
+                            if idx % 2:
+                                # keep track of min and max y
+                                min_y = item if min_y is None else min(item, min_y)
+                                max_y = item if max_y is None else max(item, max_y)
+                            else:
+                                # if cell is mirrored, update x pos
+                                if mirror_cell_y:
+                                    temp_w = cell_info[sref_name]['width']
+                                    #print(f'For a mirrored cell {sref_name}, its x pos is: {item}, cell width is {temp_w}')
+                                    item = item - int(temp_w) if not aref_flag else item
+                                # keep track of min and max x
+                                min_x = item if min_x is None else min(item, min_x)
+                                max_x = item if max_x is None else max(item, max_x)
+                        #if (sub_cell_name == 'sky130_hilas_cellAttempt01d3_pt1'):
+                            #print(f'Tracking sky130_hilas_cellAttempt01d3_pt1 min x: {min_x}')
+                            #print(f'Rec Data: {rec.data}')        
+                        # For a text record on a pin layer, get pin location
+                        if check_pin_text_layer and text_layer:
+                            text_loc_X, text_loc_Y = rec.data[0], rec.data[1]
+                        # For a boundary record on a pin layer, get polygon location
+                        if check_poly_layer and poly_pin_layer:
+                            poly_left, poly_bottom, poly_right, poly_top = rec.data[0], rec.data[1], rec.data[4], rec.data[5]         
+    except:
+        raise CellNotFound(f'Problem opening cell {name}.gds file ?')
+    return ''.join(ret_string)
     
 
 def generate_islands(island_info, cell_info, island_place, design_area, frame_module, track_spacing):
@@ -156,6 +340,9 @@ def generate_islands(island_info, cell_info, island_place, design_area, frame_mo
     - Track cell placement and update island info
     - Track island placement 
     '''
+    # TODO: Dynamic spacing for islands in design area. 
+    # - I could choose to have a variable offset value that represents the placed
+    
     ret_string = []
     x_loc, y_loc, x_base, y_base = 0, 0, 0, 0
 
@@ -258,9 +445,9 @@ def generate_islands(island_info, cell_info, island_place, design_area, frame_mo
         avail_width = design_area[2] - design_area[0] - ip_widths - design_area[4]
         horz_spacing = round(avail_width/len(island_info))
         x_base = br_max + horz_spacing
-
+        '''
         # june run offset
-        x_base = br_max + 115000
+        x_base = br_max + 15000
         y_base = int(design_area[1] + design_area[5])
         '''
         # arbgen offset values
@@ -271,167 +458,10 @@ def generate_islands(island_info, cell_info, island_place, design_area, frame_mo
         else:
             x_base = br_max + 20000
             y_base = int(design_area[1] + design_area[5])
-        
+        '''
         
     return ''.join(ret_string)
 
-def parse_cell_gds(name, first_cell, cell_info, module_list, pin_list, layer_map):
-    """
-    Convert the cell gds to text
-    - Omit header and libary tags for subsequent cells
-    - Omit cell definitions for already defined cells
-    - Track cell size and update cell info
-    - Track cell pin location and update cell info
-    """
-    ret_string, cell_pin_names, cell_pin_boxes = [], [], []
-    lib_tags = {'HEADER', 'BGNLIB', 'UNITS', 'LIBNAME', 'ENDLIB'}
-    max_x, min_x, max_y, min_y, cell_width, cell_height = None, None, None, None, None, None
-    omit_record, track_pins, check_pin_text_layer, check_poly_layer, mirror_cell_x, mirror_cell_y = False, False, False, False, False, False
-    sub_cell_name, text_layer, text_name, text_loc_X, text_loc_Y, poly_pin_layer = None, None, None, None, None, None
-    poly_left, poly_bottom, poly_right, poly_top = None, None, None, None
-    sref_name, aref_flag = None, False
-
-    #try:
-    with open(os.path.join('.','ashes_fg','asic', 'lib', 'gds', name + '.gds'),'rb') as bin_file:
-        for rec in Record.iterate(bin_file):
-            if omit_record:
-                if rec.tag_name == 'ENDSTR':
-                    omit_record = False
-            elif rec.tag_type == types.NODATA:
-                # Ignore all ENDLIB tags for individual cells
-                if rec.tag_name != 'ENDLIB':
-                    ret_string.append(rec.tag_name + '\n')
-                # Add cell to unique list and reset max cell dimensions from subcells
-                if rec.tag_name == 'ENDSTR': 
-                    # Update cell info once individual cell parsing is done
-                    cell_width = max_x - min_x if max_x is not None and min_x is not None else 0
-                    cell_height = max_y - min_y if max_y is not None and min_y is not None else 0
-                    if verbose: print((f'Sub cell: {sub_cell_name} Min x: {min_x} Max x: {max_x}'))
-                    max_x, min_x, max_y, min_y = None, None, None, None
-                    cell_info.update({sub_cell_name: {'width': cell_width, 'height': cell_height}})
-                    # Stop tracking pins once end of cell is reached
-                    # Add pin list to cell info of cell
-                    if track_pins: 
-                        track_pins = False
-                        cell_pins = assign_pins_to_polygon(cell_pin_names, cell_pin_boxes, layer_map, pin_list[0][1])
-                        cell_info[sub_cell_name]['cell_pins'] = cell_pins
-                # Inidicate a text record
-                if rec.tag_name == 'TEXT' and track_pins:
-                    check_pin_text_layer = True
-                    text_layer, text_name, text_loc_X, text_loc_Y = None, None, None, None
-                # Indicate a boundary record
-                if rec.tag_name == 'BOUNDARY' and track_pins:
-                    check_poly_layer = True
-                    poly_pin_layer = None
-                    poly_left, poly_bottom, poly_right, poly_top = None, None, None, None
-                # Indicate an AREF record. Track this to treat its XY values differently
-                if rec.tag_name == 'AREF':
-                    aref_flag = True
-
-                if rec.tag_name == 'ENDEL' and check_pin_text_layer:
-                    check_pin_text_layer = False
-                    if text_layer: cell_pin_names.append((text_layer, text_name, text_loc_X, text_loc_Y))
-                
-                if rec.tag_name == 'ENDEL' and check_poly_layer:
-                    check_poly_layer = False
-                    if poly_pin_layer: cell_pin_boxes.append((poly_pin_layer, poly_left, poly_bottom, poly_right, poly_top))
-                
-                if rec.tag_name == 'ENDEL' and (mirror_cell_x or mirror_cell_y):
-                    mirror_cell_x = False
-                    mirror_cell_y = False
-                
-                if rec.tag_name == 'ENDEL' and aref_flag:
-                    aref_flag = False
-
-            elif rec.tag_type == types.ASCII:
-                # Keep track of current sub cell name that hasnt been defined
-                sub_cell_name = rec.data.decode() if rec.tag_name == 'STRNAME' else sub_cell_name
-                # Only place header/lib tags for the first cell
-                if first_cell:
-                    ret_string.append('%s: "%s"\n' % (rec.tag_name, rec.data.decode()))
-                elif rec.tag_name not in lib_tags:
-                    # Check that the cell has not been defined previously
-                    if rec.tag_name == 'STRNAME' and rec.data.decode() in cell_info:
-                            omit_record = True
-                            # This deletes the 'BGNSTR' line preceding the duplicate cell to omit
-                            ret_string.pop()
-                    else:
-                        ret_string.append('%s: "%s"\n' % (rec.tag_name, rec.data.decode()))
-                
-                # If cell is already defined and is being called, account for its width
-                if rec.tag_name == 'SNAME':
-                    max_x = max(int(cell_info[rec.data.decode()]['width']), max_x) if max_x else int(cell_info[rec.data.decode()]['width'])
-                    # needs investigation
-                    # However, i havent run into a situation where i need it so it stays commented out
-                    #max_y = max(int(cell_info[rec.data.decode()]['height']), max_y)
-                    sref_name = rec.data.decode()
-
-                # Start tracking pins for top level cells
-                if rec.tag_name == 'STRNAME' and sub_cell_name in module_list:
-                    track_pins = True
-                
-                # If tracking pins and in a text record, add pin name only if layer was pin layer
-                if rec.tag_name == 'STRING' and check_pin_text_layer and text_layer:
-                    text_name = rec.data.decode()
-
-            elif rec.tag_type == types.BITARRAY:
-                ret_string.append('%s: %s \n' % (rec.tag_name, str(rec.data)))
-                if rec.tag_name == 'STRANS' and (rec.data & 0b1000000000000000):
-                    mirror_cell_x = True
-            else:
-                # Check to ensure record is not a header/lib tag
-                if first_cell:
-                    ret_string.append('%s: %s\n' % (rec.tag_name, ', '.join('{0}'.format(i) for i in rec.data)))
-                elif rec.tag_name not in lib_tags:
-                    ret_string.append('%s: %s\n' % (rec.tag_name, ', '.join('{0}'.format(i) for i in rec.data)))
-                
-                # If in a text record, check if layer is in pin list
-                if rec.tag_name == 'LAYER' and check_pin_text_layer:
-                    text_layer = rec.data[0] if (str(rec.data[0]), pin_list[0][1]) in pin_list else text_layer
-                
-                # If in a boundary record, check if layer is in pin list
-                if rec.tag_name == 'LAYER' and check_poly_layer:
-                    poly_pin_layer = rec.data[0] if (str(rec.data[0]), pin_list[0][1]) in pin_list else poly_pin_layer
-                
-                # If the datatype does not match pin list dataype, then reset poly pin layer
-                if rec.tag_name == 'DATATYPE' and poly_pin_layer:
-                    poly_pin_layer = None if int(rec.data[0]) != int(pin_list[0][1]) else poly_pin_layer
-                
-                # Mirroring a cell across x axis and rotating 180 deg is same as mirror across y axis
-                if rec.tag_name == 'ANGLE' and mirror_cell_x and rec.data[0] == 180:
-                    mirror_cell_y = True
-                    mirror_cell_x = False
-
-                # Check for height and width of the cell
-                # Get location of pin
-                if rec.tag_name == 'XY':
-                    for idx, item in enumerate(rec.data):
-                        if idx % 2:
-                            # keep track of min and max y
-                            min_y = item if min_y is None else min(item, min_y)
-                            max_y = item if max_y is None else max(item, max_y)
-                        else:
-                            # if cell is mirrored, update x pos
-                            if mirror_cell_y:
-                                temp_w = cell_info[sref_name]['width']
-                                #print(f'For a mirrored cell {sref_name}, its x pos is: {item}, cell width is {temp_w}')
-                                item = item - int(temp_w) if not aref_flag else item
-                            # keep track of min and max x
-                            min_x = item if min_x is None else min(item, min_x)
-                            max_x = item if max_x is None else max(item, max_x)
-                    #if (sub_cell_name == 'sky130_hilas_cellAttempt01d3_pt1'):
-                        #print(f'Tracking sky130_hilas_cellAttempt01d3_pt1 min x: {min_x}')
-                        #print(f'Rec Data: {rec.data}')        
-                    # For a text record on a pin layer, get pin location
-                    if check_pin_text_layer and text_layer:
-                        text_loc_X, text_loc_Y = rec.data[0], rec.data[1]
-                    # For a boundary record on a pin layer, get polygon location
-                    if check_poly_layer and poly_pin_layer:
-                        poly_left, poly_bottom, poly_right, poly_top = rec.data[0], rec.data[1], rec.data[4], rec.data[5]
-                            
-    #except:
-    #    raise CellNotFound(f'Cannot open cell {name}.gds file. Does it exist?')
-    return ''.join(ret_string)
 
 def generate_lef(module_list, cell_info, tech_process, file_path, dbu):
     '''
@@ -471,17 +501,18 @@ def generate_lef(module_list, cell_info, tech_process, file_path, dbu):
     lef_file.write('END LIBRARY')
     lef_file.close()
 
-def generate_def(island_info, cell_info, track_spacing, file_path, dbu, design_area, metal_layers, nets_table, file_name, frame_module):
+def generate_def(island_info, cell_info, track_spacing, file_path, dbu, design_area, metal_layers, nets_table, file_name, frame_module, router_tool):
     '''
     Create a def file for the design
     - Place def instances around the edge for matrices
     - Route correct nets to correct instances
+    - Create correct obstructions for routing
     '''
 
     # Calculate num of tracks based on die area 
     num_tracks = (round(design_area[2]/track_spacing), round(design_area[3]/track_spacing))
     track_corner = (0,0)
-    stop_layer = 3 # Metal layers to cover cells with (indicate which cells are Mx dense)
+    stop_layer = 2 # Metal layers to cover cells with (indicate which cells are Mx dense)
    
     header_str = 'VERSION 5.5 ;\nNAMESCASESENSITIVE ON ;\nDIVIDERCHAR "/" ;\nBUSBITCHARS "[]" ;\n\n'
     def_file = open(file_path, 'w')
@@ -528,9 +559,125 @@ def generate_def(island_info, cell_info, track_spacing, file_path, dbu, design_a
             else:
                 comp_string.append(f'- {inst.instance_name} {inst.module_name} + PLACED ( {loc[0]} {loc[1]} ) N ;\n')
                 comp_cnt += 1
-            # generate blockages based on cell size
-            rect = f'    RECT ( {loc[0]} {loc[1]} ) ( {loc[2]} {loc[3]} )\n'
-            rect_string.append(rect)
+            # generate internal blockages based on cell size
+            pin_const = 1
+            block_x1 = loc[0] + pin_const*dbu
+            block_y1 = loc[1] + pin_const*dbu
+            block_x2 = loc[2] - pin_const*dbu
+            block_y2 = loc[3] - pin_const*dbu
+            rect_string.append(f'    RECT ( {block_x1} {block_y1} ) ( {block_x2} {block_y2} )\n')
+            # Insert blockages between pins around the edges
+            pin_spacing = 2.5*dbu
+            pin_threshold = 7*dbu
+            block_ext_len = 1*dbu
+            # Split ports into sides
+            left_side, top_side, right_side, bot_side = [], [], [], []
+            cell_pins = cell_info[inst.module_name]['cell_pins']
+            for pin_item in cell_pins.values():
+                pin_left, pin_bot, pin_right, pin_top = loc[0] + int(pin_item['RECT'][0]), loc[1] + int(pin_item['RECT'][1]), loc[0] + int(pin_item['RECT'][2]), loc[1] + int(pin_item['RECT'][3])
+                extension_dirs = [abs(loc[0] - pin_left), abs(loc[1] - pin_bot), abs(loc[2] - pin_right), abs(loc[3] - pin_top)]
+                index_min = min(range(len(extension_dirs)), key=extension_dirs.__getitem__)
+                if index_min == 0:
+                    left_side.append([pin_left, pin_bot, pin_right,pin_top])
+                elif index_min == 1:
+                    bot_side.append([pin_left, pin_bot, pin_right,pin_top])
+                elif index_min == 2:
+                    right_side.append([pin_left, pin_bot, pin_right,pin_top])
+                elif index_min == 3:
+                    top_side.append([pin_left, pin_bot, pin_right,pin_top])
+            # For each side, insert a new rect blockage is theres space around the pins
+            left_side.sort(key=lambda x:x[1])
+            prev_coord, pin_dist = None, None
+            temp_y = None
+            num_pins = len(left_side) - 1
+            for ind, pin_coord in enumerate(left_side):
+                if prev_coord == None:
+                    pin_dist = abs(pin_coord[1] - block_y1)
+                    temp_y = block_y1
+                else:
+                    pin_dist = abs(pin_coord[1] - prev_coord[3])
+                    temp_y = prev_coord[3] + pin_spacing
+                prev_coord = pin_coord
+                if pin_dist > pin_threshold:
+                    rect_string.append(f'    RECT ( {loc[0] - block_ext_len} {temp_y} ) ( {block_x1} {pin_coord[1] - pin_spacing} )\n')
+                # check how much space there was from last pin to edge of the side
+                if ind == num_pins:
+                    pin_dist = abs(pin_coord[3] - block_y2)
+                    if pin_dist > pin_threshold:
+                        rect_string.append(f'    RECT ( {loc[0] - block_ext_len} {pin_coord[3] + pin_spacing} ) ( {block_x1} {block_y2} )\n')
+            # check if there were no pins on left side
+            if prev_coord == None:
+                rect_string.append(f'    RECT ( {loc[0] - block_ext_len} {block_y1} ) ( {block_x1} {block_y2} )\n')
+
+            top_side.sort(key=lambda x:x[0])
+            prev_coord, pin_dist = None, None
+            temp_x = None
+            num_pins = len(top_side) - 1
+            for ind, pin_coord in enumerate(top_side):
+                if prev_coord == None:
+                    pin_dist = abs(pin_coord[0] - block_x1)
+                    temp_x = block_x1
+                else:
+                    pin_dist = abs(pin_coord[0] - prev_coord[2])
+                    temp_x = prev_coord[2] + pin_spacing
+                prev_coord = pin_coord
+                if pin_dist > pin_threshold:
+                    rect_string.append(f'    RECT ( {temp_x} {block_y2} ) ( {pin_coord[0] - pin_spacing} {loc[3] + block_ext_len} )\n')
+                # check how much space there was from last pin to edge of the side
+                if ind == num_pins:
+                    pin_dist = abs(pin_coord[2] - block_x2)
+                    if pin_dist > pin_threshold:
+                        rect_string.append(f'    RECT ( {pin_coord[2] + pin_spacing} {block_y2} ) ( {block_x2} {loc[3] + block_ext_len} )\n')
+            # check if there were no pins on top side
+            if prev_coord == None:
+                rect_string.append( f'    RECT ( {block_x1} {block_y2} ) ( {block_x2} {loc[3] + block_ext_len} )\n')
+            
+            right_side.sort(key=lambda x:x[1], reverse=True)
+            prev_coord, pin_dist = None, None
+            temp_y = None
+            num_pins = len(right_side) - 1
+            for ind, pin_coord in enumerate(right_side):
+                if prev_coord == None:
+                    pin_dist = abs(pin_coord[3] - block_y2)
+                    temp_y = block_y2
+                else:
+                    pin_dist = abs(pin_coord[3] - prev_coord[1])
+                    temp_y = prev_coord[1] - pin_spacing
+                prev_coord = pin_coord
+                if pin_dist > pin_threshold:
+                    rect_string.append(f'    RECT ( {block_x2} {pin_coord[3] + pin_spacing} ) ( {loc[2] + block_ext_len} {temp_y} )\n')
+                # check how much space there was from last pin to edge of the side
+                if ind == num_pins:
+                    pin_dist = abs(pin_coord[1] - block_y1)
+                    if pin_dist > pin_threshold:
+                        rect_string.append(f'    RECT ( {block_x2} {block_y1} ) ( {loc[2] + block_ext_len} {pin_coord[1] - pin_spacing} )\n')
+            # check if there were no pins on right side
+            if prev_coord == None:
+                rect_string.append(f'    RECT ( {block_x2} {block_y1} ) ( {loc[2] + block_ext_len} {block_y2} )\n')
+
+            bot_side.sort(key=lambda x:x[0], reverse=True)
+            prev_coord, pin_dist = None, None
+            temp_x = None
+            num_pins = len(bot_side) - 1
+            for ind, pin_coord in enumerate(bot_side):
+                if prev_coord == None:
+                    pin_dist = abs(pin_coord[2] - block_x2)
+                    temp_x = block_x2
+                else:
+                    pin_dist = abs(pin_coord[2] - prev_coord[0])
+                    temp_x = prev_coord[0] - pin_spacing
+                prev_coord = pin_coord
+                if pin_dist > pin_threshold:
+                    rect_string.append(f'    RECT ( {pin_coord[2] + pin_spacing} {loc[1] - block_ext_len} ) ( {temp_x} {block_y1} )\n')
+                # check how much space there was from last pin to edge of the side
+                if ind == num_pins:
+                    pin_dist = abs(pin_coord[0] - block_x1)
+                    if pin_dist > pin_threshold:
+                        rect_string.append(f'    RECT ( {block_x1} {loc[1] - block_ext_len} ) ( {pin_coord[0] - pin_spacing} {block_y1} )\n')
+            # check if there were no pins on bot side
+            if prev_coord == None:
+                rect_string.append(f'    RECT ( {block_x1} {loc[1] - block_ext_len} ) ( {block_x2} {block_y1} )\n')
+            
             # Track nets for both matrices and cells
             vals = inst.ports.values()
             # Convert all port values to string for substring search,
@@ -589,12 +736,25 @@ def generate_def(island_info, cell_info, track_spacing, file_path, dbu, design_a
     shutil.copy(file_path, file_path[:-4] + '_guide.def')
     def_file = open(file_path, 'a')
     rect_string[-1] = rect_string[-1][:-1] + ' ;\n'
-
-    def_file.write(f'BLOCKAGES {stop_layer} ;\n')
-    for num in range(stop_layer):
-        def_file.write(f'  - LAYER {metal_layers[num]}\n')
-        def_file.write(''.join(rect_string))
-    def_file.write(f'END BLOCKAGES\n\n')
+    # Change blockages syntax based on router. Qrouter accepts an older DEF syntax i believe.
+    if router_tool != 'qrouter':
+        def_file.write(f'BLOCKAGES {stop_layer} ;\n')
+        for num in range(stop_layer):
+            def_file.write(f'  - LAYER {metal_layers[num]}\n')
+            def_file.write(''.join(rect_string))
+        def_file.write(f'END BLOCKAGES\n\n')
+    else:
+        blocks_total = len(rect_string)*stop_layer
+        def_file.write(f'BLOCKAGES {blocks_total} ;\n')
+        for num in range(stop_layer):
+            for single_rect in rect_string:
+                def_file.write(f'  - {metal_layers[num]}\n')
+                def_file.write(f'    LAYER {metal_layers[num]} ;\n')
+                if single_rect[-2] != ';':
+                    single_rect = single_rect[:-1] + ' ;\n'
+                def_file.write(single_rect)
+                def_file.write(f'  END\n\n')
+        def_file.write(f'END BLOCKAGES\n\n')
     def_blocks = f'BLOCKAGES {stop_layer} ;\n'
     def_blocks += f'  - LAYER {metal_layers[0]}\n'
     rect_string[-1] = rect_string[-1][:-2] # These are for regenerating a def file with visible guide nets
@@ -618,119 +778,162 @@ def generate_def(island_info, cell_info, track_spacing, file_path, dbu, design_a
     return def_blocks, def_nets
  
 
-def merge_def_with_gds(file_path, file_name, layer_map, cell_info, dbu, pwd):
+def merge_def_with_gds(file_path, file_name, layer_map, cell_info, dbu, pwd, router_tool):
     '''
     Convert routed def into polygons for gds
     '''
-    def_file_name = f'{file_name}_routed.def'
+    def_file_name = f'{file_name}_routed.def' if router_tool != 'qrouter' else f'{file_name}_qroute.def'
     def_file_name = os.path.join(file_path, def_file_name)
     if not os.path.exists(def_file_name): 
-        raise CellNotFound(f'Routed def file cannot be found. Is it named {file_name}_routed.def ?')
+        raise CellNotFound(f'Routed def file cannot be found.')
     
     routed_str = []
     def_file = open(def_file_name)
     parse_nets, parse_vias, update_via_doc = False, False, False
+    single_net, special_net = False, False
+    via_doc, metal_widths = {}, {}
+    detector = HoleDetector(metal_width=int(0.5*dbu))
 
-    via_doc ={}
+    # Only chose this pattern because I was learning and testing out nested python functions
+    def update_routed_str(left, bottom, right, top, routing_layer, layer_type, parse_vias=False):
+        left, bottom, right, top = int(left), int(bottom), int(right), int(top)
+        if not parse_vias:
+            coord_start = (int(left), int(bottom))
+            coord_end = (int(right), int(top))
+            # First check if metal layer exists in cache, if yes apply if not look it up and append to doc
+            if routing_layer in metal_widths:
+                net_width = int(metal_widths[routing_layer]/2)
+            else:
+                m_width = find_metal_in_lef(routing_layer, os.path.join(pwd, file_name), dbu)
+                metal_widths[routing_layer] = m_width
+                net_width = int(m_width/2)
+            if special_net:
+                width_ind = line.index("(") - 1
+                net_width = int(int(line[width_ind])/2)
+            if left == right:
+                # Before expanding the vertical route, check if we're connecting an exisiting path
+                if (int(left), int(bottom)) in prev_coords:
+                    bottom = int(bottom) - net_width
+                if (int(right), int(top)) in prev_coords:
+                    top = int(top) + net_width
+                # Expand the path as normal
+                left = int(left) - net_width
+                right = int(right) + net_width
+            elif top == bottom:
+                # Before expanding the horizontal route, check if we're connecting an exisiting path
+                if (int(left), int(bottom)) in prev_coords:
+                    left = int(left) - net_width
+                if (int(right), int(top)) in prev_coords:
+                    right = int(right) + net_width
+                # Expand the path as normal
+                bottom = int(bottom) - net_width 
+                top = int(top) + net_width
+            prev_coords.add(coord_start)
+            prev_coords.add(coord_end)
+        routed_str.append('BOUNDARY\n')
+        routed_str.append(f'LAYER: {layer_type[0]}\n')
+        routed_str.append(f'DATATYPE: {layer_type[1]}\n')
+        routed_str.append(f'XY: {left}, {bottom}, {right}, {bottom}, {right}, {top}, {left}, {top}, {left}, {bottom}\n')
+        routed_str.append('ENDEL\n')
+        detector.add_rectangle(left, bottom, right, top, routing_layer)
+
+    def merge_nonqrouter_def():
+        if len(line) > 11 and line[3] == 'ROUTED':
+            layer_type = layer_map[line[4]+'_drawing']['layer_type']
+            layer_type = layer_type.split(',')
+            left, bottom = line[6], line[7]
+            right = line[10] if line[8] != '0' else line[11]
+            top = line[11] if line[8] != '0' else line[12]
+            update_routed_str(left, bottom, right, top, line[4])
+        
+        elif len(line) > 11 and len(line) < 17 and line[4] == 'NEW':
+            layer_type = layer_map[line[5]+'_drawing']['layer_type']
+            layer_type = layer_type.split(',')
+            left, bottom = line[7], line[8]
+            right = line[11] if line[9] != '0' else line[12]
+            top = line[12] if line[9] != '0' else line[13]
+            update_routed_str(left, bottom, right, top, line[5])
+        
+        elif len(line) > 5 and len(line) < 12 and line[4] == 'NEW':
+            if line[10][:-1] in via_doc:
+                via_list = via_doc[line[10][:-1]]
+                for item in via_list:
+                    layer_type = layer_map[item[0]+'_drawing']['layer_type']
+                    layer_type = layer_type.split(',')
+                    left, bottom = int(line[7]) + int(item[1]), int(line[8]) + int(item[2])
+                    right, top = int(line[7]) + int(item[3]), int(line[8]) + int(item[4])
+                    update_routed_str(left, bottom, right, top, None, parse_vias=True)
+            else:
+                via_ref = line[10][:-1]
+                via_def = find_via_in_lef(via_ref, os.path.join(pwd, file_name), dbu)
+                via_doc[via_ref] = via_def
+                if verbose: print(f'VIA DOC {via_doc}')
+                for item in via_def:
+                    layer_type = layer_map[item[0]+'_drawing']['layer_type']
+                    layer_type = layer_type.split(',')
+                    left, bottom = int(line[7]) + int(item[1]), int(line[8]) + int(item[2])
+                    right, top = int(line[7]) + int(item[3]), int(line[8]) + int(item[4])
+                    update_routed_str(left, bottom, right, top, None, parse_vias=True)
+                    
+        elif len(line) >= 17 and line[4] == 'NEW':
+            # This case handles when routes are described with single coordinate + rectangle offsets
+            layer_type = layer_map[line[5]+'_drawing']['layer_type']
+            layer_type = layer_type.split(',')
+            left, bottom, right, top = int(line[7]) + int(line[12]), int(line[8]) + int(line[13]), int(line[7]) + int(line[14]), int(line[8]) + int(line[15])
+            update_routed_str(left, bottom, right, top, line[5])
+
+    def merge_qrouter_def():
+        key_def1 = line[0] == '+'
+        key_def2 = line[0] == '' and line[2] == 'NEW'
+        if key_def1 or key_def2:
+            route_name = line[2] if key_def1 else line[3]
+            layer_type = layer_map[route_name+'_drawing']['layer_type']
+            layer_type = layer_type.split(',')
+            num_coords = line.count('(')
+            cur_x, cur_y, prev_x, prev_y = None, None, None, None
+            for ind, el in enumerate(line):
+                if line[ind] == '(':
+                    cur_x = line[ind+1]
+                    cur_y = line[ind+2]
+                    cur_x = prev_x if cur_x == '*' else cur_x
+                    cur_y = prev_y if cur_y == '*' else cur_y
+                    if prev_x != None and num_coords >= 2:
+                        left = min(prev_x, cur_x)
+                        right = max(prev_x, cur_x)
+                        bot = min(prev_y, cur_y)
+                        top = max(prev_y, cur_y)
+                        update_routed_str(left, bot, right, top, route_name, layer_type)
+                    prev_x = cur_x
+                    prev_y = cur_y
+            if '_' in line[-2]:
+                via_ref = line[-2][:-2]
+                if via_ref not in via_doc:
+                    via_def = find_via_in_lef(via_ref, os.path.join(pwd, file_name), dbu)
+                    via_doc[via_ref] = via_def
+                via_def = via_doc[via_ref]
+                for via in via_def:
+                    layer_type = layer_map[via[0]+'_drawing']['layer_type']
+                    layer_type = layer_type.split(',')
+                    update_routed_str(int(cur_x)+int(via[1]), int(cur_y)+int(via[2]), int(cur_x)+int(via[3]), int(cur_y)+int(via[4]), via[0], layer_type, parse_vias=True)
+
     for line in def_file:
         line = line.split(' ')
-        if line[0] == 'NETS':
+        if line[0] == 'NETS' or line[0] == 'SPECIALNETS':
             parse_nets = True
+            special_net = True if line[0] == 'SPECIALNETS' else False
+        elif parse_nets and line[0] == '-':
+            prev_coords = set()
+        elif parse_nets and (line[0] == ';'):
+            prev_coords = None
         elif parse_nets:
-            parse_nets = False if line[0] == 'END' else parse_nets
-            if len(line) > 11 and line[3] == 'ROUTED':
-                routed_str.append('BOUNDARY\n')
-                layer_type = layer_map[line[4]+'_drawing']['layer_type']
-                layer_type = layer_type.split(',')
-                left, bottom = line[6], line[7]
-                right = line[10] if line[8] != '0' else line[11]
-                top = line[11] if line[8] != '0' else line[12]
-                if left == right:
-                    left = int(left) - 50
-                    right = int(right) + 50
-                elif top == bottom:
-                    bottom = int(bottom) - 50 
-                    top = int(top) + 50
-                routed_str.append(f'LAYER: {layer_type[0]}\n')
-                routed_str.append(f'DATATYPE: {layer_type[1]}\n')
-                routed_str.append(f'XY: {left}, {bottom}, {right}, {bottom}, {right}, {top}, {left}, {top}, {left}, {bottom}\n')
-                routed_str.append('ENDEL\n')
-            elif len(line) > 11 and len(line) < 17 and line[4] == 'NEW':
-                if verbose: print(line)
-                routed_str.append('BOUNDARY\n')
-                layer_type = layer_map[line[5]+'_drawing']['layer_type']
-                layer_type = layer_type.split(',')
-                left, bottom = line[7], line[8]
-                right = line[11] if line[9] != '0' else line[12]
-                top = line[12] if line[9] != '0' else line[13]
-                if left == right:
-                    left = int(left) - 50
-                    right = int(right) + 50
-                elif top == bottom:
-                    bottom = int(bottom) - 50 
-                    top = int(top) + 50
-                routed_str.append(f'LAYER: {layer_type[0]}\n')
-                routed_str.append(f'DATATYPE: {layer_type[1]}\n')
-                routed_str.append(f'XY: {left}, {bottom}, {right}, {bottom}, {right}, {top}, {left}, {top}, {left}, {bottom}\n')
-                routed_str.append('ENDEL\n')
-            elif len(line) > 5 and len(line) < 12 and line[4] == 'NEW':
-                if line[10][:-1] in via_doc:
-                    via_list = via_doc[line[10][:-1]]
-                    for item in via_list:
-                        routed_str.append('BOUNDARY\n')
-                        layer_type = layer_map[item[0]+'_drawing']['layer_type']
-                        layer_type = layer_type.split(',')
-                        left, bottom = int(line[7]) + int(item[1]), int(line[8]) + int(item[2])
-                        right, top = int(line[7]) + int(item[3]), int(line[8]) + int(item[4])
-                        if left == right:
-                            left = int(left) - 50
-                            right = int(right) + 50
-                        elif top == bottom:
-                            bottom = int(bottom) - 50 
-                            top = int(top) + 50
-                        routed_str.append(f'LAYER: {layer_type[0]}\n')
-                        routed_str.append(f'DATATYPE: {layer_type[1]}\n')
-                        routed_str.append(f'XY: {left}, {bottom}, {right}, {bottom}, {right}, {top}, {left}, {top}, {left}, {bottom}\n')
-                        routed_str.append('ENDEL\n')
-                else:
-                    cell_info_keys = cell_info.keys()
-                    via_ref = line[10][:-1]
-                    via_def = find_via_in_lef(via_ref, os.path.join(pwd, file_name), dbu)
-                    for item in via_def:
-                        routed_str.append('BOUNDARY\n')
-                        layer_type = layer_map[item[0]+'_drawing']['layer_type']
-                        layer_type = layer_type.split(',')
-                        left, bottom = int(line[7]) + int(item[1]), int(line[8]) + int(item[2])
-                        right, top = int(line[7]) + int(item[3]), int(line[8]) + int(item[4])
-                        if left == right:
-                            left = int(left) - 50
-                            right = int(right) + 50
-                        elif top == bottom:
-                            bottom = int(bottom) - 50 
-                            top = int(top) + 50
-                        routed_str.append(f'LAYER: {layer_type[0]}\n')
-                        routed_str.append(f'DATATYPE: {layer_type[1]}\n')
-                        routed_str.append(f'XY: {left}, {bottom}, {right}, {bottom}, {right}, {top}, {left}, {top}, {left}, {bottom}\n')
-                        routed_str.append('ENDEL\n')
-            elif len(line) >= 17 and line[4] == 'NEW':
-                left, bottom, right, top = int(line[7]) + int(line[12]), int(line[8]) + int(line[13]), int(line[7]) + int(line[14]), int(line[8]) + int(line[15])
-                if left == right:
-                    left = int(left) - 50
-                    right = int(right) + 50
-                elif top == bottom:
-                    bottom = int(bottom) - 50 
-                    top = int(top) + 50
-                layer_type = layer_map[line[5]+'_drawing']['layer_type']
-                layer_type = layer_type.split(',')
-                routed_str.append('BOUNDARY\n')
-                routed_str.append(f'LAYER: {layer_type[0]}\n')
-                routed_str.append(f'DATATYPE: {layer_type[1]}\n')
-                routed_str.append(f'XY: {left}, {bottom}, {right}, {bottom}, {right}, {top}, {left}, {top}, {left}, {bottom}\n')
-                routed_str.append('ENDEL\n')
+            parse_nets = False if (line[0] == 'END' and parse_nets) else parse_nets
+            special_net = False if (line[0] == 'END' and special_net) else special_net
+            merge_nonqrouter_def() if (router_tool != 'qrouter') else merge_qrouter_def()
+        # VIAS keyword was generated by triton route. 
         elif line[0] == 'VIAS':
             parse_vias = True
         elif parse_vias:
-            parse_vias = False if line[0] == 'END' else parse_vias
+            parse_vias = False if (line[0] == 'END' and parse_vias) else parse_vias
             if len(line) == 3 and parse_vias: 
                 update_via_doc = True
                 via_name = line[1]
@@ -738,6 +941,12 @@ def merge_def_with_gds(file_path, file_name, layer_map, cell_info, dbu, pwd):
             elif update_via_doc:
                 update_via_doc = False if line[1] == ';' else update_via_doc
                 if line[0] and parse_vias: via_doc[via_name].append((line[2], line[4], line[5], line[8], line[9]))
+    holes = detector.find_holes()
+    for hole, route_name, direction in holes:
+        if verbose: print(f"{direction.capitalize()} hole found on layer {route_name}: {hole}")
+        layer_type = layer_map[route_name+'_drawing']['layer_type']
+        layer_type = layer_type.split(',')
+        update_routed_str(hole[0][0], hole[0][1], hole[1][0], hole[1][1], route_name, layer_type)
     def_file.close()
 
     outfile = open(os.path.join(pwd, file_name + '_gds.txt'), 'r')

@@ -1,0 +1,9 @@
+__pycache__
+.gitignore
+cell2cell_350nm/
+cell2frame_65nm/
+asic_alice/
+TritonRoute/
+example_log.txt
+routing_params.txt
+routing_two.txt

@@ -113,7 +113,6 @@ def test1():
     c4_out = fg.c4_sp([inpad1, input_voltage])
     outpada = fg.outpada(c4_out, [13])
 
-
 def test2():
     inpad1 = fg.inpad([1])
     inpad2 = fg.inpad([2])
@@ -121,7 +120,6 @@ def test2():
     lpf_out2 = fg.lpfota(inpad2)
     outpad1 = fg.outpada(lpf_out1, [14])
     outpad2 = fg.outpada(lpf_out2, [13])
-
 
 def test3():
     inpad1 = fg.inpad([1])
@@ -131,12 +129,21 @@ def test3():
     outpad1 = fg.outpada(lpf_out1, [14])
     outpad2 = fg.outpada(lpf_out2, [13])
 
+## ORS GUI Examples
+def LPF_offchip():
+    inpad1 = fg.inpad([3])
+    lpf_out1 = fg.lpfota(inpad1)
+    outpad1 = fg.outpada(lpf_out1, [13])
 
-def new_flow_c4():
+def c4_offchip():
     inpad1 = fg.inpad([1])
     input_voltage = fg.dc_in(1.3)
     c4_out = fg.c4_sp([inpad1, input_voltage])
     outpada = fg.outpada(c4_out, [13])
-   
+
+def MSOS02_test01():
+    inpad1 = fg.inpad([1])
+    mead_out = fg.MSOS02(inpad1)
+    outpada = fg.outpada(mead_out, [13])
 
 

@@ -8,8 +8,8 @@ def asic_compiler(func, filename):
     # create directory to place verilog files
     if filename == None:
         filename = func.__name__
-    file_path = os.path.join('.', 'verilog_files')
-    if not os.path.exists(file_path): os.mkdir(file_path)
+    file_path = os.path.join('.', filename, 'verilog_files')
+    if not os.path.exists(file_path): os.makedirs(file_path)
     file_path = os.path.join(file_path, filename + '.v')
     
     modules = func()
