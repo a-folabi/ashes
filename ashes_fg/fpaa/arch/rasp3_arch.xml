@@ -1,0 +1,1351 @@
+<?xml version="1.0"?>
+<architecture>
+	<models>
+		<model name="fgota">
+			<input_ports>
+				<port name="in"/>
+			</input_ports>
+			<output_ports>
+				<port name="out"/>
+			</output_ports>
+		</model>
+		<model name="ota">
+			<input_ports>
+				<port name="in"/>
+			</input_ports>
+			<output_ports>
+				<port name="out"/>
+			</output_ports>
+		</model>
+		<model name="ota2">
+			<input_ports>
+				<port name="in"/>
+			</input_ports>
+			<output_ports>
+				<port name="out"/>
+			</output_ports>
+		</model>
+		<model name="cap">
+			<input_ports>
+				<port name="in"/>
+			</input_ports>
+			<output_ports>
+				<port name="out"/>
+			</output_ports>
+		</model>
+		<model name="cap2">
+			<input_ports>
+				<port name="in"/>
+			</input_ports>
+			<output_ports>
+				<port name="out"/>
+			</output_ports>
+		</model>
+		<model name="nfet">
+			<input_ports>
+				<port name="in"/>
+			</input_ports>
+			<output_ports>
+				<port name="out"/>
+			</output_ports>
+		</model>
+		<model name="pfet">
+			<input_ports>
+				<port name="in"/>
+			</input_ports>
+			<output_ports>
+				<port name="out"/>
+			</output_ports>
+		</model>
+		<model name="tgate">
+			<input_ports>
+				<port name="in"/>
+			</input_ports>
+			<output_ports>
+				<port name="out"/>
+			</output_ports>
+		</model>
+		<model name="tgate2">
+			<input_ports>
+				<port name="in"/>
+			</input_ports>
+			<output_ports>
+				<port name="out"/>
+			</output_ports>
+		</model>
+		<model name="nmirror">
+			<input_ports>
+				<port name="in"/>
+			</input_ports>
+			<output_ports>
+				<port name="out"/>
+			</output_ports>
+		</model>
+		<model name="mite">
+			<input_ports>
+				<port name="in"/>
+			</input_ports>
+			<output_ports>
+				<port name="out"/>
+			</output_ports>
+		</model>
+		<model name="mite2">
+			<input_ports>
+				<port name="in"/>
+			</input_ports>
+			<output_ports>
+				<port name="out"/>
+			</output_ports>
+		</model>
+		<model name="signalmult">
+			<input_ports>
+				<port name="in"/>
+			</input_ports>
+			<output_ports>
+				<port name="out"/>
+			</output_ports>
+		</model>
+		<model name="gnd_out">
+			<input_ports>
+				<port name="in"/>
+			</input_ports>
+			<output_ports>
+				<port name="out"/>
+			</output_ports>
+		</model>
+		<model name="vdd_out">
+			<input_ports>
+				<port name="in"/>
+			</input_ports>
+			<output_ports>
+				<port name="out"/>
+			</output_ports>
+		</model>
+		<model name="in2in_x1">
+			<input_ports>
+				<port name="in"/>
+			</input_ports>
+			<output_ports>
+				<port name="out"/>
+			</output_ports>
+		</model>
+		<model name="in2in_x6">
+			<input_ports>
+				<port name="in"/>
+			</input_ports>
+			<output_ports>
+				<port name="out"/>
+			</output_ports>
+		</model>
+		<model name="meas_volt_mite">
+			<input_ports>
+				<port name="in"/>
+			</input_ports>
+			<output_ports>
+				<port name="out"/>
+			</output_ports>	
+		</model>
+		<model name="ramp_fe">
+			<input_ports>
+				<port name="in"/>
+			</input_ports>
+			<output_ports>
+				<port name="out"/>
+			</output_ports>
+		</model>
+		<model name="ota_buffer">
+			<input_ports>
+				<port name="in"/>
+				<port name="clk" is_clock="1"/>
+			</input_ports>
+			<output_ports>
+				<port name="out"/>
+			</output_ports>
+		</model>
+		<model name="ota_buf">
+			<input_ports>
+				<port name="in"/>
+			</input_ports>
+			<output_ports>
+				<port name="out"/>
+			</output_ports>
+		</model>
+		<model name="lpf">
+			<input_ports>
+				<port name="in"/>
+			</input_ports>
+			<output_ports>
+				<port name="out"/>
+			</output_ports>
+		</model>
+		<model name="c4_sp">
+			<input_ports>
+				<port name="in"/>
+			</input_ports>
+			<output_ports>
+				<port name="out"/>
+			</output_ports>
+		</model>
+		<model name="TIA_blk">
+			<input_ports>
+				<port name="in"/>
+				<!--port name="fb" is_clock="1"/>-->
+			</input_ports>
+			<output_ports>
+				<port name="out"/>
+			</output_ports>
+		</model>
+		<model name="hhneuron"> 
+			<input_ports>
+				<port name="in"/>
+			</input_ports>
+			<output_ports>
+				<port name="out"/>
+			</output_ports>
+		</model>
+		<model name="nfet_i2v">
+			<input_ports>
+				<port name="in"/>
+			</input_ports>
+			<output_ports>
+				<port name="out"/>
+			</output_ports>
+		</model>
+		<model name="pfet_i2v">
+			<input_ports>
+				<port name="in"/>
+			</input_ports>
+			<output_ports>
+				<port name="out"/>
+			</output_ports>
+		</model>
+		<model name="i2v_pfet_gatefgota">
+			<input_ports>
+				<port name="in"/>
+			</input_ports>
+			<output_ports>
+				<port name="out"/>
+			</output_ports>
+		</model>
+		<model name="mismatch_meas">
+			<input_ports>
+				<port name="in"/>
+			</input_ports>
+			<output_ports>
+				<port name="out"/>
+			</output_ports>
+		</model>
+		<model name="mmap_local_swc">
+			<input_ports>
+				<port name="in"/>
+			</input_ports>
+			<output_ports>
+				<port name="out"/>
+			</output_ports>
+		</model>
+		<model name="latch_custom">
+			<input_ports>
+				<port name="D"/>
+				<port name="clk"/>
+				<port name="reset"/>
+			</input_ports>
+			<output_ports>
+				<port name="Q"/>
+			</output_ports>
+		</model>
+		<model name="counter8">
+			<input_ports>
+				<port name="clk"/>
+				<port name="reset"/>
+			</input_ports>
+			<output_ports>
+				<port name="out"/>
+			</output_ports>
+		</model>
+		<model name="volswc">
+			<input_ports>
+				<port name="in"/>
+				<port name="ci"/>
+			</input_ports>
+			<output_ports>
+				<port name="out"/>
+				<port name="co"/>
+			</output_ports>
+		</model>
+		<model name="current_ref">
+			<input_ports>
+				<port name="in"/>
+			</input_ports>
+			<output_ports>
+				<port name="out"/>
+			</output_ports>	
+		</model>
+		<model name="ichar_nfet">
+			<input_ports>
+				<port name="in"/>
+			</input_ports>
+			<output_ports>
+				<port name="out"/>
+			</output_ports>
+		</model>
+		<model name="tgate_so">
+			<input_ports>
+				<port name="in"/>
+			</input_ports>
+			<output_ports>
+				<port name="out"/>
+			</output_ports>
+		</model>	
+		<model name="DAC_sftreg">
+			<input_ports>
+				<port name="in"/>
+			</input_ports>
+			<output_ports>
+				<port name="out"/>
+			</output_ports>
+		</model>
+		<model name="sftreg">
+			<input_ports>
+				<port name="in"/>
+			</input_ports>
+			<output_ports>
+				<port name="out"/>
+			</output_ports>
+		</model>
+		<model name="sftreg2">
+			<input_ports>
+				<port name="in"/>
+			</input_ports>
+			<output_ports>
+				<port name="out"/>
+			</output_ports>
+		</model>
+		<model name="sftreg3">
+			<input_ports>
+				<port name="in"/>
+			</input_ports>
+			<output_ports>
+				<port name="out"/>
+			</output_ports>
+		</model>
+		<model name="sftreg4">
+			<input_ports>
+				<port name="in"/>
+			</input_ports>
+			<output_ports>
+				<port name="out"/>
+			</output_ports>
+		</model>
+		<model name="ota_vmm">
+			<input_ports>
+				<port name="in"/>
+			</input_ports>
+			<output_ports>
+				<port name="out"/>
+			</output_ports>
+		</model>
+		<model name="vmm_16x16">
+			<input_ports>
+				<port name="in"/>
+			</input_ports>
+			<output_ports>
+				<port name="out"/>
+			</output_ports>
+		</model>
+		<model name="vmm_2x2">
+			<input_ports>
+				<port name="in"/>
+			</input_ports>
+			<output_ports>
+				<port name="out"/>
+			</output_ports>
+		</model>
+		<model name="vmm4x4_SR">
+			<input_ports>
+				<port name="in"/>
+			</input_ports>
+			<output_ports>
+				<port name="out"/>
+			</output_ports>
+		</model>
+		<model name="vmm4x4">
+			<input_ports>
+				<port name="in"/>
+			</input_ports>
+			<output_ports>
+				<port name="out"/>
+			</output_ports>
+		</model>
+		<model name="vmm8x4">
+			<input_ports>
+				<port name="in"/>
+			</input_ports>
+			<output_ports>
+				<port name="out"/>
+			</output_ports>
+		</model>
+		<model name="vmm8inx8in">
+			<input_ports>
+				<port name="in"/>
+			</input_ports>
+			<output_ports>
+				<port name="out"/>
+			</output_ports>
+		</model>		
+		<model name="vmm8x4_in">
+			<input_ports>
+				<port name="in"/>
+			</input_ports>
+			<output_ports>
+				<port name="out"/>
+			</output_ports>
+		</model>
+		<model name="vmm4x4_SR2">
+			<input_ports>
+				<port name="in"/>
+			</input_ports>
+			<output_ports>
+				<port name="out"/>
+			</output_ports>
+		</model>
+		<model name="vmm8x4_SR">
+			<input_ports>
+				<port name="in"/>
+			</input_ports>
+			<output_ports>
+				<port name="out"/>
+			</output_ports>
+		</model>
+		<model name="vmm12x1">
+			<input_ports>
+				<port name="in"/>
+			</input_ports>
+			<output_ports>
+				<port name="out"/>
+			</output_ports>
+		</model>
+		<model name="vmm12x1_wowta">
+			<input_ports>
+				<port name="in"/>
+			</input_ports>
+			<output_ports>
+				<port name="out"/>
+			</output_ports>
+		</model>
+		<model name="SR4">
+			<input_ports>
+				<port name="in"/>
+			</input_ports>
+			<output_ports>
+				<port name="out"/>
+			</output_ports>
+		</model>
+		<model name="Hyst_diff">
+			<input_ports>
+				<port name="in"/>
+			</input_ports>
+			<output_ports>
+				<port name="out"/>
+			</output_ports>
+		</model>
+		<model name="Max_detect">
+			<input_ports>
+				<port name="in"/>
+			</input_ports>
+			<output_ports>
+				<port name="out"/>
+			</output_ports>
+		</model>
+		<model name="Min_detect">
+			<input_ports>
+				<port name="in"/>
+			</input_ports>
+			<output_ports>
+				<port name="out"/>
+			</output_ports>
+		</model>
+		<model name="hhn">
+			<input_ports>
+				<port name="in"/>
+			</input_ports>
+			<output_ports>
+				<port name="out"/>
+			</output_ports>
+		</model>
+		<model name="fgswitch">
+			<input_ports>
+				<port name="in"/>
+			</input_ports>
+			<output_ports>
+				<port name="out"/>
+			</output_ports>
+		</model>
+		<model name="common_drain">
+			<input_ports>
+				<port name="in"/>
+			</input_ports>
+			<output_ports>
+				<port name="out"/>
+			</output_ports>
+		</model>
+		<model name="common_drain_nfet">
+			<input_ports>
+				<port name="in"/>
+			</input_ports>
+			<output_ports>
+				<port name="out"/>
+			</output_ports>
+		</model>
+		<model name="hhn_debug">
+			<input_ports>
+				<port name="in"/>
+			</input_ports>
+			<output_ports>
+				<port name="out"/>
+			</output_ports>
+		</model>
+		<model name="vmmoffset">
+			<input_ports>
+				<port name="in"/>
+			</input_ports>
+			<output_ports>
+				<port name="out"/>
+			</output_ports>
+		</model>
+		<model name="wta_new">
+			<input_ports>
+				<port name="in"/>
+			</input_ports>
+			<output_ports>
+				<port name="out"/>
+			</output_ports>
+		</model>
+		<model name="common_source">
+			<input_ports>
+				<port name="in"/>
+			</input_ports>
+			<output_ports>
+				<port name="out"/>
+			</output_ports>
+		</model>
+		<model name="VolDivide1">
+			<input_ports>
+				<port name="in"/>
+			</input_ports>
+			<output_ports>
+				<port name="out"/>
+			</output_ports>
+		</model>
+		<model name="I_SenseAmp">
+			<input_ports>
+				<port name="in"/>
+			</input_ports>
+			<output_ports>
+				<port name="out"/>
+			</output_ports>
+		</model>
+		<model name="nmirror_w_bias">
+			<input_ports>
+				<port name="in"/>
+			</input_ports>
+			<output_ports>
+				<port name="out"/>
+			</output_ports>
+		</model>
+		<model name="SubbandArray">
+			<input_ports>
+				<port name="in"/>
+			</input_ports>
+			<output_ports>
+				<port name="out"/>
+			</output_ports>
+		</model>
+		<model name="HH_RG">
+			<input_ports>
+				<port name="in"/>
+			</input_ports>
+			<output_ports>
+				<port name="out"/>
+			</output_ports>
+		</model>
+		<model name="HH_RG_2s">
+			<input_ports>
+				<port name="in"/>
+			</input_ports>
+			<output_ports>
+				<port name="out"/>
+			</output_ports>
+		</model>
+		<model name="HH_RG_3s">
+			<input_ports>
+				<port name="in"/>
+			</input_ports>
+			<output_ports>
+				<port name="out"/>
+			</output_ports>
+		</model>
+		<model name="SOSLPF">
+			<input_ports>
+				<port name="in"/>
+			</input_ports>
+			<output_ports>
+				<port name="out"/>
+			</output_ports>
+		</model>
+		<model name="MSOS02">
+			<input_ports>
+				<port name="in"/>
+			</input_ports>
+			<output_ports>
+				<port name="out"/>
+			</output_ports>
+		</model>
+		<model name="vmm_offc">
+			<input_ports>
+				<port name="in"/>
+			</input_ports>
+			<output_ports>
+				<port name="out"/>
+			</output_ports>
+		</model>
+	</models>
+	<layout width="14" height="14"/>
+	<device>
+		<sizing R_minW_nmos="5726.870117" R_minW_pmos="15491.700195" ipin_mux_trans_size="1.000000"/>
+		<timing C_ipin_cblock="1.191000e-14" T_ipin_cblock="1.482000e-10"/>
+		<area grid_logic_tile_area="30000.000000"/>
+		<chan_width_distr>
+			<io width="1.000000"/>
+			<x distr="uniform" peak="1.000000"/>
+			<y distr="uniform" peak="1.000000"/>
+		</chan_width_distr>
+		<switch_block type="subset" fs="3"/>
+	</device>
+	<switchlist>
+		<switch type="mux" name="0" R="94.841003" Cin="1.537000e-14" Cout="2.194000e-13" Tdel="6.562000e-11" mux_trans_size="10.000000" buf_size="1"/>
+	</switchlist>
+	<segmentlist>
+		<!-- wire_switch, opin_switch by richie - needed for type='bidir' -->
+		<segment freq="1.000000" length="1" type="bidir" Rmetal="11.064550" Cmetal="4.727860e-14">
+			<!-- <mux name="0"/> -->
+			<sb type="pattern">1 1</sb>
+			<cb type="pattern">1</cb>
+			<wire_switch name="0"/>
+			<opin_switch name="0"/>
+		</segment>
+	</segmentlist>
+	<complexblocklist>
+		<pb_type name="io" capacity="6">
+			<input name="outpad" num_pins="1"/>
+			<output name="inpad" num_pins="1"/>
+			<clock name="clock" num_pins="1"/>
+			<!-- IOs can operate as either inputs or outputs -->
+			<mode name="inpad">
+				<pb_type name="inpad" blif_model=".input" num_pb="1">
+					<output name="inpad" num_pins="1"/>
+				</pb_type>
+				<interconnect>
+					<direct name="inpad" input="inpad.inpad" output="io.inpad">
+						<delay_constant max="4.243e-11" in_port="inpad.inpad" out_port="io.inpad"/>
+					</direct>
+				</interconnect>
+			</mode>
+			<mode name="outpad">
+				<pb_type name="outpad" blif_model=".output" num_pb="1">
+					<input name="outpad" num_pins="1"/>
+				</pb_type>
+				<interconnect>
+					<direct name="outpad" input="io.outpad" output="outpad.outpad">
+						<delay_constant max="1.394e-11" in_port="io.outpad" out_port="outpad.outpad"/>
+					</direct>
+				</interconnect>
+			</mode>
+			<fc_in type="frac">1</fc_in>
+			<fc_out type="frac">1</fc_out>
+			<pinlocations pattern="custom">
+				<loc side="left">io.outpad io.inpad io.clock</loc>
+				<loc side="top">io.outpad io.inpad io.clock</loc>
+				<loc side="right">io.outpad io.inpad io.clock</loc>
+				<loc side="bottom">io.outpad io.inpad io.clock</loc>
+			</pinlocations>
+			<gridlocations>
+				<loc type="perimeter" priority="10"/>
+			</gridlocations>
+		</pb_type>
+		<pb_type name="clb">
+			<input name="I" num_pins="16" equivalent="false"/>
+			<output name="O" num_pins="8" equivalent="false"/>
+			<clock name="clk" num_pins="1" equivalent="false"/>
+			<!-- Describe basic logic element ifar delay numbers -->
+			<pb_type name="ble" num_pb="8">
+				<input name="in" num_pins="4"/>
+				<input name="CLK" num_pins="1"/>
+				<input name="reset" num_pins="1"/>
+				<output name="out" num_pins="1"/>
+				<clock name="clk" num_pins="1"/>
+				<pb_type name="soft_logic" num_pb="1">
+					<input name="in" num_pins="4"/>
+					<output name="out" num_pins="1"/>
+					<mode name="n1_lut4">
+						<pb_type name="lut4" blif_model=".names" num_pb="1" class="lut">
+							<input name="in" num_pins="4" port_class="lut_in"/>
+							<output name="out" num_pins="1" port_class="lut_out"/>
+							<!-- LUT timing using delay matrix -->
+							<delay_matrix type="max" in_port="lut4.in" out_port="lut4.out">2.690e-10 2.690e-10 2.690e-10 2.690e-10 </delay_matrix>
+						</pb_type>
+						<interconnect>
+							<direct name="direct1" input="soft_logic.in[3:0]" output="lut4[0:0].in[3:0]"/>
+							<direct name="direct2" input="lut4[0:0].out" output="soft_logic.out[0:0]"/>
+						</interconnect>
+					</mode>
+				</pb_type>
+				<pb_type name="ff" blif_model=".latch" num_pb="1" class="flipflop">
+					<input name="D" num_pins="1" port_class="D"/>
+					<output name="Q" num_pins="1" port_class="Q"/>
+					<clock name="clk" num_pins="1" port_class="clock"/>
+					<T_setup value="2.448e-10" port="ff.D" clock="clk"/>
+					<T_clock_to_Q max="7.732e-11" port="ff.Q" clock="clk"/>
+				</pb_type>
+				<pb_type name="ff_custom" blif_model=".latch_custom" num_pb="1" >
+					<input name="D" num_pins="1" />
+					<input name="clk" num_pins="1"/>
+					<input name="reset" num_pins="1"/>
+					<output name="Q" num_pins="1"/>
+					<!--delay_matrix type="max" in_port="counter.D counter.clk counter.reset" out_port="counter.Q">2.69e-10 2.69e-10 2.69e-10 </delay_matrix-->
+					<delay_matrix type="max" in_port="ff_custom.D" out_port="ff_custom.Q">2.69e-10 </delay_matrix>
+					<delay_matrix type="max" in_port="ff_custom.clk" out_port="ff_custom.Q">2.69e-10 </delay_matrix>
+					<delay_matrix type="max" in_port="ff_custom.reset" out_port="ff_custom.Q">2.69e-10 </delay_matrix>
+					<!--clock name="clk" num_pins="1" port_class="clock"/>
+					<T_setup value="2.448e-10" port="counter.D" clock="clk"/>
+					<T_clock_to_Q max="7.732e-11" port="counter.Q" clock="clk"/-->
+				</pb_type>
+				<interconnect>
+					<!-- Two ff, make ff available to only corresponding luts -->
+					<direct name="direct1" input="ble.in" output="soft_logic.in"/>
+					<direct name="direct2" input="soft_logic.out" output="ff.D"/>
+					<direct name="direct4" input="ble.clk" output="ff.clk"/>
+					<direct name="direct5" input="ble.CLK" output="ff_custom.clk"/>
+					<direct name="direct6" input="ble.reset" output="ff_custom.reset"/>
+					<direct name="direct7" input="soft_logic.out" output="ff_custom.D"/>
+					<mux name="mux3" input="ff.Q ff_custom.Q soft_logic.out" output="ble.out"/>
+				</interconnect>
+			</pb_type>
+			<pb_type name="counter8" blif_model=".counter8" num_pb="1" >
+					<input name="clk" num_pins="1"/>
+					<input name="reset" num_pins="1"/>
+					<output name="out" num_pins="8"/>
+					<delay_matrix type="max" in_port="counter8.clk" out_port="counter8.out">2.69e-10 2.69e-10 2.69e-10 2.69e-10 2.69e-10 2.69e-10 2.69e-10 2.69e-10 </delay_matrix>
+					<delay_matrix type="max" in_port="counter8.reset" out_port="counter8.out">2.69e-10 2.69e-10 2.69e-10 2.69e-10 2.69e-10 2.69e-10 2.69e-10 2.69e-10 </delay_matrix>
+			</pb_type>			
+			<interconnect>
+				<complete name="crossbar" input="clb.I[13:0] ble[7:0].out" output="ble[7:0].in[3:0]"/>
+				<complete name="clks" input="clb.clk" output="ble[7:0].clk"/>
+				<complete name="clks1" input="clb.I[14]" output="ble[7:0].CLK counter8.clk"/>
+				<complete name="clks2" input="clb.I[15]" output="ble[7:0].reset counter8.reset"/>
+				<direct name="clbouts" input="ble[7:0].out" output="clb.O"/>
+				<direct name="clbouts2" input="counter8.out[7:0]" output="clb.O"/>
+			</interconnect>
+			<fc_in type="frac">1</fc_in>
+			<fc_out type="frac">1</fc_out>
+			<pinlocations pattern="custom">
+				<loc side="left">clb.I[0] clb.I[4] clb.I[8] clb.I[12] clb.O[0] clb.O[4]</loc>
+				<loc side="top">clb.I[3] clb.I[7] clb.I[11] clb.I[15] clb.O[3] clb.O[7]</loc>
+				<loc side="right">clb.I[2] clb.I[6] clb.I[10] clb.I[14] clb.O[2] clb.O[6]</loc>
+				<loc side="bottom">clb.I[1] clb.I[5] clb.I[9] clb.I[13] clb.O[1] clb.O[5]</loc>
+			</pinlocations>
+			<gridlocations>
+				<loc type="fill" priority="1"/>
+			</gridlocations>
+		</pb_type>
+<!-->
+CAB
+-->
+		<pb_type name="cab">
+			<input name="I" num_pins="16"/>
+			<input name="si" num_pins="4"/>
+			<output name="O" num_pins="8"/>
+			<output name="so" num_pins="12"/>
+			<clock name="gnd" num_pins="1"/>
+			<clock name="vdd" num_pins="1"/>
+			<pb_type name="fgota" num_pb="1" blif_model=".fgota">
+				<input name="in" num_pins="2"/>
+				<output name="out" num_pins="1"/>
+				<delay_matrix type="max" in_port="fgota.in" out_port="fgota.out">2.69e-12 2.69e-10 </delay_matrix>
+			</pb_type>
+			<pb_type name="ota_buf" num_pb="1" blif_model=".ota_buf">
+				<input name="in" num_pins="1"/>
+				<output name="out" num_pins="1"/>
+				<delay_matrix type="max" in_port="ota_buf.in" out_port="ota_buf.out">2.69e-10 </delay_matrix>
+			</pb_type>		
+			<pb_type name="ota" num_pb="1" blif_model=".ota">
+				<input name="in" num_pins="2"/>
+				<output name="out" num_pins="1"/>
+				<delay_matrix type="max" in_port="ota.in" out_port="ota.out">2.69e-10 2.69e-10 </delay_matrix>
+			</pb_type>
+			<pb_type name="cap" num_pb="1" blif_model=".cap">
+				<input name="in" num_pins="1"/>
+				<output name="out" num_pins="1"/>
+				<delay_matrix type="max" in_port="cap.in" out_port="cap.out">2.69e-10 </delay_matrix>
+			</pb_type>
+			<pb_type name="c4_sp" num_pb="1" blif_model=".c4_sp">
+				<input name="in" num_pins="2"/>
+				<output name="out" num_pins="1"/>
+				<delay_matrix type="max" in_port="c4_sp.in" out_port="c4_sp.out"> 2.69e-10 2.69e-10 </delay_matrix>
+			</pb_type>
+			<pb_type name="TIA_blk" num_pb="1" blif_model=".TIA_blk">
+				<input name="in" num_pins="1"/>
+				<output name="out" num_pins="1"/>
+				<delay_matrix type="max" in_port="TIA_blk.in" out_port="TIA_blk.out"> 2.69e-10 </delay_matrix>
+			</pb_type>
+			<pb_type name="ichar_nfet" blif_model=".ichar_nfet" num_pb="1">
+				<input name="in" num_pins="2"/>
+				<output name="out" num_pins="1"/>
+				<delay_constant max="1.667e-9" in_port="ichar_nfet.in" out_port="ichar_nfet.out"/>
+			</pb_type>
+			<pb_type name="hhneuron" num_pb="1" blif_model=".hhneuron">
+				<input name="in" num_pins="4"/>
+				<output name="out" num_pins="3"/>
+				<delay_matrix type="max" in_port="hhneuron.in" out_port="hhneuron.out"> 2.69e-10 2.69e-10 2.69e-10 2.69e-10 2.69e-10 2.69e-10 2.69e-10 2.69e-10 2.69e-10 2.69e-10 2.69e-10 2.69e-10</delay_matrix>
+			</pb_type>
+			<pb_type name="nfet" num_pb="1" blif_model=".nfet">
+				<input name="in" num_pins="2"/>
+				<output name="out" num_pins="1"/>
+				<delay_matrix type="max" in_port="nfet.in" out_port="nfet.out">2.69e-10 2.69e-10 </delay_matrix>
+			</pb_type>
+			<pb_type name="pfet" num_pb="1" blif_model=".pfet">
+				<input name="in" num_pins="2"/>
+				<output name="out" num_pins="1"/>
+				<delay_matrix type="max" in_port="pfet.in" out_port="pfet.out">2.69e-10 2.69e-10 </delay_matrix>
+			</pb_type>
+			<pb_type name="tgate" num_pb="1" blif_model=".tgate">
+				<input name="in" num_pins="2"/>
+				<output name="out" num_pins="1"/>
+				<delay_matrix type="max" in_port="tgate.in" out_port="tgate.out">2.69e-10 2.69e-10 </delay_matrix>
+			</pb_type>
+			<pb_type name="nmirror" num_pb="1" blif_model=".nmirror">
+				<input name="in" num_pins="1"/>
+				<output name="out" num_pins="1"/>
+				<delay_matrix type="max" in_port="nmirror.in" out_port="nmirror.out">2.69e-10 </delay_matrix>
+			</pb_type>	
+			<pb_type name="volswc" num_pb="2" blif_model=".volswc">
+				<input name="in" num_pins="8"/>
+				<input name="ci" num_pins="3"/>
+				<output name="out" num_pins="1"/>
+				<output name="co" num_pins="3"/>					
+			</pb_type>	
+			<pb_type name="lpf" num_pb="1" blif_model=".lpf">
+				<input name="in" num_pins="1"/>
+				<output name="out" num_pins="1"/>
+				<delay_matrix type="max" in_port="lpf.in" out_port="lpf.out">2.69e-10 </delay_matrix>
+			</pb_type>
+			<pb_type name="nfet_i2v" num_pb="1" blif_model=".nfet_i2v">
+				<input name="in" num_pins="1"/>
+				<output name="out" num_pins="1"/>
+				<delay_matrix type="max" in_port="nfet_i2v.in" out_port="nfet_i2v.out">2.69e-10 </delay_matrix>
+			</pb_type>
+			<pb_type name="pfet_i2v" num_pb="1" blif_model=".pfet_i2v">
+				<input name="in" num_pins="1"/>
+				<output name="out" num_pins="1"/>
+				<delay_matrix type="max" in_port="pfet_i2v.in" out_port="pfet_i2v.out">2.69e-10 </delay_matrix>
+			</pb_type>
+			<pb_type name="i2v_pfet_gatefgota" num_pb="1" blif_model=".i2v_pfet_gatefgota">
+				<input name="in" num_pins="1"/>
+				<output name="out" num_pins="1"/>
+				<delay_matrix type="max" in_port="i2v_pfet_gatefgota.in" out_port="i2v_pfet_gatefgota.out">2.69e-10 </delay_matrix>
+			</pb_type>
+			<pb_type name="mismatch_meas" num_pb="1" blif_model=".mismatch_meas">
+				<input name="in" num_pins="3"/>
+				<output name="out" num_pins="1"/>
+				<delay_matrix type="max" in_port="mismatch_meas.in" out_port="mismatch_meas.out">2.69e-10 2.69e-10 2.69e-10 </delay_matrix>
+			</pb_type>
+			<pb_type name="mmap_local_swc" num_pb="1" blif_model=".mmap_local_swc">
+				<input name="in" num_pins="3"/>
+				<output name="out" num_pins="4"/>
+				<delay_constant max="1.667e-9" in_port="mmap_local_swc.in" out_port="mmap_local_swc.out"/>
+			</pb_type>
+			<pb_type name="ramp_fe" num_pb="1" blif_model=".ramp_fe">
+				<input name="in" num_pins="2"/>
+				<output name="out" num_pins="4"/>
+				<delay_constant max="1.667e-9" in_port="ramp_fe.in" out_port="ramp_fe.out"/>
+			</pb_type>
+			<pb_type name="gnd_out" blif_model=".gnd_out" num_pb="1">
+				<input name="in" num_pins="2"/>
+				<output name="out" num_pins="1"/>
+				<delay_constant max="1.667e-9" in_port="gnd_out.in" out_port="gnd_out.out"/>
+			</pb_type>
+			<pb_type name="vdd_out" blif_model=".vdd_out" num_pb="1">
+				<input name="in" num_pins="2"/>
+				<output name="out" num_pins="1"/>
+				<delay_constant max="1.667e-9" in_port="vdd_out.in" out_port="vdd_out.out"/>
+			</pb_type>
+			<pb_type name="in2in_x1" blif_model=".in2in_x1" num_pb="1">
+				<input name="in" num_pins="3"/>
+				<output name="out" num_pins="1"/>
+				<delay_constant max="1.667e-9" in_port="in2in_x1.in" out_port="in2in_x1.out"/>
+			</pb_type>
+			<pb_type name="in2in_x6" blif_model=".in2in_x6" num_pb="1">
+				<input name="in" num_pins="13"/>
+				<output name="out" num_pins="1"/>
+				<delay_constant max="1.667e-9" in_port="in2in_x6.in" out_port="in2in_x6.out"/>
+			</pb_type>   
+			<pb_type name="Hyst_diff" blif_model=".Hyst_diff" num_pb="1">
+				<input name="in" num_pins="1"/>
+				<output name="out" num_pins="1"/>
+				<delay_constant max="1.667e-9" in_port="Hyst_diff.in" out_port="Hyst_diff.out"/>
+			</pb_type>
+			<pb_type name="Max_detect" blif_model=".Max_detect" num_pb="1">
+				<input name="in" num_pins="1"/>
+				<output name="out" num_pins="1"/>
+				<delay_constant max="1.667e-9" in_port="Max_detect.in" out_port="Max_detect.out"/>
+			</pb_type>
+			<pb_type name="Min_detect" blif_model=".Min_detect" num_pb="1">
+				<input name="in" num_pins="1"/>
+				<output name="out" num_pins="1"/>
+				<delay_constant max="1.667e-9" in_port="Min_detect.in" out_port="Min_detect.out"/>
+			</pb_type>
+			<pb_type name="hhn" blif_model=".hhn" num_pb="1">
+				<input name="in" num_pins="4"/>
+				<output name="out" num_pins="1"/>
+				<delay_constant max="1.667e-9" in_port="hhn.in" out_port="hhn.out"/>
+			</pb_type>
+			<pb_type name="fgswitch" blif_model=".fgswitch" num_pb="1">
+				<input name="in" num_pins="1"/>
+				<output name="out" num_pins="1"/>
+				<delay_constant max="1.667e-9" in_port="fgswitch.in" out_port="fgswitch.out"/>
+			</pb_type>
+			<pb_type name="common_drain" blif_model=".common_drain" num_pb="1">
+				<input name="in" num_pins="1"/>
+				<output name="out" num_pins="1"/>
+				<delay_constant max="1.667e-9" in_port="common_drain.in" out_port="common_drain.out"/>
+			</pb_type>
+			<pb_type name="common_drain_nfet" blif_model=".common_drain_nfet" num_pb="1">
+				<input name="in" num_pins="1"/>
+				<output name="out" num_pins="1"/>
+				<delay_constant max="1.667e-9" in_port="common_drain_nfet.in" out_port="common_drain_nfet.out"/>
+			</pb_type>
+			<pb_type name="hhn_debug" blif_model=".hhn_debug" num_pb="1">
+				<input name="in" num_pins="4"/>
+				<output name="out" num_pins="3"/>
+				<delay_constant max="1.667e-9" in_port="hhn_debug.in" out_port="hhn_debug.out"/>
+			</pb_type>
+			<pb_type name="vmm_16x16" blif_model=".subckt vmm_16x16" num_pb="1">
+				<input name="in" num_pins="16"/>
+				<output name="out" num_pins="8"/>
+				<delay_constant max="1.667e-9" in_port="vmm_16x16.in" out_port="vmm_16x16.out"/>
+			</pb_type>          
+			<pb_type name="vmm_2x2" blif_model=".subckt vmm_2x2" num_pb="1">
+				<input name="in" num_pins="2"/>
+				<output name="out" num_pins="2"/>
+				<delay_constant max="1.667e-9" in_port="vmm_2x2.in" out_port="vmm_2x2.out"/>
+			</pb_type>
+			<pb_type name="ota_vmm" blif_model=".ota_vmm" num_pb="1">
+				<input name="in" num_pins="2"/>
+				<output name="out" num_pins="1"/>
+				<delay_constant max="1.667e-9" in_port="ota_vmm.in" out_port="ota_vmm.out"/>
+			</pb_type>	
+			<pb_type name="tgate_so" blif_model=".tgate_so" num_pb="1">
+				<input name="in" num_pins="8"/>
+				<output name="out" num_pins="1"/>
+				<delay_constant max="1.667e-9" in_port="tgate_so.in" out_port="tgate_so.out"/>
+			</pb_type>
+			<pb_type name="vmm4x4_SR" blif_model=".vmm4x4_SR" num_pb="1">
+				<input name="in" num_pins="7"/>
+				<output name="out" num_pins="4"/>
+				<delay_constant max="1.667e-9" in_port="vmm4x4_SR.in" out_port="vmm4x4_SR.out"/>
+			</pb_type>	
+			<pb_type name="vmm4x4_SR2" blif_model=".vmm4x4_SR2" num_pb="1">
+				<input name="in" num_pins="8"/>
+				<output name="out" num_pins="4"/>
+				<delay_constant max="1.667e-9" in_port="vmm4x4_SR2.in" out_port="vmm4x4_SR2.out"/>
+			</pb_type>
+			<pb_type name="vmm8x4_SR" blif_model=".vmm8x4_SR" num_pb="1">
+				<input name="in" num_pins="11"/>
+				<output name="out" num_pins="4"/>
+				<delay_constant max="1.667e-9" in_port="vmm8x4_SR.in" out_port="vmm8x4_SR.out"/>
+			</pb_type>
+			<pb_type name="SR4" blif_model=".SR4" num_pb="1">
+				<input name="in" num_pins="4"/>
+				<output name="out" num_pins="8"/>
+				<delay_constant max="1.667e-9" in_port="SR4.in" out_port="SR4.out"/>
+			</pb_type>	
+			<pb_type name="vmm4x4" blif_model=".vmm4x4" num_pb="1">
+				<input name="in" num_pins="4"/>
+				<output name="out" num_pins="4"/>
+				<delay_constant max="1.667e-9" in_port="vmm4x4.in" out_port="vmm4x4.out"/>
+			</pb_type>
+			<pb_type name="vmm8x4" blif_model=".vmm8x4" num_pb="1">
+				<input name="in" num_pins="13"/>
+				<output name="out" num_pins="1"/>
+				<delay_constant max="1.667e-9" in_port="vmm8x4.in" out_port="vmm8x4.out"/>
+			</pb_type>
+			<pb_type name="vmm8inx8in" blif_model=".vmm8inx8in" num_pb="1">
+				<input name="in" num_pins="17"/>
+				<output name="out" num_pins="1"/>
+				<delay_constant max="1.667e-9" in_port="vmm8inx8in.in" out_port="vmm8inx8in.out"/>
+			</pb_type>
+			<pb_type name="vmm8x4_in" blif_model=".vmm8x4_in" num_pb="1">
+				<input name="in" num_pins="13"/>
+				<output name="out" num_pins="1"/>
+				<delay_constant max="1.667e-9" in_port="vmm8x4_in.in" out_port="vmm8x4_in.out"/>
+			</pb_type>
+			<pb_type name="vmm12x1" blif_model=".vmm12x1" num_pb="1">
+				<input name="in" num_pins="13"/>
+				<output name="out" num_pins="1"/>
+				<delay_constant max="1.667e-9" in_port="vmm12x1.in" out_port="vmm12x1.out"/>
+			</pb_type>
+			<pb_type name="vmm12x1_wowta" blif_model=".vmm12x1_wowta" num_pb="1">
+				<input name="in" num_pins="12"/>
+				<output name="out" num_pins="1"/>
+				<delay_constant max="1.667e-9" in_port="vmm12x1_wowta.in" out_port="vmm12x1_wowta.out"/>
+			</pb_type>
+			<pb_type name="sftreg" num_pb="1" blif_model=".sftreg">
+				<input name="in" num_pins="19"/>
+				<output name="out" num_pins="4"/>
+				<delay_constant max="1.667e-9" in_port="sftreg.in" out_port="sftreg.out"/>
+			</pb_type>
+			<pb_type name="DAC_sftreg" num_pb="1" blif_model=".DAC_sftreg">
+				<input name="in" num_pins="3"/>
+				<output name="out" num_pins="4"/>
+				<delay_constant max="1.667e-9" in_port="DAC_sftreg.in" out_port="DAC_sftreg.out"/>
+			</pb_type>
+			<pb_type name="sftreg2" num_pb="1" blif_model=".sftreg2">
+				<input name="in" num_pins="3"/>
+				<output name="out" num_pins="20"/>
+				<delay_constant max="1.667e-9" in_port="sftreg2.in" out_port="sftreg2.out"/>
+			</pb_type>
+			<pb_type name="sftreg3" num_pb="1" blif_model=".sftreg3">
+				<input name="in" num_pins="4"/>
+				<output name="out" num_pins="20"/>
+				<delay_constant max="1.667e-9" in_port="sftreg3.in" out_port="sftreg3.out"/>
+			</pb_type>
+			<pb_type name="sftreg4" num_pb="1" blif_model=".sftreg4">
+				<input name="in" num_pins="4"/>
+				<output name="out" num_pins="20"/>
+				<delay_constant max="1.667e-9" in_port="sftreg4.in" out_port="sftreg4.out"/>
+			</pb_type>
+			<pb_type name="vmmoffset" blif_model=".vmmoffset" num_pb="1">
+				<input name="in" num_pins="1"/>
+				<output name="out" num_pins="1"/>
+				<delay_constant max="1.667e-9" in_port="vmmoffset.in" out_port="vmmoffset.out"/>
+			</pb_type>
+			<pb_type name="wta_new" blif_model=".wta_new" num_pb="1">
+				<input name="in" num_pins="3"/>
+				<output name="out" num_pins="1"/>
+				<delay_constant max="1.667e-9" in_port="wta_new.in" out_port="wta_new.out"/>
+			</pb_type>
+			<pb_type name="common_source" blif_model=".common_source" num_pb="1">
+				<input name="in" num_pins="1"/>
+				<output name="out" num_pins="1"/>
+				<delay_constant max="1.667e-9" in_port="common_source.in" out_port="common_source.out"/>
+			</pb_type>
+			<pb_type name="VolDivide1" blif_model=".VolDivide1" num_pb="1">
+				<input name="in" num_pins="1"/>
+				<output name="out" num_pins="1"/>
+				<delay_constant max="1.667e-9" in_port="VolDivide1.in" out_port="VolDivide1.out"/>
+			</pb_type>
+			<pb_type name="I_SenseAmp" blif_model=".I_SenseAmp" num_pb="1">
+				<input name="in" num_pins="2"/>
+				<output name="out" num_pins="1"/>
+				<delay_constant max="1.667e-9" in_port="I_SenseAmp.in" out_port="I_SenseAmp.out"/>
+			</pb_type>
+			<pb_type name="nmirror_w_bias" blif_model=".nmirror_w_bias" num_pb="1">
+				<input name="in" num_pins="2"/>
+				<output name="out" num_pins="1"/>
+				<delay_constant max="1.667e-9" in_port="nmirror_w_bias.in" out_port="nmirror_w_bias.out"/>
+			</pb_type>
+			<pb_type name="SubbandArray" blif_model=".SubbandArray" num_pb="1">
+				<input name="in" num_pins="2"/>
+				<output name="out" num_pins="2"/>
+				<delay_constant max="1.667e-9" in_port="SubbandArray.in" out_port="SubbandArray.out"/>
+			</pb_type>
+			<pb_type name="HH_RG" blif_model=".HH_RG" num_pb="1">
+				<input name="in" num_pins="5"/>
+				<output name="out" num_pins="2"/>
+				<delay_constant max="1.667e-9" in_port="HH_RG.in" out_port="HH_RG.out"/>
+			</pb_type>
+			<pb_type name="HH_RG_2s" blif_model=".HH_RG_2s" num_pb="1">
+				<input name="in" num_pins="6"/>
+				<output name="out" num_pins="2"/>
+				<delay_constant max="1.667e-9" in_port="HH_RG_2s.in" out_port="HH_RG_2s.out"/>
+			</pb_type>
+			<pb_type name="HH_RG_3s" blif_model=".HH_RG_3s" num_pb="1">
+				<input name="in" num_pins="7"/>
+				<output name="out" num_pins="2"/>
+				<delay_constant max="1.667e-9" in_port="HH_RG_3s.in" out_port="HH_RG_3s.out"/>
+			</pb_type>
+			<pb_type name="SOSLPF" blif_model=".SOSLPF" num_pb="1">
+				<input name="in" num_pins="1"/>
+				<output name="out" num_pins="1"/>
+				<delay_constant max="1.667e-9" in_port="SOSLPF.in" out_port="SOSLPF.out"/>
+			</pb_type>
+			<pb_type name="MSOS02" blif_model=".MSOS02" num_pb="1">
+				<input name="in" num_pins="1"/>
+				<output name="out" num_pins="1"/>
+				<delay_constant max="1.667e-9" in_port="MSOS02.in" out_port="MSOS02.out"/>
+			</pb_type>
+			<pb_type name="vmm_offc" blif_model=".vmm_offc" num_pb="1">
+				<input name="in" num_pins="13"/>
+				<output name="out" num_pins="2"/>
+				<delay_constant max="1.667e-9" in_port="vmm_offc.in" out_port="vmm_offc.out"/>
+			</pb_type>
+			<interconnect>		
+				<direct name="volswc1" input="cab.I[5:0]" output="volswc[0].in[5:0]"/>
+				<complete name="crossbar" input="fgota.out ota_buf.out ota.out cap.out nfet.out pfet.out tgate.out nmirror.out volswc[1:0].out" output="volswc[0].in[7:6]"/>
+				<direct name="volswc3" input="cab.I[11:6]" output="volswc[1].in[5:0]"/>
+				<complete name="crossbar" input="fgota.out ota_buf.out ota.out cap.out nfet.out pfet.out tgate.out nmirror.out volswc[1:0].out" output="volswc[1].in[7:6]"/>
+				<direct name="volswc5" input="cab.I[15:13]" output="volswc[0].ci"/>
+				<direct name="volswc6" input="volswc[0].co" output="volswc[1].ci"/>
+				<direct name="volswc7" input="volswc[1].co" output="cab.O[7:5]"/>	
+				<direct name="crossbar" input="cab.I[15:13]" output="mmap_local_swc[0].in[2:0]"/>
+				<complete name="crossbar" input="cab.I[12:8] fgota.out cap.out nfet.out pfet.out tgate.out nmirror.out volswc[1:0].out" output="fgota.in[1:0] ichar_nfet[0].in[1:0] TIA_blk.in[0] cap.in nfet.in[1:0] pfet.in[1:0] tgate.in[1:0] nmirror.in"></complete>
+				<complete name="crossbar" input="fgota.out ota.out cap.out nfet.out pfet.out nmirror.out volswc[1:0].out ota_buf.out lpf.out nfet_i2v.out pfet_i2v.out i2v_pfet_gatefgota.out[0] mismatch_meas.out[0] gnd_out.out vdd_out.out in2in_x1.out in2in_x6.out tgate.out" output="cab.O[4]"/>
+				<complete name="crossbar" input="cab.I[8]" output="ota_buf.in lpf.in"/>				
+				<complete name="crossbar" input="cab.I[12:0]" output="gnd_out.in[1:0] vdd_out.in[1:0] in2in_x1.in[2:0] in2in_x6.in[12:0] nfet_i2v.in[0] pfet_i2v.in[0] i2v_pfet_gatefgota.in[0] mismatch_meas.in[2:0]"/>
+				<complete name="crossbar" input="cab.I[11]" output="tgate.in[0]"/>	
+				<complete name="crossbar" input="pfet.out ichar_nfet[0].out" output="cab.O[4:3] "/>	
+				<complete name="crossbar" input="TIA_blk.out[0]" output="cab.O[4]"/>
+				<complete name="direct" input="hhneuron[0].out[2:0]" output="cab.O[3:1] "/>
+				<complete name="crossbar" input="cab.I[11:8]" output="hhneuron.in[3:0] c4_sp.in[1:0] fgota.in[1:0]"/>
+				<complete name="crossbar" input="cab.I[11:9] cab.I[8]" output="ota.in ramp_fe.in ota_buf.in"/>	
+				<complete name="crossbar" input="cab.I[6] cab.I[12]" output="c4_sp.in[1:0] fgota.in[1:0]"/>
+				<complete name="crossbar" input="cab.I[8]" output="c4_sp[0].in[1] cap.in[0]"/>
+				<complete name="crossbar" input="cab.I[6] cab.I[12]" output="c4_sp.in[1:0] fgota.in[1:0]"/>
+				<complete name="crossbar" input="cab.I[7:6]" output="fgota.in[0] "/>		
+				<complete name="crossbar" input="c4_sp.out[0] cap.out[0]" output="cab.O[4]"/>
+				<direct name="crossbar" input="ramp_fe.out[3:1]" output="cab.O[3:1] "/>
+				<direct name="crossbar" input="ramp_fe.out[0]" output="cab.O[4] "/>
+				<direct name="crossbar" input="mmap_local_swc[0].out[3:0]" output="cab.O[7:4]" />	
+				<complete name="crossbar" input="cab.I[12:0]" output="Hyst_diff.in[0]"/>
+				<complete name="crossbar" input="Hyst_diff[0].out[0]" output="cab.O[4]"/>
+				<complete name="crossbar" input="cab.I[12:0]" output="Max_detect.in[0]"/>
+				<complete name="crossbar" input="Max_detect[0].out[0]" output="cab.O[4]"/>
+				<complete name="crossbar" input="cab.I[12:0]" output="Min_detect.in[0]"/>
+				<complete name="crossbar" input="Min_detect[0].out[0]" output="cab.O[4]"/>
+				<complete name="crossbar" input="cab.I[12:0]" output="hhn.in[3:0]"/>
+				<complete name="crossbar" input="hhn[0].out[0]" output="cab.O[4]"/>
+				<complete name="crossbar" input="cab.I[12:0]" output="fgswitch.in[0]"/>
+				<complete name="crossbar" input="fgswitch[0].out[0]" output="cab.O[4]"/>
+				<complete name="crossbar" input="cab.I[12:0]" output="common_drain.in[0]"/>
+				<complete name="crossbar" input="common_drain[0].out[0]" output="cab.O[4]"/>
+				<complete name="crossbar" input="cab.I[12:0]" output="common_drain_nfet.in[0]"/>
+				<complete name="crossbar" input="common_drain_nfet[0].out[0]" output="cab.O[4]"/>
+				<complete name="crossbar" input="cab.I[12:0]" output="hhn_debug.in[3:0]"/>
+				<complete name="crossbar" input="hhn_debug[0].out[2:0]" output="cab.O[4:2]"/>
+				<direct name="a2a" input="cab.I" output="vmm_16x16.in"> </direct>
+				<direct name="b2b" input="vmm_16x16.out" output="cab.O"></direct>
+				<complete name="sub" input="cab.I[1:0]" output="vmm_2x2.in[1:0]"> </complete>
+				<complete name="sub2" input="vmm_2x2.out[1:0]" output="cab.O[1:0]"></complete>
+				<complete name="crossbar" input="tgate_so.out" output="cab.O[3]"></complete>
+				<complete name="crossbar" input="cab.I[12:0]" output="tgate_so.in[7:0]"></complete>
+				<complete name="crossbar" input="ota_vmm.out" output="cab.O[4]"></complete>
+				<complete name="crossbar" input="vmm12x1.out vmm12x1_wowta.out" output="cab.O[4]"></complete>
+				<complete name="crossbar" input="vmm8x4_in.out" output="cab.O[4]"></complete>
+				<direct name="crossbar" input="cab.I[12:11]" output="ota_vmm.in"> </direct>
+				<direct name="crossbar" input="cab.I[1]" output="vmm8x4_SR.in[4]"> </direct>
+				<direct name="crossbar" input="cab.I[2]" output="vmm8x4_SR.in[5]"> </direct>
+				<direct name="crossbar" input="cab.I[3]" output="vmm8x4_SR.in[6]"> </direct>
+				<direct name="crossbar" input="cab.I[5]" output="vmm8x4_SR.in[7]"> </direct>
+				<direct name="crossbar" input="cab.I[1]" output="vmm8x4.in[4]"> </direct>
+				<direct name="crossbar" input="cab.I[2]" output="vmm8x4.in[5]"> </direct>
+				<direct name="crossbar" input="cab.I[3]" output="vmm8x4.in[6]"> </direct>
+				<direct name="crossbar" input="cab.I[5]" output="vmm8x4.in[7]"> </direct>
+				<direct name="crossbar" input="cab.I[0]" output="vmm8x4.in[8]"> </direct>
+				<direct name="crossbar" input="cab.I[4]" output="vmm8x4.in[9]"> </direct>
+				<direct name="crossbar" input="cab.I[6]" output="vmm8x4.in[10]"> </direct>
+				<direct name="crossbar" input="cab.I[10]" output="vmm8x4.in[11]"> </direct>
+				<direct name="crossbar" input="cab.I[12:0]" output="vmm12x1.in[12:0]"> </direct>
+				<direct name="crossbar" input="cab.I[11:0]" output="vmm12x1_wowta.in[11:0]"> </direct>
+				<direct name="crossbar" input="cab.I[12:0]" output="vmm8x4_in.in[12:0]"> </direct>
+				<complete name="direct04" input="cab.I[12]" output="vmm4x4_SR.in[3] vmm4x4_SR2.in[3] vmm8x4_SR.in[3] vmm4x4.in[3] vmm8x4.in[3]"> </complete>
+				<complete name="direct04" input="cab.I[11]" output="vmm4x4_SR.in[2] vmm4x4_SR2.in[2] vmm8x4_SR.in[2] vmm4x4.in[2] vmm8x4.in[2]"> </complete>
+				<complete name="direct05" input="cab.I[9]" output="vmm4x4_SR.in[1] vmm4x4_SR2.in[1] vmm8x4_SR.in[1] vmm4x4.in[1] vmm8x4.in[1]"> </complete>
+				<complete name="direct05" input="cab.I[8]" output="vmm4x4_SR.in[0] vmm4x4_SR2.in[0] vmm8x4_SR.in[0] vmm4x4.in[0] vmm8x4.in[0]"> </complete>
+				<complete name="direct05" input="cab.I[7]" output="vmm8x4.in[12]"> </complete>
+				<complete name="direct4" input="cab.I[13]" output="vmm4x4_SR.in[4] vmm4x4_SR2.in[4] vmm8x4_SR.in[8] SR4.in[1]"> </complete>
+				<complete name="direct5" input="cab.I[14]" output="vmm4x4_SR.in[5] vmm4x4_SR2.in[5] vmm8x4_SR.in[9] SR4.in[2]"> </complete>
+				<complete name="direct6" input="cab.I[15]" output="vmm4x4_SR.in[6] vmm4x4_SR2.in[6] vmm8x4_SR.in[10] SR4.in[3]"> </complete>
+				<direct name="direct7" input="vmm4x4_SR.out[3:0] " output="cab.O[7:4]"> </direct> <!--do not chng-->
+				<direct name="crossbar" input="vmm4x4_SR2.out[3:0] " output="cab.O[7:4]"> </direct> <!--do not chng-->
+				<direct name="direct8" input="vmm8x4_SR.out[3:0] " output="cab.O[7:4]"> </direct> <!--do not chng-->
+				<direct name="direct9" input="SR4.out[4:0] " output="cab.O[4:0]"> </direct> <!--do not chng-->
+				<direct name="crossbar" input="vmm4x4.out[3:0] " output="cab.O[3:0]"> </direct> <!--do not chng-->
+				<direct name="direct10" input="SR4.out[7:5] " output="cab.O[7:5]"> </direct> <!--do not chng-->
+				<direct name="crossbar" input="vmm8x4.out[0] " output="cab.O[4]"> </direct> <!--do not chng-->
+				<complete name="crossbar" input="cab.I[12]" output="SR4.in[0]"> </complete>
+				<complete name="crossbar" input="cab.I[7]" output="vmm4x4_SR2.in[7]"> </complete>
+				<direct name="crossbar" input="cab.I[5:0]" output="sftreg[0].in[13:8]"/>
+				<direct name="crossbar" input="cab.I[11:6]" output="sftreg[0].in[5:0]"/>
+				<direct name="crossbar" input="cab.si[3:2]" output="sftreg[0].in[7:6]"/>
+				<direct name="crossbar" input="cab.si[1:0]" output="sftreg[0].in[15:14]"/>
+				<direct name="crossbar" input="cab.I[15:13]" output="sftreg[0].in[18:16]"/>
+				<direct name="crossbar" input="sftreg[0].out[3:0]" output="cab.O[7:4]" />
+				<direct name="crossbar" input="cab.I[15:13]" output="DAC_sftreg[0].in[2:0]"/>
+				<direct name="crossbar" input="DAC_sftreg[0].out[3:0]" output="cab.O[7:4]" />
+				<direct name="crossbar" input="cab.I[15:13]" output="sftreg2[0].in[2:0]"/>
+				<direct name="crossbar" input="cab.I[15:13]" output="sftreg3[0].in[2:0]"/>
+				<direct name="crossbar" input="cab.I[15:13]" output="sftreg4[0].in[2:0]"/>
+				<direct name="crossbar" input="cab.I[12]" output="sftreg3[0].in[3]"/>
+				<direct name="crossbar" input="cab.I[12]" output="sftreg4[0].in[3]"/>
+				<direct name="crossbar" input="sftreg2[0].out[9:4]" output="cab.so[11:6] "/>
+				<direct name="crossbar" input="sftreg2[0].out[17:12]" output="cab.so[5:0] "/>
+				<direct name="crossbar" input="sftreg2[0].out[11:10]" output="cab.O[3:2]" />
+				<direct name="crossbar" input="sftreg2[0].out[19:18]" output="cab.O[1:0]" />
+				<direct name="crossbar" input="sftreg2[0].out[3:0]" output="cab.O[7:4]" />
+				<direct name="crossbar" input="sftreg3[0].out[9:4]" output="cab.so[11:6] "/>
+				<direct name="crossbar" input="sftreg3[0].out[17:12]" output="cab.so[5:0] "/>
+				<direct name="crossbar" input="sftreg3[0].out[11:10]" output="cab.O[3:2]" />
+				<direct name="crossbar" input="sftreg3[0].out[19:18]" output="cab.O[1:0]" />
+				<direct name="crossbar" input="sftreg3[0].out[3:0]" output="cab.O[7:4]" />	
+				<direct name="crossbar" input="sftreg4[0].out[9:4]" output="cab.so[11:6] "/>
+				<direct name="crossbar" input="sftreg4[0].out[17:12]" output="cab.so[5:0] "/>
+				<direct name="crossbar" input="sftreg4[0].out[11:10]" output="cab.O[3:2]" />
+				<direct name="crossbar" input="sftreg4[0].out[19:18]" output="cab.O[1:0]" />
+				<direct name="crossbar" input="sftreg4[0].out[3:0]" output="cab.O[7:4]" />	
+				<!-- fg devices -->
+				<direct name="crossbar" input="cab.I[12]" output="vmm8inx8in.in[0]"/>
+				<direct name="crossbar" input="cab.I[11:0]" output="vmm8inx8in.in[12:1]"/>
+				<direct name="crossbar" input="cab.si[3:0]" output="vmm8inx8in.in[16:13]"/>
+				<direct name="crossbar" input="vmm8inx8in.out[0]" output="cab.O[4] "/>
+				<complete name="crossbar" input="cab.I[12:0]" output="vmmoffset.in[0]"/>
+				<complete name="crossbar" input="vmmoffset[0].out[0]" output="cab.O[4]"/>
+				<complete name="crossbar" input="cab.I[12:0]" output="wta_new.in[2:0]"/>
+				<complete name="crossbar" input="wta_new[0].out[0]" output="cab.O[4]"/>
+				<complete name="crossbar" input="cab.I[12:0]" output="common_source.in[0]"/>
+				<complete name="crossbar" input="common_source[0].out[0]" output="cab.O[4]"/>
+				<complete name="crossbar" input="cab.I[12:0]" output="VolDivide1.in[0]"/>
+				<complete name="crossbar" input="VolDivide1[0].out[0]" output="cab.O[4]"/>
+				<complete name="crossbar" input="cab.I[12:0]" output="I_SenseAmp.in[1:0]"/>
+				<complete name="crossbar" input="I_SenseAmp[0].out[0]" output="cab.O[4]"/>
+				<complete name="crossbar" input="cab.I[12:0]" output="nmirror_w_bias.in[1:0]"/>
+				<complete name="crossbar" input="nmirror_w_bias[0].out[0]" output="cab.O[4]"/>
+				<complete name="crossbar" input="cab.I[12:0]" output="SubbandArray.in[1:0]"/>
+				<complete name="crossbar" input="SubbandArray[0].out[1:0]" output="cab.O[4:3]"/>
+				<complete name="crossbar" input="cab.I[12:0]" output="HH_RG.in[4:0]"/>
+				<complete name="crossbar" input="HH_RG[0].out[1:0]" output="cab.O[4:3]"/>
+				<complete name="crossbar" input="cab.I[12:0]" output="HH_RG_2s.in[5:0]"/>
+				<complete name="crossbar" input="HH_RG_2s[0].out[1:0]" output="cab.O[4:3]"/>
+				<complete name="crossbar" input="cab.I[12:0]" output="HH_RG_3s.in[6:0]"/>
+				<complete name="crossbar" input="HH_RG_3s[0].out[1:0]" output="cab.O[4:3]"/>
+				<complete name="crossbar" input="cab.I[12:0]" output="SOSLPF.in[0]"/>
+				<complete name="crossbar" input="SOSLPF[0].out[0]" output="cab.O[4]"/>
+				<complete name="crossbar" input="cab.I[12:0]" output="MSOS02.in[0]"/>
+				<complete name="crossbar" input="MSOS02[0].out[0]" output="cab.O[4]"/>
+				<complete name="crossbar" input="cab.I[12:0]" output="vmm_offc.in[12:0]"/>
+				<complete name="crossbar" input="vmm_offc[0].out[1:0]" output="cab.O[4:3]"/>
+			</interconnect>
+			<fc_in type="frac">1</fc_in>
+			<fc_out type="frac">1</fc_out>
+			<pinlocations pattern="custom">
+				<loc side="left">cab.I[3:0] cab.O[1:0] cab.so[3:0] cab.si[1:0]</loc>
+				<loc side="top">cab.I[15:13] cab.I[9:8] cab.O[4] cab.so[9:8]</loc>
+				<loc side="right">cab.I[7:4] cab.O[3:2] cab.so[7:4] cab.si[3:2]</loc>
+				<loc side="bottom">cab.I[12:10] cab.O[7:5] cab.so[11:10]</loc>
+			</pinlocations>
+			<gridlocations>
+				<loc type="col" start="2" priority="6"/>
+				<loc type="col" start="3" priority="6"/>
+				<loc type="col" start="6" priority="6"/>
+				<loc type="col" start="7" priority="6"/>
+				<loc type="col" start="10" priority="6"/>
+				<loc type="col" start="11" priority="6"/>
+			</gridlocations>
+		</pb_type>
+<!-->
+CAB2
+-->
+		<pb_type name="cab2">
+			<input name="I" num_pins="16" equivalent="false"/>
+			<output name="O" num_pins="8" equivalent="false"/>
+			<clock name="gnd" num_pins="1"/>
+			<clock name="clk" num_pins="1"/>
+			<pb_type name="ota_buffer" num_pb="1" blif_model=".ota_buffer">
+				<input name="in" num_pins="1"/>
+				<output name="out" num_pins="1"/>
+				<clock name="clk" num_pins="1" port_class="clock"/>
+				<delay_matrix type="max" in_port="ota_buffer.in" out_port="ota_buffer.out">10.69e-10 </delay_matrix>
+			</pb_type>
+			<pb_type name="tgate" num_pb="3" blif_model=".tgate">
+				<input name="in" num_pins="2"/>
+				<output name="out" num_pins="1"/>
+				<delay_matrix type="max" in_port="tgate.in" out_port="tgate.out">2.69e-10 2.69e-10 </delay_matrix>
+			</pb_type>
+			<pb_type name="cap2" num_pb="3" blif_model=".cap2">
+				<input name="in" num_pins="1"/>
+				<output name="out" num_pins="1"/>
+				<delay_matrix type="max" in_port="cap2.in" out_port="cap2.out">2.69e-10 </delay_matrix>
+			</pb_type>
+			<pb_type name="ota2" num_pb="1" blif_model=".ota2">
+				<input name="in" num_pins="2"/>
+				<output name="out" num_pins="1"/>
+				<delay_constant max="1.667e-9" in_port="ota2.in" out_port="ota2.out"/>
+			</pb_type>
+			<pb_type name="meas_volt_mite" num_pb="2" blif_model=".meas_volt_mite">
+				<input name="in" num_pins="1"/>
+				<output name="out" num_pins="1"/>
+				<delay_matrix type="max" in_port="meas_volt_mite.in" out_port="meas_volt_mite.out">2.69e-10 </delay_matrix>
+			</pb_type>
+			<pb_type name="current_ref" num_pb="1" blif_model=".current_ref">
+				<input name="in" num_pins="2"/>
+				<output name="out" num_pins="1"/>
+				<delay_constant max="1.667e-9" in_port="current_ref.in" out_port="current_ref.out"/>
+			</pb_type>
+			<pb_type name="tgate2" num_pb="3" blif_model=".tgate2">
+				<input name="in" num_pins="2"/>
+				<output name="out" num_pins="1"/>
+				<delay_matrix type="max" in_port="tgate2.in" out_port="tgate2.out">2.69e-10 2.69e-10  </delay_matrix>
+			</pb_type>
+			<pb_type name="mite" num_pb="3" blif_model=".mite">
+				<input name="in" num_pins="3"/>
+				<output name="out" num_pins="1"/>
+				<delay_matrix type="max" in_port="mite.in" out_port="mite.out">2.69e-10 2.69e-10 2.69e-10 </delay_matrix>
+			</pb_type>
+			<pb_type name="mite2" num_pb="2" blif_model=".mite2">
+				<input name="in" num_pins="2"/>
+				<output name="out" num_pins="2"/>
+				<delay_matrix type="max" in_port="mite2.in" out_port="mite2.out">2.69e-10 2.69e-10 2.69e-10 2.69e-10</delay_matrix>
+			</pb_type>
+			<pb_type name="signalmult" num_pb="1" blif_model=".signalmult">
+				<input name="in" num_pins="4"/>
+				<output name="out" num_pins="2"/>
+				<delay_matrix type="max" in_port="signalmult.in" out_port="signalmult.out">2.69e-10 2.69e-10 2.69e-10 2.69e-10 2.69e-10 2.69e-10 2.69e-10 2.69e-10 </delay_matrix>
+			</pb_type>
+			<pb_type name="volswc" num_pb="2" blif_model=".volswc">
+				<input name="in" num_pins="8"/>
+				<input name="ci" num_pins="3"/>
+				<output name="out" num_pins="1"/>
+				<output name="co" num_pins="3"/>
+				<delay_constant max="1.667e-9" in_port="volswc.in" out_port="volswc.out"/>					
+			</pb_type>
+			<interconnect>			
+				<direct name="volswc1" input="cab2.I[5:0]" output="volswc[0].in[5:0]"/> 
+				<complete name="crossbar" input="ota_buffer.out tgate[2:0].out cap2[2:0].out ota2.out tgate2[2:0].out  meas_volt_mite[1:0].out mite[2:0].out mite2[0].out[1:0] signalmult.out[1:0] volswc[1:0].out " output="volswc[0].in[7:6]"/>
+				<direct name="volswc3" input="cab2.I[11:6]" output="volswc[1].in[5:0]"/> 
+				<complete name="crossbar" input="ota_buffer.out tgate[2:0].out cap2[2:0].out ota2.out tgate2[2:0].out mite[2:0].out meas_volt_mite[1:0].out mite2[0].out[1:0] signalmult.out[1:0] volswc[1:0].out" output="volswc[1].in[7:6]"/>
+				<direct name="volswc5" input="cab2.I[15:13]" output="volswc[0].ci"/>
+				<direct name="volswc6" input="volswc[0].co" output="volswc[1].ci"/>
+				<direct name="volswc7" input="volswc[1].co" output="cab2.O[7:5]"/>				
+				<complete name="crossbar" input="cab2.I[12:0] ota_buffer.out tgate[2:0].out cap2[2:0].out ota2[0].out[0] tgate2[2:0].out mite[2:0].out signalmult.out[1:0] volswc[1:0].out" output="ota_buffer.in current_ref.in tgate[2:0].in cap2[2:0].in ota2[0].in[1:0] tgate2[2:0].in signalmult.in[3:0]"></complete>
+				<complete name="crossbar" input="ota_buffer.out tgate[2:0].out cap2[2:0].out signalmult.out[1:0] volswc[1:0].out" output="cab2.O[4:0]"/>
+				<complete name="crossbar" input="meas_volt_mite[1:0].out mite[2:0].out" output="cab2.O[3]"/>
+				<complete name="crossbar" input="tgate2[2:0].out" output="cab2.O[3]"/>
+				<complete name="crossbar" input="ota2[0].out[0]" output="cab2.O[3]"/>
+				<complete name="crossbar" input="cab2.I[3:1]" output="mite[2:0].in[2:0]"/>
+				<direct name="crossbar" input="mite2[0].out[1:0]" output="cab2.O[3:2]"/>
+				<direct name="crossbar" input="cab2.I[2:1]" output="mite2[0].in[1:0]"/>
+				<complete name="crossbar" input="current_ref.out" output="cab2.O[0]"/>
+				<direct name="crossbar" input="cab2.I[1:0]" output="meas_volt_mite[1:0].in[0]" />
+			</interconnect>
+			<fc_in type="frac">1</fc_in>
+			<fc_out type="frac">1</fc_out>
+			<pinlocations pattern="custom">
+				<loc side="left">cab2.I[3:0] cab2.O[1:0]</loc>
+				<loc side="top">cab2.I[15:13] cab2.I[9:8] cab2.O[4]</loc>
+				<loc side="right">cab2.I[7:4] cab2.O[3:2]</loc>
+				<loc side="bottom">cab2.I[12:10] cab2.O[7:5] </loc>
+			</pinlocations>
+			<gridlocations>
+				<loc type="col" start="14" priority="6"/>
+			</gridlocations>
+		</pb_type>
+	</complexblocklist>
+</architecture>
