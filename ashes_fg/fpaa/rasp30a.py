@@ -1,5 +1,5 @@
 import pdb
-from genu import *
+from ashes_fg.fpaa.genu import *
 
 class rasp30a(stats):
 	def __init__(self):
