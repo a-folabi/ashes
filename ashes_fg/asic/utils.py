@@ -124,7 +124,6 @@ def get_island_adjacent(island_place, neighbors):
                     neighbors[idx] = same_row[1]
                 else:
                     neighbors[idx] = None
-    return neighbors
 
 def add_guide_to_def(file_path, blocks, nets, guide):
     '''

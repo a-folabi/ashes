@@ -30,17 +30,18 @@ from ashes_fg.asic.utils import *
 # Qs:
 # - Why are island numbers zero indexed but row and cols are 1 indexed?
 
-verbose = False
+verbose = True
 pypath = sys.executable
 
 
-def gds_synthesis(tech_process, dbu, track_spacing, x_offset, y_offset, design_area, proj_name, routed_def=False, router_tool='qrouter'):
+def gds_synthesis(process_params, design_area, proj_name, routed_def=False, router_tool='qrouter'):
     verilog_file_name = proj_name + '.v'
     file_name_no_ext = proj_name
     file_path = os.path.join('.', file_name_no_ext)
     ver_file = open(os.path.join('.', proj_name, 'verilog_files', verilog_file_name), 'r')
     ver_file_content = ver_file.read()
     ver_file.close()
+    tech_process, dbu, track_spacing, x_offset, y_offset, cell_pitch = process_params
     
     ast = parse_verilog(ver_file_content)
     module_list = set()
@@ -72,9 +73,13 @@ def gds_synthesis(tech_process, dbu, track_spacing, x_offset, y_offset, design_a
     layer_map = json.load(open(layer_map_path))
     pin_list = make_pin_list(layer_map, tech_process)
 
-    # Pre fill the module list with unique names of instances used
+    # Pick out relevant module and pre fill the module list with unique names of instances used
+    # Flow currently handles one module at a time, give 'cells_only' module priority.
+    cells_only_module = False
     for item in ast.modules:
-        if item.module_name == 'TOP':
+        module_name = item.module_name.lower()
+        if module_name == 'top' or module_name == 'cells_only':
+            cells_only_module = True if module_name == 'cells_only' else False
             top_module = item
             for inst in item.module_instances:
                 if inst.module_name not in module_list:
@@ -96,7 +101,7 @@ def gds_synthesis(tech_process, dbu, track_spacing, x_offset, y_offset, design_a
                 port_copy[p_key] = p_value
         inst.ports = port_copy
 
-    # Instantiate cells in output layout based on modules used in verilog
+    # Parse cell GDS and instantiate cells in output layout based on modules used in verilog
     for inst in top_module.module_instances:
         if inst.module_name in module_list:
             cell_text = parse_cell_gds(inst.module_name, first_cell, cell_info, module_list, pin_list, layer_map, tech_process)
@@ -113,8 +118,10 @@ def gds_synthesis(tech_process, dbu, track_spacing, x_offset, y_offset, design_a
     island_neighbor = {}
     prev_col_idx = 0
     curr_row, max_row = 0, 0
+    module_key_names = ['frame', 'decoder', 'switch', 'switch_ind']
     for inst in top_module.module_instances:
-        if inst.instance_name.lower() != 'frame':
+        inst_name = inst.instance_name.lower()
+        if inst_name not in module_key_names:
             details = inst.ports
             num = int(details['island_num'])
             max_row = max(max_row, int(details['row']))
@@ -130,21 +137,31 @@ def gds_synthesis(tech_process, dbu, track_spacing, x_offset, y_offset, design_a
                     island_info[num]['deq'].appendleft(inst)
                     curr_row = int(details['row'])
                     prev_col_idx = 1
-                    
                 elif int(details['row']) <= curr_row:
                     island_info[num]['deq'].insert(prev_col_idx, inst)
                     prev_col_idx +=1
                 island_info[num]['max_row'] = max_row
-        else:
+        elif inst_name == 'frame':
             frame_module = inst
+        else:
+            details = inst.ports
+            num = int(details['island_num'])
+            if num not in island_info:
+                island_info[num] = {}
+            if inst_name not in island_info[num]:
+                island_info[num][inst_name] = []
+            island_info[num][inst_name].append(inst)
+
     if verbose: print('Old Island Info:')
     if verbose: pprint.pprint(island_info)
-    island_text = generate_islands(island_info, cell_info, island_place, design_area, frame_module, track_spacing)
+    island_params = (track_spacing, cell_pitch, cells_only_module)
+    parse_cell_params = (module_list, pin_list, layer_map, tech_process, dbu, text_layout_path)
+    island_text = generate_islands(island_info, cell_info, island_place, design_area, frame_module, island_params, parse_cell_params)
     if verbose: print(f'Island Placements:\n {island_place}')
 
     txt2gds_path = os.path.join('.','ashes_fg','asic','txt2gds.py')
     if not routed_def:
-        get_island_adjacent(island_place, island_neighbor)
+        #get_island_adjacent(island_place, island_neighbor)
         
         update_output_layout('BGNSTR: 122, 9, 12, 16, 36, 29, 122, 9, 24, 14, 16, 22\n', text_layout_path)
         update_output_layout(f'STRNAME: "{file_name_no_ext}"\n', text_layout_path)
@@ -152,8 +169,7 @@ def gds_synthesis(tech_process, dbu, track_spacing, x_offset, y_offset, design_a
         update_output_layout('ENDSTR\n', text_layout_path)
         update_output_layout('ENDLIB\n', text_layout_path)
         os.system(f'{pypath} {txt2gds_path} -o {gds_path} {text_layout_path}')
-        
-        
+        return
         generate_lef(module_list, cell_info, tech_process, lef_file_path, dbu)
 
         metal_layers = count_metal_layers(layer_map, tech_process)
@@ -189,6 +205,7 @@ def parse_cell_gds(name, first_cell, cell_info, module_list, pin_list, layer_map
     sub_cell_name, text_layer, text_name, text_loc_X, text_loc_Y, poly_pin_layer = None, None, None, None, None, None
     poly_left, poly_bottom, poly_right, poly_top = None, None, None, None
     sref_name, aref_flag = None, False
+    rotated_cell = False
 
     # add process variable 
     try:
@@ -206,9 +223,9 @@ def parse_cell_gds(name, first_cell, cell_info, module_list, pin_list, layer_map
                         # Update cell info once individual cell parsing is done
                         cell_width = max_x - min_x if max_x is not None and min_x is not None else 0
                         cell_height = max_y - min_y if max_y is not None and min_y is not None else 0
-                        if verbose: print((f'Sub cell: {sub_cell_name} Min y: {min_y} Max y: {max_y}'))
+                        if verbose: print((f'Sub cell: {sub_cell_name} Min x: {min_x} Max x: {max_x}'))
+                        cell_info.update({sub_cell_name: {'width': cell_width, 'height': cell_height, 'origin': (min_x, min_y)}})
                         max_x, min_x, max_y, min_y = None, None, None, None
-                        cell_info.update({sub_cell_name: {'width': cell_width, 'height': cell_height}})
                         # Stop tracking pins once end of cell is reached
                         # Add pin list to cell info of cell
                         if track_pins: 
@@ -242,6 +259,9 @@ def parse_cell_gds(name, first_cell, cell_info, module_list, pin_list, layer_map
                     
                     if rec.tag_name == 'ENDEL' and aref_flag:
                         aref_flag = False
+                    
+                    if rec.tag_name == 'ENDEL' and rotated_cell:
+                        rotated_cell = False
 
                 elif rec.tag_type == types.ASCII:
                     # Keep track of current sub cell name that hasnt been defined
@@ -301,6 +321,9 @@ def parse_cell_gds(name, first_cell, cell_info, module_list, pin_list, layer_map
                     if rec.tag_name == 'ANGLE' and mirror_cell_x and rec.data[0] == 180:
                         mirror_cell_y = True
                         mirror_cell_x = False
+                    
+                    if rec.tag_name == 'ANGLE' and rec.data[0] == 90.0:
+                        rotated_cell = True
 
                     # Check for height and width of the cell
                     # Get location of pin
@@ -310,18 +333,27 @@ def parse_cell_gds(name, first_cell, cell_info, module_list, pin_list, layer_map
                                 # keep track of min and max y
                                 min_y = item if min_y is None else min(item, min_y)
                                 max_y = item if max_y is None else max(item, max_y)
+                                if sref_name and not mirror_cell_x and not mirror_cell_y and not rotated_cell and cell_info[sref_name]['width'] != 0:
+                                    temp_max = int(item) + cell_info[sref_name]['height'] + cell_info[sref_name]['origin'][1]
+                                    max_y = temp_max if max_y is None else max(temp_max, max_y) 
                             else:
                                 # if cell is mirrored, update x pos
                                 if mirror_cell_y:
-                                    temp_w = cell_info[sref_name]['width']
-                                    #print(f'For a mirrored cell {sref_name}, its x pos is: {item}, cell width is {temp_w}')
+                                    temp_w = cell_info[sref_name]['width'] + cell_info[sref_name]['origin'][0]
+                                    print(f'For a mirrored cell {sref_name}, its x pos is: {item}, cell width is {temp_w}')
                                     item = item - int(temp_w) if not aref_flag else item
                                 # keep track of min and max x
                                 min_x = item if min_x is None else min(item, min_x)
                                 max_x = item if max_x is None else max(item, max_x)
-                        #if (sub_cell_name == 'sky130_hilas_cellAttempt01d3_pt1'):
-                            #print(f'Tracking sky130_hilas_cellAttempt01d3_pt1 min x: {min_x}')
-                            #print(f'Rec Data: {rec.data}')        
+                                # another max case is by adding width to origin of a sub cell. 
+                                # Make sure to check if cell is not rotated or mirrored
+                                if sref_name and not mirror_cell_x and not mirror_cell_y and not rotated_cell and cell_info[sref_name]['width'] != 0:
+                                    temp_max = int(item) + cell_info[sref_name]['width'] + cell_info[sref_name]['origin'][0]
+                                    max_x = temp_max if max_x is None else max(temp_max, max_x) 
+                        sref_name = None
+                        #if (sub_cell_name == 'TSMC350nm_4x2_Direct'):
+                        #    print(f'Tracking TSMC350nm_4x2_Direct min x: {min_x}')
+                        #    print(f'Rec Data: {rec.data}')        
                         # For a text record on a pin layer, get pin location
                         if check_pin_text_layer and text_layer:
                             text_loc_X, text_loc_Y = rec.data[0], rec.data[1]
@@ -333,7 +365,7 @@ def parse_cell_gds(name, first_cell, cell_info, module_list, pin_list, layer_map
     return ''.join(ret_string)
     
 
-def generate_islands(island_info, cell_info, island_place, design_area, frame_module, track_spacing):
+def generate_islands(island_info, cell_info, island_place, design_area, frame_module, island_params, parse_cell_params):
     ''' 
     Generate gds output for islands 
     - Place all cells and matrices into islands
@@ -342,13 +374,17 @@ def generate_islands(island_info, cell_info, island_place, design_area, frame_mo
     '''
     # TODO: Dynamic spacing for islands in design area. 
     # - I could choose to have a variable offset value that represents the placed
-    
     ret_string = []
     x_loc, y_loc, x_base, y_base = 0, 0, 0, 0
+    track_spacing, cell_pitch, cells_only_module = island_params
+    module_list, pin_list, layer_map, tech_process, dbu, text_layout_path = parse_cell_params
+    rev_layer_map = reverse_pdk_doc(layer_map)
 
     if design_area:
-        # Assign starting location for placement
-        x_loc, y_loc, x_base, y_base = int(design_area[0] + design_area[4]), int(design_area[1] + design_area[5]), int(design_area[0] + design_area[4]), int(design_area[1] + design_area[5])
+        x_base, y_base = int(design_area[0] + design_area[4]), int(design_area[1] + design_area[5])
+        x_loc, y_loc = x_base, y_base
+        design_width = int(design_area[2] - design_area[0])
+        design_height = int(design_area[3] - design_area[1])
 
     # Place pad frame if present
     if frame_module:
@@ -357,99 +393,386 @@ def generate_islands(island_info, cell_info, island_place, design_area, frame_mo
         ret_string.append('XY: 0, 0\n')
         ret_string.append('ENDEL\n')
 
-    # TODO: 
-    # - equally space the islands based on design area
-    # - Think about how I want to place islands whose height differs from others on the row
-    #       - do i want to go back shift previous islands around?
-    # - implement feature to push cell placement to back of queue if column offset hasnt been defined yet (eg WTA common bias)
-    for val in island_info:
-        island = island_info[val]
+    cell_order_in_island = {}
+    for val, island in island_info.items():
+        # Determine relative cell orderings within the island
         col_widths = {}
         prev_row, prev_height, prev_col, prev_width = -1, -1, -1, -1
         block_left, block_bot, block_right, block_top = None, None, None, None
         first_cell = True
-        cell_pitch = 6500
-        for inst in island['deq']:
-            details = inst.ports
-            cell_width = int(cell_info[str(inst.module_name)]['width'])
-            cell_height = int(cell_info[str(inst.module_name)]['height'])
-            curr_row = int(details['row'])
-            curr_col = int(details['col'])
+        cell_order = []
+        if not cells_only_module:
+            for inst in island['deq']:
+                details = inst.ports
+                cell_width = int(cell_info[str(inst.module_name)]['width'])
+                cell_height = int(cell_info[str(inst.module_name)]['height'])
+                curr_row = int(details['row'])
+                curr_col = int(details['col'])
 
-            # Track column widths for cells that need to skip
-            # TODO: Add a feature to find col widths when bottom row needs offset
-            if curr_col not in col_widths:
+                # Track column widths for cells that need to skip
+                # TODO: Add a feature to find col widths when bottom row needs offset
+                if curr_col not in col_widths:
+                    if 'matrix_row' in details:
+                        col_widths[curr_col] = cell_width
+                        for idx in range(curr_col + 1, int(details['matrix_col']) + 1):
+                            col_widths[idx] = cell_width
+                    else:
+                        col_widths[curr_col] = cell_width
+                
+                # Reset x and update y for each row
+                # Y location is estimated assuming that rows are defined in the ascending order in the verilog file
+                if not first_cell and prev_row != curr_row:
+                    x_loc = x_base
+                    if curr_col != 1:
+                        x_loc += calculate_offset(col_widths, curr_col-1)
+                    y_loc = y_base + (island['max_row'] - curr_row)*cell_pitch if not block_top else block_top
+                elif first_cell: 
+                    first_cell = False
+                    x_loc = x_base
+                    y_loc = y_base
+                
+                prev_row = curr_row
+                prev_height = cell_height
+                prev_col = curr_col
+                
                 if 'matrix_row' in details:
-                    col_widths[curr_col] = cell_width
-                    for idx in range(curr_col + 1, int(details['matrix_col']) + 1):
-                        col_widths[idx] = cell_width
+                    mat_col, mat_row = int(details['matrix_col']), int(details['matrix_row'])
+                    ref_str = 'AREF\n'
+                    ret_string.append(ref_str)
+                    ret_string.append(f'SNAME: "{inst.module_name}"\n')
+                    col_row = f'COLROW: {mat_col}, {mat_row}\n'
+                    ret_string.append(col_row)
+                    if (x_loc == 0 and curr_col != 1) or (curr_col - prev_col > 1 and x_loc != 0):
+                        x_loc += calculate_offset(col_widths, curr_col-1)
+                    xy_tag = f'XY: {x_loc}, {y_loc}, {x_loc + mat_col*cell_width}, {y_loc}, {x_loc}, {y_loc + mat_row*cell_height}\n'
+                    ret_string.append(xy_tag)
+                    details['placement'] = (x_loc, y_loc, x_loc + mat_col*cell_width, y_loc + mat_row*cell_height )
+                    block_left = x_loc if block_left is None else min(block_left, x_loc)
+                    block_bot = y_loc if block_bot is None else min(block_bot, y_loc)
+                    block_right = x_loc + mat_col*cell_width if block_right is None else max(block_right, x_loc + mat_col*cell_width)
+                    block_top = y_loc + mat_row*cell_height if block_top is None else max(block_top, y_loc + mat_row*cell_height)
+                    x_loc += mat_col*cell_width
                 else:
-                    col_widths[curr_col] = cell_width
-            
-            # Reset x and update y for each row
-            # Y location is estimated assuming that rows are defined in the ascending order in the verilog file
-            if not first_cell and prev_row != curr_row:
-                x_loc = x_base
-                if curr_col != 1:
-                    x_loc += calculate_offset(col_widths, curr_col-1)
-                y_loc = y_base + (island['max_row'] - curr_row)*cell_pitch if not block_top else block_top
-            elif first_cell: 
-                first_cell = False
-                x_loc = x_base
-                y_loc = y_base
-            
-            prev_row = curr_row
-            prev_height = cell_height
-            prev_col = curr_col
-            
-            if 'matrix_row' in details:
-                mat_col, mat_row = int(details['matrix_col']), int(details['matrix_row'])
-                ref_str = 'AREF\n'
-                ret_string.append(ref_str)
-                ret_string.append(f'SNAME: "{inst.module_name}"\n')
-                col_row = f'COLROW: {mat_col}, {mat_row}\n'
-                ret_string.append(col_row)
-                if (x_loc == 0 and curr_col != 1) or (curr_col - prev_col > 1 and x_loc != 0):
-                    x_loc += calculate_offset(col_widths, curr_col-1)
-                xy_tag = f'XY: {x_loc}, {y_loc}, {x_loc + mat_col*cell_width}, {y_loc}, {x_loc}, {y_loc + mat_row*cell_height}\n'
-                ret_string.append(xy_tag)
-                details['placement'] = (x_loc, y_loc, x_loc + mat_col*cell_width, y_loc + mat_row*cell_height )
-                block_left = x_loc if block_left is None else min(block_left, x_loc)
-                block_bot = y_loc if block_bot is None else min(block_bot, y_loc)
-                block_right = x_loc + mat_col*cell_width if block_right is None else max(block_right, x_loc + mat_col*cell_width)
-                block_top = y_loc + mat_row*cell_height if block_top is None else max(block_top, y_loc + mat_row*cell_height)
-                x_loc += mat_col*cell_width
-            else:
-                ref_str = 'SREF\n'
-                ret_string.append(ref_str)
-                ret_string.append(f'SNAME: "{inst.module_name}"\n')
-                # TODO: Possibly Remove. Isn't this calculating offset twice?
-                if (x_loc == 0 and curr_col != 1) or (curr_col - prev_col > 1 and x_loc != 0):
-                    x_loc += calculate_offset(col_widths, curr_col-1)
-                xy_tag = f'XY: {x_loc}, {y_loc}\n'
-                ret_string.append(xy_tag)
-                details['placement'] = (x_loc, y_loc, x_loc + cell_width, y_loc + cell_height )
-                block_left = x_loc if block_left is None else min(block_left, x_loc)
-                block_bot = y_loc if block_bot is None else min(block_bot, y_loc)
-                block_right = x_loc + cell_width if block_right is None else max(block_right, x_loc + cell_width)
-                block_top = y_loc + cell_height if block_top is None else max(block_top, y_loc + cell_height)
-                x_loc += cell_width
-            
-            ret_string.append('ENDEL\n')
-        island_place.append((block_left, block_bot, block_right, block_top))
-        ip = np.array(island_place)
-        _, _, br_max, bt_max = ip.max(axis=0)
-        # Island offset
-        '''
+                    ref_str = 'SREF\n'
+                    ret_string.append(ref_str)
+                    ret_string.append(f'SNAME: "{inst.module_name}"\n')
+                    # TODO: Possibly Remove. Isn't this calculating offset twice?
+                    if (x_loc == 0 and curr_col != 1) or (curr_col - prev_col > 1 and x_loc != 0):
+                        x_loc += calculate_offset(col_widths, curr_col-1)
+                    xy_tag = f'XY: {x_loc}, {y_loc}\n'
+                    ret_string.append(xy_tag)
+                    details['placement'] = (x_loc, y_loc, x_loc + cell_width, y_loc + cell_height )
+                    block_left = x_loc if block_left is None else min(block_left, x_loc)
+                    block_bot = y_loc if block_bot is None else min(block_bot, y_loc)
+                    block_right = x_loc + cell_width if block_right is None else max(block_right, x_loc + cell_width)
+                    block_top = y_loc + cell_height if block_top is None else max(block_top, y_loc + cell_height)
+                    x_loc += cell_width
+                
+                ret_string.append('ENDEL\n')
+            island_place.append((block_left, block_bot, block_right, block_top))
+        else:
+            for inst in island['deq']:
+                details = inst.ports
+                cell_width = int(cell_info[str(inst.module_name)]['width'])
+                curr_col = int(details['col'])
+                cell_order.append([str(inst.module_name), curr_col, cell_width])
+            cell_order.sort(key=lambda x: x[1])
+            prev_x = 0
+            intra_cell_padding = int(3*dbu)
+            for idx in range(len(cell_order)):
+                rel_x = prev_x
+                rel_y = 0 if idx % 2 == 0 else cell_pitch
+                cell_order[idx] += [rel_x, rel_y]
+                cell_width = cell_order[idx][2]
+                prev_x += cell_width + intra_cell_padding
+        if verbose: print(f'Cell order in island {cell_order}')
+        
+        # If required, perform mux generation. 
+        # Create decoder tree
+        mux_needed = 'decoder' in island and 'switch' in island
+        if mux_needed:
+            # Outline decoder cells 
+            decoder_helper_suffix = ['_A_bridge', '_B_bridge', '_C_bridge', '_D_bridge', '_spacing', '_bridge_spacing']
+            horz_decoder_array, vert_decoder_array = [], []
+            horz_switch_array, vert_switch_array = [], []
+            for inst in island['decoder']:
+                decoder_array = []
+                details = inst.ports
+                bit_width = int(details['bits'])
+                direction = details['direction']
+                decoder_helper_prefix = str(inst.module_name)
+                decoder_helper_cell_names = [decoder_helper_prefix+x for x in decoder_helper_suffix]
+                for name in decoder_helper_cell_names:
+                    cell_text = parse_cell_gds(name, False, cell_info, module_list, pin_list, layer_map, tech_process)
+                    update_output_layout(cell_text, text_layout_path)
+                    if verbose: pprint.pprint(cell_info[name])   
+                total_outputs = 2**bit_width
+                decoder_cols = int(math.ceil(math.log2(bit_width))+ math.ceil(math.log2(bit_width))-1)
+                decoder_rows = int(math.ceil(total_outputs/4))
+                # Compute as though vertical, transpose at the end if horizontal 
+                bridge_cnt = 0
+                for row in range(decoder_rows):
+                    temp_row = []
+                    for col in range(decoder_cols):
+                        alpha = 4**(math.floor((decoder_cols-col-1)/2))
+                        if col == decoder_cols -1:
+                            temp_row.append(decoder_helper_prefix)
+                        elif col == decoder_cols - 2:
+                            names_idx = row % 4
+                            temp_row.append(decoder_helper_cell_names[names_idx])
+                        elif col % 2 == 1:
+                            if row % alpha == 0:
+                                temp_row.append(decoder_helper_cell_names[bridge_cnt])
+                                bridge_cnt+= 1
+                                bridge_cnt = 0 if bridge_cnt == 4 else bridge_cnt
+                            else:
+                                temp_row.append(decoder_helper_cell_names[5])
+                        elif col % 2 == 0:
+                            if row % alpha == 0:
+                                temp_row.append(decoder_helper_prefix)
+                            else:
+                                temp_row.append(decoder_helper_cell_names[4])
+                    decoder_array.append(temp_row)
+                if direction == 'horizontal': 
+                    decoder_array = list(zip(*decoder_array))
+                    horz_decoder_array = decoder_array
+                else:
+                    vert_decoder_array = decoder_array
+                if verbose: 
+                    print(f'{direction} decoder {bit_width} bits')
+                    print('\n'.join(['\t'.join([str(cell) for cell in row]) for row in decoder_array]))
+            # Create switch vector for horz and vert
+            # assume all directs first, then replace any specified columns with indirect swcs
+            for inst in island['switch']:
+                details = inst.ports
+                direction = details['direction']
+                swc_cols = int(details['num'])
+                swc_name = inst.module_name
+                if direction == 'horizontal':
+                    horz_switch_array.append([swc_name for x in range(swc_cols)])
+                elif direction == 'vertical':
+                    swc_type = details['type']
+                    if swc_type == 'prog_switch': vert_switch_array.append([swc_name for x in range(swc_cols)])
+                    elif swc_type == 'drain_select': vert_switch_array.insert(0, [swc_name for x in range(swc_cols)])
+            vert_switch_array = list(zip(*vert_switch_array))
+            for inst in island['switch_ind']:
+                details = inst.ports
+                direction = details['direction']
+                col_id = int(details['col']) - 1
+                swc_name = inst.module_name
+                horz_switch_array[0][col_id] = swc_name 
+            if verbose: 
+                print(f'horz switch')
+                print('\n'.join(['\t'.join([str(cell) for cell in row]) for row in horz_switch_array]))
+                print(f'vert switch')
+                print('\n'.join(['\t'.join([str(cell) for cell in row]) for row in vert_switch_array]))
+            # Align decoder and switches around the core cell island then update cell order.
+            # Deal with vertical mux then calculate x-axis offset.
+            if val not in cell_order_in_island:
+                cell_order_in_island[val] = {'items': {}, 'coords': []}
+            # First is decoders in vertical mux
+            height_accum, coords_id = 0, 0
+            for row in reversed(vert_decoder_array):
+                width_accum = 0
+                for col in row:
+                    cell_width = cell_info[col]['width']
+                    cell_height = cell_info[col]['height']
+                    cell_order_in_island[val]['items'][coords_id] = {}
+                    cell_order_in_island[val]['items'][coords_id]['type'] = 'cell'
+                    cell_order_in_island[val]['items'][coords_id]['name'] = col
+                    temp_coord = [width_accum, height_accum, width_accum + cell_width, height_accum + cell_height]
+                    cell_order_in_island[val]['coords'].append(temp_coord)
+                    coords_id += 1
+                    width_accum += cell_width
+                height_accum += int(cell_info[row[0]]['height'])
+            # next update switches positioning
+            height_accum = 0
+            x_drainmux_offset = 0
+            for item in vert_decoder_array[0]:
+                x_drainmux_offset += cell_info[item]['width']
+            for row in reversed(vert_switch_array):
+                width_accum = x_drainmux_offset
+                for col in row:
+                    cell_width = cell_info[col]['width']
+                    cell_height = cell_info[col]['height']
+                    cell_order_in_island[val]['items'][coords_id] = {}
+                    cell_order_in_island[val]['items'][coords_id]['type'] = 'cell'
+                    cell_order_in_island[val]['items'][coords_id]['name'] = col
+                    temp_coord = [width_accum, height_accum, width_accum + cell_width, height_accum + cell_height]
+                    cell_order_in_island[val]['coords'].append(temp_coord)
+                    coords_id += 1
+                    width_accum += cell_width
+                height_accum += int(cell_info[row[0]]['height'])
+            drain_select_width = cell_info[str(vert_switch_array[0][0])]['width']
+            prog_switch_width = cell_info[str(vert_switch_array[0][1])]['width']
+            drainmux_spacing = 5*dbu
+            x_drainmux_offset += drain_select_width + prog_switch_width + drainmux_spacing
+            # Deal with core cells inside island
+            for cell in cell_order:
+                cell_width = cell[2]
+                cell_height = cell_info[cell[0]]['height']
+                cell_order_in_island[val]['items'][coords_id] = {}
+                cell_order_in_island[val]['items'][coords_id]['type'] = 'cell'
+                cell_order_in_island[val]['items'][coords_id]['name'] = cell[0]
+                temp_coord = [x_drainmux_offset + cell[3], cell[4], x_drainmux_offset + cell[3] + cell_width, cell[4] + cell_height]
+                cell_order_in_island[val]['coords'].append(temp_coord)
+                cell[3] = x_drainmux_offset + cell[3]
+                coords_id += 1
+            # Deal with horizontal switches
+            gatemux_spacing = 15*dbu
+            height_accum += gatemux_spacing
+            for idx, switch in enumerate(horz_switch_array[0]):
+                if idx % 2 == 0:
+                    x_loc = cell_order[idx][3]
+                    y_loc = height_accum
+                    cell_width = cell_info[switch]['width']
+                    cell_height = cell_info[switch]['height']
+                    cell_order_in_island[val]['items'][coords_id] = {}
+                    cell_order_in_island[val]['items'][coords_id]['type'] = 'cell'
+                    cell_order_in_island[val]['items'][coords_id]['name'] = switch
+                    temp_coord = [x_loc, y_loc, x_loc + cell_width, y_loc + cell_height]
+                    cell_order_in_island[val]['coords'].append(temp_coord)
+                    coords_id += 1
+                    if (idx+1) < len(horz_switch_array[0]):
+                        switch = horz_switch_array[0][idx+1]
+                        x2_loc = x_loc + cell_width
+                        cell_width = cell_info[switch]['width']
+                        cell_height = cell_info[switch]['height']
+                        cell_order_in_island[val]['items'][coords_id] = {}
+                        cell_order_in_island[val]['items'][coords_id]['type'] = 'cell'
+                        cell_order_in_island[val]['items'][coords_id]['name'] = switch
+                        temp_coord = [x2_loc, y_loc, x2_loc + cell_width, y_loc + cell_height]
+                        cell_order_in_island[val]['coords'].append(temp_coord)
+                        coords_id += 1
+            # Place polygons to hook up nets that should have been connected via abutting. Mainly for gate side.
+            # for switch: get x,y starting point. get all y offsets for nets. Find total width.
+            abut_net_x1 = x_drainmux_offset
+            abut_net_y1 = height_accum
+            switch_net_y_offsets = [3950, 5100, 6050, 12480, 19090, 20250]
+            abut_net_last_swc_x_loc = cell_order_in_island[val]['coords'][coords_id-1][0]
+            if verbose: print(f'Last switch placed should be {coords_id -1}')
+            for yval in switch_net_y_offsets:
+                cell_order_in_island[val]['items'][coords_id] = {}
+                cell_order_in_island[val]['items'][coords_id]['type'] = 'polygon'
+                cell_order_in_island[val]['items'][coords_id]['layer'] = 'METAL1'
+                temp_coord = [abut_net_x1, abut_net_y1 + yval, abut_net_last_swc_x_loc, abut_net_y1 + yval + 500]
+                cell_order_in_island[val]['coords'].append(temp_coord)
+                coords_id += 1
+            # deal with horizontal decoders and place polygons
+            height_accum += cell_height
+            for row_idx, row in enumerate(reversed(horz_decoder_array)):
+                for idx, col in enumerate(row):
+                    if (idx*2) < len(cell_order):
+                        x_loc = cell_order[idx*2][3]
+                        y_loc = height_accum
+                        cell_width = cell_info[col]['width']
+                        cell_height = cell_info[col]['height']
+                        cell_order_in_island[val]['items'][coords_id] = {}
+                        cell_order_in_island[val]['items'][coords_id]['type'] = 'cell'
+                        cell_order_in_island[val]['items'][coords_id]['name'] = col
+                        temp_coord = [x_loc, y_loc, x_loc + cell_width, y_loc + cell_height]
+                        cell_order_in_island[val]['coords'].append(temp_coord)
+                        coords_id += 1
+                decoder_cell_row_y_offsets = [1990, 6990, 10600, 11850]
+                decoder_bridge_row_y_offsets = [3500, 7500, 11500, 15500]
+                abut_net_y1 = height_accum
+                abut_net_last_swc_x_loc = cell_order_in_island[val]['coords'][coords_id-1][0]
+                if row_idx % 2 == 0:
+                    for yval in decoder_cell_row_y_offsets:
+                        cell_order_in_island[val]['items'][coords_id] = {}
+                        cell_order_in_island[val]['items'][coords_id]['type'] = 'polygon'
+                        cell_order_in_island[val]['items'][coords_id]['layer'] = 'METAL1'
+                        temp_coord = [abut_net_x1, abut_net_y1 + yval, abut_net_last_swc_x_loc, abut_net_y1 + yval + 500]
+                        cell_order_in_island[val]['coords'].append(temp_coord)
+                        coords_id += 1
+                elif row_idx % 2 == 1:
+                    for yval in decoder_bridge_row_y_offsets:
+                        cell_order_in_island[val]['items'][coords_id] = {}
+                        cell_order_in_island[val]['items'][coords_id]['type'] = 'polygon'
+                        cell_order_in_island[val]['items'][coords_id]['layer'] = 'METAL1'
+                        temp_coord = [abut_net_x1, abut_net_y1 + yval, abut_net_last_swc_x_loc, abut_net_y1 + yval + 500]
+                        cell_order_in_island[val]['coords'].append(temp_coord)
+                        coords_id += 1
+                height_accum += cell_height
+        else:
+            coords_id = 0
+            if val not in cell_order_in_island:
+                cell_order_in_island[val] = {'items': {}, 'coords': []}
+            for cell in cell_order:
+                cell_width = cell[2]
+                cell_height = cell_info[cell[0]]['height']
+                cell_order_in_island[val]['items'][coords_id] = {}
+                cell_order_in_island[val]['items'][coords_id]['type'] = 'cell'
+                cell_order_in_island[val]['items'][coords_id]['name'] = cell[0]
+                temp_coord = [cell[3], cell[4], cell[3] + cell_width, cell[4] + cell_height]
+                cell_order_in_island[val]['coords'].append(temp_coord)
+                coords_id+=1
+        if verbose: 
+            print('Relative ordering within islands')
+            pprint.pprint(cell_order_in_island) 
+    # Fit islands into design area
+    island_dims = []
+    for val, island in cell_order_in_island.items():
+        array = np.array(island['coords'])
+        island_width = np.max(array[:, 2])
+        island_height = np.max(array[:, 3])
+        if island_width > design_width:
+            raise ParsingError(f"Island num {val} is too wide ({island_width}nm) to fit in the design space ({design_area[2] - design_area[0]}nm)")
+        elif island_height > design_height:
+            raise ParsingError(f"Island num {val} is too tall ({island_height}nm) to fit in the design space ({design_area[3] - design_area[1]}nm)")
+        island_dims.append([island_width, island_height, val])
+    
+    if cells_only_module:
+        # find center left design area. starting with island 0, place them all in a row and update cell order doc
+        x_loc = x_base
+        y_loc = int((design_area[3] - design_area[1])/2) + int(design_area[1])
+        island_row_spacing = 50*dbu
+        for dim in island_dims:
+            array = np.array(cell_order_in_island[dim[2]]['coords'])
+            array[:, 0] += x_loc
+            array[:, 2] += x_loc
+            array[:, 1] += y_loc
+            array[:, 3] += y_loc
+            x_loc += dim[0] + island_row_spacing
+            cell_order_in_island[dim[2]]['coords'] = array.tolist()
+
+    # gds write out
+    for val, island in cell_order_in_island.items():
+        for idx, item in island['items'].items():
+            if item['type'] == 'cell':
+                ret_string.append('SREF\n')
+                c_name = item['name']
+                ret_string.append(f'SNAME: "{c_name}"\n')
+                array = island['coords']
+                x_loc = array[idx][0]
+                y_loc = array[idx][1]
+                ret_string.append(f'XY: {x_loc}, {y_loc}\n')
+                ret_string.append(f'ENDEL\n')
+            elif item['type'] == 'polygon':
+                layer_type = rev_layer_map[item['layer']+'_drawing']['layer_type']
+                layer_type = layer_type.split(',')
+                array = island['coords']
+                left, bottom, right, top = array[idx][0], array[idx][1], array[idx][2], array[idx][3]
+                ret_string.append('BOUNDARY\n')
+                ret_string.append(f'LAYER: {layer_type[0]}\n')
+                ret_string.append(f'DATATYPE: {layer_type[1]}\n')
+                ret_string.append(f'XY: {left}, {bottom}, {right}, {bottom}, {right}, {top}, {left}, {top}, {left}, {bottom}\n')
+                ret_string.append('ENDEL\n')
+
+
+    #ip = np.array(island_place)
+    #_, _, br_max, bt_max = ip.max(axis=0)
+    # Island offset
+    '''
         ip_widths = np.sum(ip[:, 2]) - np.sum(ip[:, 0]) # cant use ip because its empty as i havent placed all islands
         avail_width = design_area[2] - design_area[0] - ip_widths - design_area[4]
         horz_spacing = round(avail_width/len(island_info))
         x_base = br_max + horz_spacing
-        '''
+    '''
         # june run offset
-        x_base = br_max + 15000
-        y_base = int(design_area[1] + design_area[5])
-        '''
+        #x_base = br_max + 15000
+        #y_base = int(design_area[1] + design_area[5])
+    '''
         # arbgen offset values
         
         if val == 0:
@@ -458,8 +781,7 @@ def generate_islands(island_info, cell_info, island_place, design_area, frame_mo
         else:
             x_base = br_max + 20000
             y_base = int(design_area[1] + design_area[5])
-        '''
-        
+    '''
     return ''.join(ret_string)
 
 
@@ -793,9 +1115,10 @@ def merge_def_with_gds(file_path, file_name, layer_map, cell_info, dbu, pwd, rou
     single_net, special_net = False, False
     via_doc, metal_widths = {}, {}
     detector = HoleDetector(metal_width=int(0.5*dbu))
+    prev_coords = None
 
     # Only chose this pattern because I was learning and testing out nested python functions
-    def update_routed_str(left, bottom, right, top, routing_layer, layer_type, parse_vias=False):
+    def update_routed_str(left, bottom, right, top, routing_layer, layer_type, parse_vias=False, route_edge=False):
         left, bottom, right, top = int(left), int(bottom), int(right), int(top)
         if not parse_vias:
             coord_start = (int(left), int(bottom))
@@ -810,20 +1133,21 @@ def merge_def_with_gds(file_path, file_name, layer_map, cell_info, dbu, pwd, rou
             if special_net:
                 width_ind = line.index("(") - 1
                 net_width = int(int(line[width_ind])/2)
+                route_edge = False
             if left == right:
                 # Before expanding the vertical route, check if we're connecting an exisiting path
-                if (int(left), int(bottom)) in prev_coords:
+                if (int(left), int(bottom)) in prev_coords or route_edge:
                     bottom = int(bottom) - net_width
-                if (int(right), int(top)) in prev_coords:
+                if (int(right), int(top)) in prev_coords or route_edge:
                     top = int(top) + net_width
                 # Expand the path as normal
                 left = int(left) - net_width
                 right = int(right) + net_width
             elif top == bottom:
                 # Before expanding the horizontal route, check if we're connecting an exisiting path
-                if (int(left), int(bottom)) in prev_coords:
+                if (int(left), int(bottom)) in prev_coords or route_edge:
                     left = int(left) - net_width
-                if (int(right), int(top)) in prev_coords:
+                if (int(right), int(top)) in prev_coords or route_edge:
                     right = int(right) + net_width
                 # Expand the path as normal
                 bottom = int(bottom) - net_width 
@@ -886,8 +1210,8 @@ def merge_def_with_gds(file_path, file_name, layer_map, cell_info, dbu, pwd, rou
         key_def1 = line[0] == '+'
         key_def2 = line[0] == '' and line[2] == 'NEW'
         if key_def1 or key_def2:
-            route_name = line[2] if key_def1 else line[3]
-            layer_type = layer_map[route_name+'_drawing']['layer_type']
+            route_layer_name = line[2] if key_def1 else line[3]
+            layer_type = layer_map[route_layer_name+'_drawing']['layer_type']
             layer_type = layer_type.split(',')
             num_coords = line.count('(')
             cur_x, cur_y, prev_x, prev_y = None, None, None, None
@@ -895,14 +1219,19 @@ def merge_def_with_gds(file_path, file_name, layer_map, cell_info, dbu, pwd, rou
                 if line[ind] == '(':
                     cur_x = line[ind+1]
                     cur_y = line[ind+2]
-                    cur_x = prev_x if cur_x == '*' else cur_x
-                    cur_y = prev_y if cur_y == '*' else cur_y
+                    cur_x = prev_x if cur_x == '*' else int(cur_x)
+                    cur_y = prev_y if cur_y == '*' else int(cur_y)
                     if prev_x != None and num_coords >= 2:
                         left = min(prev_x, cur_x)
                         right = max(prev_x, cur_x)
                         bot = min(prev_y, cur_y)
                         top = max(prev_y, cur_y)
-                        update_routed_str(left, bot, right, top, route_name, layer_type)
+                        # Check for the start and end of a route to pad the ends
+                        route_start = len(prev_coords) == 0
+                        last_paren_ind = len(line) - 1 - line[::-1].index('(')
+                        route_end = ";" in line and last_paren_ind == ind
+                        routed_edges = route_start or route_end
+                        update_routed_str(left, bot, right, top, route_layer_name, layer_type, route_edge=routed_edges)
                     prev_x = cur_x
                     prev_y = cur_y
             if '_' in line[-2]:
@@ -942,11 +1271,11 @@ def merge_def_with_gds(file_path, file_name, layer_map, cell_info, dbu, pwd, rou
                 update_via_doc = False if line[1] == ';' else update_via_doc
                 if line[0] and parse_vias: via_doc[via_name].append((line[2], line[4], line[5], line[8], line[9]))
     holes = detector.find_holes()
-    for hole, route_name, direction in holes:
-        if verbose: print(f"{direction.capitalize()} hole found on layer {route_name}: {hole}")
-        layer_type = layer_map[route_name+'_drawing']['layer_type']
+    for hole, route_layer_name, direction in holes:
+        if verbose: print(f"{direction.capitalize()} hole found on layer {route_layer_name}: {hole}")
+        layer_type = layer_map[route_layer_name+'_drawing']['layer_type']
         layer_type = layer_type.split(',')
-        update_routed_str(hole[0][0], hole[0][1], hole[1][0], hole[1][1], route_name, layer_type)
+        update_routed_str(hole[0][0], hole[0][1], hole[1][0], hole[1][1], route_layer_name, layer_type)
     def_file.close()
 
     outfile = open(os.path.join(pwd, file_name + '_gds.txt'), 'r')
