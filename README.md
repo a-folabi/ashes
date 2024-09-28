@@ -10,7 +10,7 @@ The project is designed to be cross-platform and run across Unix and Windows env
 The python package can work as a standalone package whose outputs stop before the detailed router (TritonRoute) for the ASIC flow and before the resource allocator (VTR/VPR) for the FPAA flow. To install dependencies for just the python package run the following line.
 
 ```
-pip install python-gdsii numpy verilog-parser
+pip install numpy verilog-parser
 ```
 
 ### Detailed Router
