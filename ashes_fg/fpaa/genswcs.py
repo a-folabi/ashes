@@ -8,28 +8,44 @@ from subprocess import call
 from os.path import isfile
 import copy
 
-#intialization
-rasp3a=0
-ff_custom=1
-fix_cab=0
-cap_nams = ['0dum_nam0']
-cap_vals = [0]
-cap_seq = []
-c_outin = []
-for i in range(len(sys.argv)):
-	if sys.argv[i] == '-rasp3a': rasp3a=rasp3a+1
-	elif sys.argv[i] == '-route': fix_cab=fix_cab+1
 
-if rasp3a==0:
-	from rasp30 import *
-	from rasp30 import rasp30 as chipStats
-	from rasp30 import arrayStats as arrayStats_used
-elif rasp3a==1:
-	from rasp30a import *
-	from rasp30a import rasp30a as chipStats
-	from rasp30a import arrayStats as arrayStats_used   
+from ashes_fg.fpaa.rasp30 import *
+from ashes_fg.fpaa.rasp30 import rasp30 as chipStats_30
+from ashes_fg.fpaa.rasp30 import arrayStats as arrayStats_used_rasp30
 
-def main():
+from ashes_fg.fpaa.rasp30a import *
+from ashes_fg.fpaa.rasp30a import rasp30a as chipStats_30a
+from ashes_fg.fpaa.rasp30a import arrayStats as arrayStats_used_rasp30a
+
+def main(bs_circuit_loc, bs_run_dir, bs_board_arch, bs_vpr_disp=None, bs_pins_file=None):
+	#Change: moved initialization variables inside main function and made them global
+	#intialization
+	global rasp3a
+	rasp3a = 0
+	global ff_custom
+	ff_custom=1
+	global fix_cab
+	fix_cab=0
+	global cap_nams
+	cap_nams = ['0dum_nam0']
+	global cap_vals
+	cap_vals = [0]
+	global cap_seq
+	cap_seq = []
+	global c_outin
+	c_outin = []
+	global chipStats
+	global arrayStats_used
+	# Change: Moved imports into main function and set chipStats and arrayStats_used according to board_arch input
+	if bs_board_arch == 'rasp3a': 
+		chipStats = chipStats_30a
+		arrayStats_used = arrayStats_used_rasp30a
+	else:
+		chipStats = chipStats_30
+		arrayStats_used = arrayStats_used_rasp30
+	if bs_board_arch == 'rasp3a': rasp3a=rasp3a+1
+	if bs_vpr_disp == '-route': fix_cab=fix_cab+1
+	
 	global swcs
 	swcs = list()
 	global groutes
@@ -48,13 +64,11 @@ def main():
 	vpr_disp = 0 # TURN DISPLAY ON 1 else 0
 	arch_file = []
 	pins_file = []
-
-	for i in range(len(sys.argv)):
-		if sys.argv[i] == '-c': circuit_loc = sys.argv[i+1] 
-		if sys.argv[i] == '-d': run_dir = sys.argv[i+1]     
-		if sys.argv[i] == '-v': vpr_disp = 1       
-		if sys.argv[i] == '-a': arch_file = sys.argv[i+1]       
-		if sys.argv[i] == '-p': pins_file = sys.argv[i+1]       
+	# Change: circuit_loc, run_dir, vpr_disp, arch_file, pins_file now set from main function inputs instead of command line call
+	if bs_circuit_loc != None: circuit_loc = bs_circuit_loc
+	if bs_run_dir != None: run_dir = bs_run_dir
+	if bs_vpr_disp != None: vpr_disp = 1
+	if bs_pins_file != None: pins_file = bs_pins_file     
 
 	circuit_name = circuit_loc.split('/')[-1]
 	if not pins_file and isfile(circuit_loc + '.pads'): pins_file = circuit_loc + '.pads'        
@@ -63,7 +77,7 @@ def main():
 	if not arch_file: arch_file = dirx + parseBlif(circuit_loc + '.blif')
 	xarray = pbarray(len(chipStats().array.pattern),len(chipStats().array.pattern[0])) #initial import
 
-	runVTR(arch_file, circuit_loc, pins_file, run_dir, vpr_disp)    
+	runVTR(arch_file, circuit_loc, pins_file, run_dir, vpr_disp)   
 	parseNet('%s/%s.net'%(run_dir, circuit_name))
 	parsePlace('%s/%s.place'%(run_dir, circuit_name))
 	if (pins_file): parsePads(pins_file)
@@ -72,14 +86,13 @@ def main():
 	printSwcs('%s/%s.swcs'%(run_dir, circuit_name))
 	saveCaps('%s/%s.caps'%(run_dir, circuit_name))
     
-    
 def runVTR(arch_file, circuit, pins_file, run_dir, vpr_disp):
 	DEBUG = 0
 	vpr_loc = '/home/ubuntu/rasp30/vtr_release/vpr/vpr'
 	chan_width = 17
 
 	circuit_name = circuit.split('/')[-1]
-
+	
 	net_file   = '%s/%s.net'%(run_dir, circuit_name)
 	place_file = '%s/%s.place'%(run_dir, circuit_name)
 	route_file = '%s/%s.route'%(run_dir, circuit_name)
@@ -895,7 +908,7 @@ def parseRoute(file_name):
 	groutes.append(new_route)
 
 if __name__ == "__main__":
-	main()
+	main(c, d, a, v, p)
                 
 
             

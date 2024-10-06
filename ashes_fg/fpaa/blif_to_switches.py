@@ -1,5 +1,6 @@
 import os
 import sys
+import ashes_fg.fpaa.genswcs as gs
 
 def blif2swcs(sys_name, project_name, board_type, out_path):
     '''
@@ -20,6 +21,6 @@ def blif2swcs(sys_name, project_name, board_type, out_path):
     fname = project_name
     path = str(out_path)
     
+    # changed genswcs.py call from command line call to function call
+    gs.main(path + '/' + fname, path, arch)
     
-    
-    os.system('python /home/ubuntu/rasp30/vpr2swcs/genswcs.py -c ' + path +'/'+ fname + ' -d ' + path + brdtype)
