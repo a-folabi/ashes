@@ -5,7 +5,7 @@ from collections import OrderedDict as OD
 from ashes_fg.asic.exceptions import *
 
 track_idx_margin = 2 # number of tracks to skip from edges of design
-verbose = True
+verbose = False
 
 def global_router(island_info, cell_info, nets_table, island_place, metal_layers, track_spacing, file_path, neighbor, design_area, frame_module):
     '''

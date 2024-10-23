@@ -230,7 +230,7 @@ class HoleDetector:
             _, end1, _ = active_edges[i]
             start2, _, _ = active_edges[i+1]
             gap = start2 - end1
-            if 0 < gap <= self.metal_width:
+            if 0 < gap < self.metal_width:
                 if is_vertical:
                     hole = ((coord1, end1), (coord2, start2))
                 else:
