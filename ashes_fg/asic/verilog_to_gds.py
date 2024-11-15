@@ -34,7 +34,7 @@ verbose = False
 pypath = sys.executable
 
 
-def gds_synthesis(process_params, design_area, proj_name, routed_def=False, router_tool='qrouter'):
+def gds_synthesis(process_params, design_area, proj_name, isle_loc=None, routed_def=False, router_tool='qrouter'):
     verilog_file_name = proj_name + '.v'
     file_name_no_ext = proj_name
     file_path = os.path.join('.', file_name_no_ext)
@@ -161,7 +161,7 @@ def gds_synthesis(process_params, design_area, proj_name, routed_def=False, rout
     cell_order_in_island = {}
     island_params = (track_spacing, cell_pitch, cells_only_module)
     parse_cell_params = (module_list, pin_list, layer_map, tech_process, dbu, text_layout_path)
-    island_text = generate_islands(island_info, cell_info, island_place, cell_order_in_island, design_area, frame_module, island_params, parse_cell_params)
+    island_text = generate_islands(island_info, cell_info, island_place, cell_order_in_island, design_area, frame_module, island_params, parse_cell_params, isle_loc)
     if verbose: 
         print(f'Island Placements:\n {island_place}')
         print('Post island gen, island info')
@@ -216,7 +216,8 @@ def parse_cell_gds(name, first_cell, cell_info, module_list, pin_list, layer_map
     sub_cell_name, text_layer, text_name, text_loc_X, text_loc_Y, poly_pin_layer = None, None, None, None, None, None
     poly_left, poly_bottom, poly_right, poly_top = None, None, None, None
     sref_name, aref_flag = None, False
-    rotated_cell = False
+    rotated_cell, matrix_inst = False, False
+    sub_cell_width = None
 
     # add process variable 
     try:
@@ -234,7 +235,7 @@ def parse_cell_gds(name, first_cell, cell_info, module_list, pin_list, layer_map
                         # Update cell info once individual cell parsing is done
                         cell_width = max_x - min_x if max_x is not None and min_x is not None else 0
                         cell_height = max_y - min_y if max_y is not None and min_y is not None else 0
-                        if verbose: print((f'Sub cell: {sub_cell_name} Min y: {min_y} Max y: {max_y}'))
+                        #if verbose: print((f'Sub cell: {sub_cell_name} Min x: {min_x} Max x: {max_x}'))
                         cell_info.update({sub_cell_name: {'width': cell_width, 'height': cell_height, 'origin': (min_x, min_y)}})
                         max_x, min_x, max_y, min_y = None, None, None, None
                         # Stop tracking pins once end of cell is reached
@@ -243,6 +244,7 @@ def parse_cell_gds(name, first_cell, cell_info, module_list, pin_list, layer_map
                             track_pins = False
                             cell_pins = assign_pins_to_polygon(cell_pin_names, cell_pin_boxes, layer_map, pin_list[0][1])
                             cell_info[sub_cell_name]['cell_pins'] = cell_pins
+                        
                     # Inidicate a text record
                     if rec.tag_name == 'TEXT' and track_pins:
                         check_pin_text_layer = True
@@ -273,6 +275,11 @@ def parse_cell_gds(name, first_cell, cell_info, module_list, pin_list, layer_map
                     
                     if rec.tag_name == 'ENDEL' and rotated_cell:
                         rotated_cell = False
+                    
+                    if rec.tag_name == 'ENDEL':
+                        sub_cell_width = None
+                        sref_name = None
+                        matrix_inst = False
 
                 elif rec.tag_type == types.ASCII:
                     # Keep track of current sub cell name that hasnt been defined
@@ -290,8 +297,9 @@ def parse_cell_gds(name, first_cell, cell_info, module_list, pin_list, layer_map
                             ret_string.append('%s: "%s"\n' % (rec.tag_name, rec.data.decode()))
                     
                     # If cell is already defined and is being called, account for its width
+                    # Store the sub cell width to make sure the cell being called is not rotated
                     if rec.tag_name == 'SNAME':
-                        max_x = max(int(cell_info[rec.data.decode()]['width']), max_x) if max_x else int(cell_info[rec.data.decode()]['width'])
+                        sub_cell_width = int(cell_info[rec.data.decode()]['width'])
                         # needs investigation
                         # However, i havent run into a situation where i need it so it stays commented out
                         #max_y = max(int(cell_info[rec.data.decode()]['height']), max_y)
@@ -333,8 +341,15 @@ def parse_cell_gds(name, first_cell, cell_info, module_list, pin_list, layer_map
                         mirror_cell_y = True
                         mirror_cell_x = False
                     
-                    if rec.tag_name == 'ANGLE' and rec.data[0] == 90.0:
+                    # if the cell is rotated mark it as so
+                    if rec.tag_name == 'ANGLE' and (rec.data[0] == 90.0 or rec.data[0] == 270.0):
                         rotated_cell = True
+                    # if the cell is not rotated and there is a sub cell width available, update the max width
+                    elif not rotated_cell and sub_cell_width and sref_name:
+                        max_x = max(sub_cell_width, max_x) if max_x else sub_cell_width
+                    
+                    if rec.tag_name == 'COLROW':
+                        matrix_inst = True
 
                     # Check for height and width of the cell
                     # Get location of pin
@@ -346,14 +361,18 @@ def parse_cell_gds(name, first_cell, cell_info, module_list, pin_list, layer_map
                                 max_y = item if max_y is None else max(item, max_y)
                                 if sref_name and not mirror_cell_x and not mirror_cell_y and not rotated_cell and cell_info[sref_name]['width'] != 0 and idx == 1:
                                     temp_max = int(item) + cell_info[sref_name]['height'] + cell_info[sref_name]['origin'][1]
-                                    #if (sub_cell_name == 'TSMC350nm_VinjDecode2to4_vtile') and verbose: 
-                                    #    print(f'temp max y {temp_max}, item {item} sref_name {sref_name}')
+                                    #if (sub_cell_name == 'TSMC350nm_16out_AnalogMux') and verbose: 
+                                    #    dbg_height = cell_info[sref_name]['height']
+                                    #    dbg_origin = cell_info[sref_name]['origin'][1]
+                                    #    print(f'temp max y {temp_max}, item {item}, height {dbg_height}, origin_y {dbg_origin}, sref_name {sref_name}')
                                     max_y = temp_max if max_y is None else max(temp_max, max_y) 
                             else:
                                 # if cell is mirrored, update x pos
                                 if mirror_cell_y:
                                     temp_w = cell_info[sref_name]['width'] + cell_info[sref_name]['origin'][0]
-                                    #print(f'For a mirrored cell {sref_name}, its x pos is: {item}, cell width is {temp_w}')
+                                    #dbg_width = cell_info[sref_name]['width']
+                                    #dbg_origin = cell_info[sref_name]['origin'][0]
+                                    #print(f'For a mirrored cell {sref_name}, its x pos is: {item}, dbg_width {dbg_width}, origin x {dbg_origin}, cell width is {temp_w}')
                                     item = item - int(temp_w) if not aref_flag else item
                                 # keep track of min and max x
                                 min_x = item if min_x is None else min(item, min_x)
@@ -361,24 +380,27 @@ def parse_cell_gds(name, first_cell, cell_info, module_list, pin_list, layer_map
                                 # another max case is by adding width to origin of a sub cell. 
                                 # Make sure to check if cell is not rotated or mirrored
                                 if sref_name and not mirror_cell_x and not mirror_cell_y and not rotated_cell and cell_info[sref_name]['width'] != 0:
+                                    if idx > 0 and matrix_inst: item = 0 # For matrices, only look at the first x location.
                                     temp_max = int(item) + cell_info[sref_name]['width'] + cell_info[sref_name]['origin'][0]
+                                    #if (sub_cell_name == 'ArbGen'): print(f"temp max {temp_max}, sref name {sref_name} cell_width {cell_info[sref_name]['width']} item val {item}")
                                     max_x = temp_max if max_x is None else max(temp_max, max_x) 
                         sref_name = None
-                        #if (sub_cell_name == 'TSMC350nm_VinjDecode2to4_vtile'):
-                        #    print(f'Tracking TSMC350nm_VinjDecode2to4_vtile max y: {max_y}')
+                        #if (sub_cell_name == 'ArbGen'):
+                        #    print(f'Tracking ArbGen max x: {max_x}')
                         #    print(f'Rec Data: {rec.data}')        
                         # For a text record on a pin layer, get pin location
                         if check_pin_text_layer and text_layer:
                             text_loc_X, text_loc_Y = rec.data[0], rec.data[1]
                         # For a boundary record on a pin layer, get polygon location
                         if check_poly_layer and poly_pin_layer:
-                            poly_left, poly_bottom, poly_right, poly_top = rec.data[0], rec.data[1], rec.data[4], rec.data[5]         
+                            poly_left, poly_bottom, poly_right, poly_top = rec.data[0], rec.data[1], rec.data[4], rec.data[5]   
+      
     except:
-        raise CellNotFound(f'Problem opening cell {name}.gds file ?')
+        raise CellNotFound(f'Problem opening and parsing cell {name}.gds file.')
     return ''.join(ret_string)
     
 
-def generate_islands(island_info, cell_info, island_place, cell_order_in_island, design_area, frame_module, island_params, parse_cell_params):
+def generate_islands(island_info, cell_info, island_place, cell_order_in_island, design_area, frame_module, island_params, parse_cell_params, isle_loc):
     ''' 
     Generate gds output for islands 
     - Place all cells and matrices into islands
@@ -495,7 +517,7 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
                 cell_order.append(temp_order)
             cell_order.sort(key=lambda x: x[1])
             prev_x = 0
-            intra_cell_padding = int(5*dbu)
+            intra_cell_padding = int(50*dbu)
             for idx in range(len(cell_order)):
                 rel_x = prev_x
                 rel_y = 0 if idx % 2 == 0 else cell_pitch
@@ -512,6 +534,7 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
             decoder_helper_suffix = ['_A_bridge', '_B_bridge', '_C_bridge', '_D_bridge', '_spacing', '_bridge_spacing']
             horz_decoder_array, vert_decoder_array = [], []
             horz_switch_array, vert_switch_array = [], []
+            key_except = ['island_num', 'direction', 'bits']
             for inst in island['decoder']:
                 decoder_array = []
                 details = inst.ports
@@ -520,9 +543,14 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
                 decoder_helper_prefix = str(inst.module_name)
                 decoder_helper_cell_names = [decoder_helper_prefix+x for x in decoder_helper_suffix]
                 for name in decoder_helper_cell_names:
-                    cell_text = parse_cell_gds(name, False, cell_info, module_list, pin_list, layer_map, tech_process)
-                    update_output_layout(cell_text, text_layout_path)
-                    if verbose: pprint.pprint(cell_info[name])   
+                    # If the helper cells have previously been parsed without being considered as top cells, 
+                    # remove them from cell info and re-parse so their pins are populated. Dont update GDS again.
+                    should_update_layout = True
+                    if name in cell_info: 
+                        del cell_info[name]
+                        should_update_layout = False
+                    cell_text = parse_cell_gds(name, False, cell_info, decoder_helper_cell_names, pin_list, layer_map, tech_process)
+                    if should_update_layout: update_output_layout(cell_text, text_layout_path)  
                 total_outputs = 2**bit_width
                 decoder_cols = int(math.ceil(math.log2(bit_width))+ math.ceil(math.log2(bit_width))-1)
                 decoder_rows = int(math.ceil(total_outputs/4))
@@ -533,22 +561,22 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
                     for col in range(decoder_cols):
                         alpha = 4**(math.floor((decoder_cols-col-1)/2))
                         if col == decoder_cols -1:
-                            temp_row.append(decoder_helper_prefix)
+                            temp_row.append({'name': decoder_helper_prefix, 'nets': {}})
                         elif col == decoder_cols - 2:
                             names_idx = row % 4
-                            temp_row.append(decoder_helper_cell_names[names_idx])
+                            temp_row.append({'name': decoder_helper_cell_names[names_idx], 'nets': {}})
                         elif col % 2 == 1:
                             if row % alpha == 0:
-                                temp_row.append(decoder_helper_cell_names[bridge_cnt])
+                                temp_row.append({'name': decoder_helper_cell_names[bridge_cnt], 'nets': {}})
                                 bridge_cnt+= 1
                                 bridge_cnt = 0 if bridge_cnt == 4 else bridge_cnt
                             else:
-                                temp_row.append(decoder_helper_cell_names[5])
+                                temp_row.append({'name': decoder_helper_cell_names[5], 'nets': {}})
                         elif col % 2 == 0:
                             if row % alpha == 0:
-                                temp_row.append(decoder_helper_prefix)
+                                temp_row.append({'name': decoder_helper_prefix, 'nets': {}})
                             else:
-                                temp_row.append(decoder_helper_cell_names[4])
+                                temp_row.append({'name': decoder_helper_cell_names[4], 'nets': {}})
                     decoder_array.append(temp_row)
                 if direction == 'horizontal': 
                     decoder_array = list(zip(*decoder_array))
@@ -557,10 +585,31 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
                     vert_decoder_array = decoder_array
                 if verbose: 
                     print(f'{direction} decoder {bit_width} bits')
-                    print('\n'.join(['\t'.join([str(cell) for cell in row]) for row in decoder_array]))
+                    print('\n'.join(['\t'.join([str(cell['name']) for cell in row]) for row in decoder_array]))
+                # Here, i need to iterate through all pins that arent special key words and match the net to the cell
+                for pin_key, pin_val in details.items():
+                    if pin_key not in key_except:
+                        two_d_key = re.search(r"decode_n(\d+)_n(\d+)_(.+)", pin_key)
+                        match = two_d_key if two_d_key else re.search(r"decode_n(\d+)_(.+)", pin_key)
+                        swc_id, swc_pin_key, swc_id2 = None, None, None
+                        if two_d_key:
+                            swc_id = int(match.group(1))
+                            swc_id2 = int(match.group(2))
+                            swc_pin_key = match.group(3)
+                        elif match:
+                            swc_id = int(match.group(1))
+                            swc_pin_key = match.group(2)
+                        else:
+                            print(f'Error: Failed to match to correct switch instance in decoder synthesis for {pin_key}')
+                            exit()
+                        if two_d_key:
+                            decoder_array[swc_id][swc_id2]['nets'][swc_pin_key] = pin_val
+                        else:
+                            decoder_array[0][swc_id]['nets'][swc_pin_key] = pin_val
+
             # Create switch vector for horz and vert
             # assume all directs first, then replace any specified columns with indirect swcs
-            key_except = ['island_num', 'direction','num', 'type']
+            key_except = ['island_num', 'direction','num', 'type', 'col']
             for inst in island['switch']:
                 details = inst.ports
                 direction = details['direction']
@@ -570,9 +619,14 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
                     temp_row = [{'name':swc_name, 'nets':{}, 'pin_blockage':True} for x in range(swc_cols)]
                     for pin_key, pin_val in details.items():
                             if pin_key not in key_except:
-                                swc_id = pin_key.split("_")[1]
-                                swc_id = int(swc_id[1:])
-                                swc_pin_key = pin_key.split("_")[2]
+                                match = re.search(r"switch_n(\d+)_(.+)", pin_key)
+                                swc_id, swc_pin_key = None, None
+                                if match:
+                                    swc_id = int(match.group(1))
+                                    swc_pin_key = match.group(2)
+                                else:
+                                    print(f'Error: Failed to match to correct switch instance in decoder synthesis for {pin_key}')
+                                    exit()
                                 temp_row[swc_id]['nets'][swc_pin_key] = pin_val
                     horz_switch_array.append(temp_row)
                 elif direction == 'vertical':
@@ -583,12 +637,33 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
                             if pin_key not in key_except:
                                 # Pull out the number and pin name from the naming format switch_n#_<pin name>
                                 # then associate the pin + net with the right cell
-                                swc_id = pin_key.split("_")[1]
-                                swc_id = int(swc_id[1:])
-                                swc_pin_key = pin_key.split("_")[2]
+                                match = re.search(r"switch_n(\d+)_(.+)", pin_key)
+                                swc_id, swc_pin_key = None, None
+                                if match:
+                                    swc_id = int(match.group(1))
+                                    swc_pin_key = match.group(2)
+                                else:
+                                    print(f'Error: Failed to match to correct switch instance in decoder synthesis for {pin_key}')
+                                    exit()
                                 temp_row[swc_id]['nets'][swc_pin_key] = pin_val
                         vert_switch_array.append(temp_row)
-                    elif swc_type == 'drain_select': vert_switch_array.insert(0, [{'name':swc_name, 'nets':{}, 'pin_blockage':False} for x in range(swc_cols)])
+                    elif swc_type == 'drain_select':
+                        temp_row = [{'name':swc_name, 'nets':{}, 'pin_blockage':True} for x in range(swc_cols)]
+                        for pin_key, pin_val in details.items():
+                            if pin_key not in key_except:
+                                # Pull out the number and pin name from the naming format switch_n#_<pin name>
+                                # then associate the pin + net with the right cell
+                                match = re.search(r"switch_n(\d+)_(.+)", pin_key)
+                                swc_id, swc_pin_key = None, None
+                                if match:
+                                    swc_id = int(match.group(1))
+                                    swc_pin_key = match.group(2)
+                                else:
+                                    print(f'Error: Failed to match to correct switch instance in decoder synthesis for {pin_key}')
+                                    exit()
+                                temp_row[swc_id]['nets'][swc_pin_key] = pin_val 
+                        vert_switch_array.insert(0, temp_row)
+                        #vert_switch_array.insert(0, [{'name':swc_name, 'nets':{}, 'pin_blockage':True} for x in range(swc_cols)])
                     
             vert_switch_array = list(zip(*vert_switch_array))
             if 'switch_ind' in island:
@@ -597,12 +672,17 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
                     direction = details['direction']
                     col_id = int(details['col']) - 1
                     swc_name = inst.module_name
-                    horz_switch_array[0][col_id] = swc_name 
+                    nets = {}
+                    for pin_key, pin_val in details.items():
+                        if pin_key not in key_except:
+                            nets[pin_key] = pin_val
+                    horz_switch_array[0][col_id]['name'] = swc_name 
+                    horz_switch_array[0][col_id]['nets'] = nets
             if verbose: 
                 print(f'horz switch')
-                print('\n'.join(['\t'.join([str(cell) for cell in row]) for row in horz_switch_array]))
+                print('\n'.join(['\t'.join([str(cell['name']) for cell in row]) for row in horz_switch_array]))
                 print(f'vert switch')
-                print('\n'.join(['\t'.join([str(cell) for cell in row]) for row in vert_switch_array]))
+                print('\n'.join(['\t'.join([str(cell['name']) for cell in row]) for row in vert_switch_array]))
             # Align decoder and switches around the core cell island then update cell order.
             # Deal with vertical mux then calculate x-axis offset.
             if val not in cell_order_in_island:
@@ -612,21 +692,25 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
             for row in reversed(vert_decoder_array):
                 width_accum = 0
                 for col in row:
-                    cell_width = cell_info[col]['width']
-                    cell_height = cell_info[col]['height']
+                    cell_width = cell_info[col['name']]['width']
+                    cell_height = cell_info[col['name']]['height']
                     cell_order_in_island[val]['items'][coords_id] = {}
                     cell_order_in_island[val]['items'][coords_id]['type'] = 'cell'
-                    cell_order_in_island[val]['items'][coords_id]['name'] = col
+                    cell_order_in_island[val]['items'][coords_id]['name'] = col['name']
+                    cell_order_in_island[val]['items'][coords_id]['nets'] = col['nets']
+                    if 'cell_pins' not in cell_info[col['name']]:
+                        cell_info[col['name']]['cell_pins'] = {}
+                    cell_order_in_island[val]['items'][coords_id]['pin_blockage'] = True
                     temp_coord = [width_accum, height_accum, width_accum + cell_width, height_accum + cell_height]
                     cell_order_in_island[val]['coords'].append(temp_coord)
                     coords_id += 1
                     width_accum += cell_width
-                height_accum += int(cell_info[row[0]]['height'])
+                height_accum += int(cell_info[row[0]['name']]['height'])
             # next update switches positioning
             height_accum = 0
             x_drainmux_offset = 0
             for item in vert_decoder_array[0]:
-                x_drainmux_offset += cell_info[item]['width']
+                x_drainmux_offset += cell_info[item['name']]['width']
             for row in reversed(vert_switch_array):
                 width_accum = x_drainmux_offset
                 for col in row:
@@ -644,8 +728,9 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
                 height_accum += int(cell_info[row[0]['name']]['height'])
             drain_select_width = cell_info[str(vert_switch_array[0][0]['name'])]['width']
             prog_switch_width = cell_info[str(vert_switch_array[0][1]['name'])]['width']
-            drainmux_spacing = 8*dbu
+            drainmux_spacing = 8.5*dbu #7.5 is okay
             x_drainmux_offset += drain_select_width + prog_switch_width + drainmux_spacing
+            x_drainmux_offset = round(x_drainmux_offset/track_spacing)*track_spacing
             # Deal with core cells inside island
             for cell in cell_order:
                 cell_width = cell[2]
@@ -661,41 +746,35 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
                 cell[3] = x_drainmux_offset + cell[3]
                 coords_id += 1
             # Deal with horizontal switches
-            gatemux_spacing = 15*dbu
+            gatemux_spacing = int(15*dbu)
             height_accum += gatemux_spacing
             for idx, switch in enumerate(horz_switch_array[0]):
-                if idx % 2 == 0:
-                    x_loc = cell_order[idx][3]
-                    y_loc = height_accum
-                    cell_width = cell_info[switch['name']]['width']
-                    cell_height = cell_info[switch['name']]['height']
-                    cell_order_in_island[val]['items'][coords_id] = {}
-                    cell_order_in_island[val]['items'][coords_id]['type'] = 'cell'
-                    cell_order_in_island[val]['items'][coords_id]['name'] = switch['name']
-                    temp_coord = [x_loc, y_loc, x_loc + cell_width, y_loc + cell_height]
-                    cell_order_in_island[val]['items'][coords_id]['nets'] = switch['nets']
-                    cell_order_in_island[val]['items'][coords_id]['pin_blockage'] = switch['pin_blockage']
-                    cell_order_in_island[val]['coords'].append(temp_coord)
-                    coords_id += 1
-                    if (idx+1) < len(horz_switch_array[0]):
-                        switch = horz_switch_array[0][idx+1]
-                        x2_loc = x_loc + cell_width
-                        cell_width = cell_info[switch['name']]['width']
-                        cell_height = cell_info[switch['name']]['height']
-                        cell_order_in_island[val]['items'][coords_id] = {}
-                        cell_order_in_island[val]['items'][coords_id]['type'] = 'cell'
-                        cell_order_in_island[val]['items'][coords_id]['name'] = switch['name']
-                        temp_coord = [x2_loc, y_loc, x2_loc + cell_width, y_loc + cell_height]
-                        cell_order_in_island[val]['items'][coords_id]['nets'] = switch['nets']
-                        cell_order_in_island[val]['items'][coords_id]['pin_blockage'] = switch['pin_blockage']
-                        cell_order_in_island[val]['coords'].append(temp_coord)
-                        coords_id += 1
+                #Semi-Hardcode connecting net from switch to decoder
+                temp_net_num = idx*4
+                switch['nets']['decode<0>'] = f'swc_net{temp_net_num + 0}'
+                switch['nets']['RUN_IN<0>'] = f'swc_net{temp_net_num + 1}'
+                switch['nets']['decode<1>'] = f'swc_net{temp_net_num + 2}'
+                switch['nets']['RUN_IN<1>'] = f'swc_net{temp_net_num + 3}'
+                x_loc = cell_order[idx][3]
+                y_loc = height_accum
+                cell_width = cell_info[switch['name']]['width']
+                cell_height = cell_info[switch['name']]['height']
+                cell_order_in_island[val]['items'][coords_id] = {}
+                cell_order_in_island[val]['items'][coords_id]['type'] = 'cell'
+                cell_order_in_island[val]['items'][coords_id]['name'] = switch['name']
+                temp_coord = [x_loc, y_loc, x_loc + cell_width, y_loc + cell_height]
+                cell_order_in_island[val]['items'][coords_id]['nets'] = switch['nets']
+                cell_order_in_island[val]['items'][coords_id]['pin_blockage'] = switch['pin_blockage']
+                cell_order_in_island[val]['coords'].append(temp_coord)
+                coords_id += 1
             # Place polygons to hook up nets that should have been connected via abutting. Mainly for gate side.
             # for switch: get x,y starting point. get all y offsets for nets. Find total width.
             # TODO: convert the hardcoded y offsets for 350 into a dynamic look up based on net names
-            abut_net_x1 = x_drainmux_offset
+            gate_decoder_spacing = int(15*dbu)
+            gate_switch_width = cell_info[str(horz_switch_array[0][0]['name'])]['width']
+            abut_net_x1 = x_drainmux_offset + gate_switch_width
             abut_net_y1 = height_accum
-            switch_net_y_offsets = [3950, 5100, 6050, 12480, 19090, 20250]
+            switch_net_y_offsets = [3950, 5100, 6050]
             abut_net_last_swc_x_loc = cell_order_in_island[val]['coords'][coords_id-1][0]
             if verbose: print(f'Last switch placed should be {coords_id -1}')
             for yval in switch_net_y_offsets:
@@ -706,17 +785,32 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
                 cell_order_in_island[val]['coords'].append(temp_coord)
                 coords_id += 1
             # deal with horizontal decoders and place polygons
-            height_accum += cell_height
+            height_accum += cell_height + gate_decoder_spacing
             for row_idx, row in enumerate(reversed(horz_decoder_array)):
                 for idx, col in enumerate(row):
+                    if row_idx == 0:
+                        #Semi-Hardcode connecting net from switch to decoder
+                        temp_net_num = idx*8
+                        col['nets']['OUT<0>'] = f'swc_net{temp_net_num + 0}'
+                        col['nets']['RUN_OUT<0>'] = f'swc_net{temp_net_num + 1}'
+                        col['nets']['OUT<1>'] = f'swc_net{temp_net_num + 2}'
+                        col['nets']['RUN_OUT<1>'] = f'swc_net{temp_net_num + 3}'
+                        col['nets']['OUT<2>'] = f'swc_net{temp_net_num + 4}'
+                        col['nets']['RUN_OUT<2>'] = f'swc_net{temp_net_num + 5}'
+                        col['nets']['OUT<3>'] = f'swc_net{temp_net_num + 6}' if 'OUT<3>' not in col['nets'] else col['nets']['OUT<3>']
+                        col['nets']['RUN_OUT<3>'] = f'swc_net{temp_net_num + 7}' if 'RUN_OUT<3>' not in col['nets'] else col['nets']['RUN_OUT<3>']
                     if (idx*2) < len(cell_order):
                         x_loc = cell_order[idx*2][3]
                         y_loc = height_accum
-                        cell_width = cell_info[col]['width']
-                        cell_height = cell_info[col]['height']
+                        cell_width = cell_info[col['name']]['width']
+                        cell_height = cell_info[col['name']]['height']
                         cell_order_in_island[val]['items'][coords_id] = {}
                         cell_order_in_island[val]['items'][coords_id]['type'] = 'cell'
-                        cell_order_in_island[val]['items'][coords_id]['name'] = col
+                        cell_order_in_island[val]['items'][coords_id]['name'] = col['name']
+                        cell_order_in_island[val]['items'][coords_id]['nets'] = col['nets']
+                        if 'cell_pins' not in cell_info[col['name']]:
+                            cell_info[col['name']]['cell_pins'] = {}
+                        cell_order_in_island[val]['items'][coords_id]['pin_blockage'] = True
                         temp_coord = [x_loc, y_loc, x_loc + cell_width, y_loc + cell_height]
                         cell_order_in_island[val]['coords'].append(temp_coord)
                         coords_id += 1
@@ -751,6 +845,7 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
                 cell_order_in_island[val]['items'][coords_id] = {}
                 cell_order_in_island[val]['items'][coords_id]['type'] = 'cell'
                 cell_order_in_island[val]['items'][coords_id]['name'] = cell[0]
+                cell_order_in_island[val]['items'][coords_id]['pin_blockage'] = True
                 temp_coord = [cell[3], cell[4], cell[3] + cell_width, cell[4] + cell_height]
                 cell_order_in_island[val]['coords'].append(temp_coord)
                 # Forward along the nets
@@ -774,21 +869,35 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
     
     if cells_only_module:
         # find center left design area. starting with island 0, place them all in a row and update cell order doc
-        x_loc = int(design_area[0])
-        y_loc = int(design_height/2) + int(design_area[1])
+        x_loc = round(design_area[0]/track_spacing)*track_spacing - int(track_spacing/2)
+        y_loc = round(int(design_height/3), -1) + int(design_area[1])
         total_islands_width = sum(row[0] for row in island_dims)
         island_row_spacing = int(round((design_width - total_islands_width)/(len(island_dims) + 1), -3))
-        if verbose: print(f'dynamic spacing {island_row_spacing}')
-        for dim in island_dims:
-            array = np.array(cell_order_in_island[dim[2]]['coords'])
-            x_loc += island_row_spacing
-            array[:, 0] += x_loc
-            array[:, 2] += x_loc
-            array[:, 1] += y_loc
-            array[:, 3] += y_loc
-            island_place.append([x_loc, y_loc])
-            x_loc += dim[0] 
-            cell_order_in_island[dim[2]]['coords'] = array.tolist()
+        island_row_spacing = round(island_row_spacing/track_spacing)*track_spacing
+        # Option to have island locations set externally or dynamically
+        if isle_loc:
+            for idx, value in cell_order_in_island.items():
+                array = np.array(value['coords'])
+                x_loc = isle_loc[idx][0]
+                y_loc = isle_loc[idx][1]
+                array[:, 0] += x_loc
+                array[:, 2] += x_loc
+                array[:, 1] += y_loc
+                array[:, 3] += y_loc
+                island_place.append([x_loc, y_loc])
+                value['coords'] = array.tolist()
+        else:
+            if verbose: print(f'dynamic spacing {island_row_spacing}')
+            for dim in island_dims:
+                array = np.array(cell_order_in_island[dim[2]]['coords'])
+                x_loc += island_row_spacing
+                array[:, 0] += x_loc
+                array[:, 2] += x_loc
+                array[:, 1] += y_loc
+                array[:, 3] += y_loc
+                island_place.append([x_loc, y_loc])
+                x_loc += dim[0] 
+                cell_order_in_island[dim[2]]['coords'] = array.tolist()
 
     # gds write out
     for val, island in cell_order_in_island.items():
@@ -898,7 +1007,7 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
     # Calculate num of tracks based on die area 
     num_tracks = (round(design_area[2]/track_spacing), round(design_area[3]/track_spacing))
     track_corner = (0,0)
-    stop_layer = 3 # Metal layers to cover cells with (indicate which cells are Mx dense)
+    stop_layer = 2 # Metal layers to cover cells with (indicate which cells are Mx dense)
    
     header_str = 'VERSION 5.5 ;\nNAMESCASESENSITIVE ON ;\nDIVIDERCHAR "/" ;\nBUSBITCHARS "[]" ;\n\n'
     def_file = open(file_path, 'w')
@@ -910,8 +1019,14 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
     # Generate Tracks
     track_string = []
     for val in range(len(metal_layers), 0, -1):
-        track_def = f'TRACKS X {track_corner[0]} DO {num_tracks[0]} STEP {track_spacing} LAYER {metal_layers[val-1]} ;\n'
-        track_def += f'TRACKS Y {track_corner[1]} DO {num_tracks[1]} STEP {track_spacing} LAYER {metal_layers[val-1]} ;\n'
+        lef_path = os.path.join(file_name, file_name)
+        m_width = find_metal_in_lef(metal_layers[val-1], lef_path, dbu)
+        m_width = None # make all track widths the same for each layer because i see better results
+        m_width = track_spacing if m_width is None else int(m_width + 0.1*dbu)
+        m_id = val-1
+        m_track_num = (round(design_area[2]/m_width), round(design_area[3]/m_width))
+        track_def = f'TRACKS X {m_id} DO {m_track_num[0]} STEP {m_width} LAYER {metal_layers[val-1]} ;\n'
+        track_def += f'TRACKS Y {m_id} DO {m_track_num[1]} STEP {m_width} LAYER {metal_layers[val-1]} ;\n'
         track_string.append(track_def)
     def_file.write(''.join(track_string))
     comp_string = []
@@ -1076,6 +1191,7 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
     else:
         blocks_total = len(rect_string)*stop_layer
         def_file.write(f'BLOCKAGES {blocks_total} ;\n')
+        # write blockages for cells      
         for num in range(stop_layer):
             for single_rect in rect_string:
                 def_file.write(f'  - {metal_layers[num]}\n')
@@ -1084,6 +1200,37 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
                     single_rect = single_rect[:-1] + ' ;\n'
                 def_file.write(single_rect)
                 def_file.write(f'  END\n\n')
+        # Write blockages for manually inserted polygons which connect nets
+        for val, island in cell_order_in_island.items():
+            for idx, item in island['items'].items():
+                if item['type'] == 'polygon':
+                    array = island['coords']
+                    loc = array[idx]
+                    block_x1 = loc[0]
+                    block_y1 = loc[1]
+                    block_x2 = loc[2]
+                    block_y2 = loc[3]
+                    poly_mlayer = item['layer']
+                    def_file.write(f'  - {poly_mlayer}\n')
+                    def_file.write(f'    LAYER {poly_mlayer} ;\n')
+                    def_file.write(f'    RECT ( {block_x1} {block_y1} ) ( {block_x2} {block_y2} ) ;\n')
+                    def_file.write(f'  END\n\n')
+        # Write blockages for any manually specified cells or islands
+        for val, island in cell_order_in_island.items():
+            if val != 1:
+                for idx, item in island['items'].items():
+                    if item['type'] == 'cell':
+                        array = island['coords']
+                        loc = array[idx]
+                        block_x1 = loc[0]
+                        block_y1 = loc[1] + int(1*dbu)
+                        block_x2 = loc[2] - int(1*dbu)
+                        block_y2 = loc[3] - int(1*dbu)
+                        poly_mlayer = metal_layers[stop_layer]
+                        def_file.write(f'  - {poly_mlayer}\n')
+                        def_file.write(f'    LAYER {poly_mlayer} ;\n')
+                        def_file.write(f'    RECT ( {block_x1} {block_y1} ) ( {block_x2} {block_y2} ) ;\n')
+                        def_file.write(f'  END\n\n')
         def_file.write(f'END BLOCKAGES\n\n')
     def_blocks = f'BLOCKAGES {stop_layer} ;\n'
     def_blocks += f'  - LAYER {metal_layers[0]}\n'

@@ -155,6 +155,7 @@ def find_metal_in_lef(metal, file_name, dbu):
                 lef_file.close()
                 return ret_val
     lef_file.close()
+    return ret_val
 
 
 class Rectangle:
