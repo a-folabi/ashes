@@ -147,6 +147,6 @@ def MSOS02_test01():
     outpada = fg.outpada(mead_out, [13])
 
 def ors_buffer():
-    inpad1 = fg.inpad([9])
-    buff_out = fg.ota(inpad1)
-    outpad = fg.outpada(buff_out, [10])
+    inpad1 = fg.inpad([5])
+    buff_out = fg.ota_buf(inpad1)
+    outpad = fg.outpada(buff_out, [6])
