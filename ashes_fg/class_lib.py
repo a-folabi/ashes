@@ -279,6 +279,7 @@ class ota_buf:
         self.input = input
         self.num_instances = num_instances
         self.ota_buf_bias = ota_buf_bias
+        self.ota_buf_ls = 0
 
 
 class hhn:

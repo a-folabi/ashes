@@ -640,12 +640,12 @@ def compile(project_name, board_type, chip_num):
 		zip_list = zip_list + 'output_info output_info voltage_meas.elf ';
 		print("here1")
 
-'''
-	input_vector_temp = np.loadtxt(f"{path}/input_vector");
-	if input_vector_temp[0][1] == 0:
-		os.system(f"~/rasp30/prog_assembly/libs/sh/asm2ihex2.sh voltage_meas ~/rasp30/prog_assembly/libs/asm_code/voltage_measurement_ver01_just_runmode.s43 16384 16384 16384 {path}")
-	zip_list = zip_list + "input_vector ";
 
+	input_vector_temp = np.loadtxt(f"{path}/input_vector", converters={_:lambda s: int(s, 16) for _ in range(4)})
+	if input_vector_temp[1] == 0:
+		os.system(f"~/rasp30/prog_assembly/libs/sh/asm2ihex2.sh voltage_meas ~/rasp30/prog_assembly/libs/asm_code/voltage_measurement_ver01_just_runmode.s43 16384 16384 16384 {path}")
+	zip_list = zip_list + "input_vector "
+'''
 	os.system(f"rm {project_name}.zip");
 	os.system(f"zip {project_name}.zip {zip_list}");
 	#input_vector input_vector_for_graph insert into below
