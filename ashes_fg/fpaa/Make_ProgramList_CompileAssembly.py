@@ -209,22 +209,22 @@ def compile(project_name, board_type, chip_num):
 		# 1:Switch FGs, 2:OTA_ref FGs(Bias), 3:OTA FGs, 4:MITE, 5:BLE, 6:Direct SWC FGs
 		if target_listArray[i][3] == 1 or target_listArray[i][3] == 5:
 			if target_listArray[i][2] > 10E-6:
-				temp2_highaboveVt_swc = temp2_highaboveVt_swc + f"0x{(int(target_listArray[i][0])):04x}" + f"0x{(int(target_listArray[i][1])):04x}"  + f"0x{(int(target_listArray[i][4])):04x}" + "0x0000" + " 0xffff" + " "; # Row, Col, target, diff, # of pulses (Start values should be 0xffff. 0x0000 means the coarse program is over)
+				temp2_highaboveVt_swc = temp2_highaboveVt_swc + f"0x{(int(target_listArray[i][0])):04x} " + f"0x{(int(target_listArray[i][1])):04x} "  + f"0x{(int(target_listArray[i][4])):04x} " + "0x0000 " + "0xffff " + " "; # Row, Col, target, diff, # of pulses (Start values should be 0xffff. 0x0000 means the coarse program is over)
 				target_l_highaboveVt_swc = np.append(target_l_highaboveVt_swc, np.array([[target_listArray[i][0], target_listArray[i][1], target_listArray[i][2]]]), axis=0);
 				n_target_highaboveVt_swc=n_target_highaboveVt_swc+1
 		
 			if target_listArray[i][2] <= 10E-6 and target_listArray[i][2] > 1E-7:
-				temp2_aboveVt_swc = temp2_aboveVt_swc + f"0x{(int(target_listArray[i][0])):04x}" + f"0x{(int(target_listArray[i][1])):04x}"  + f"0x{(int(target_listArray[i][4])):04x}" + "0x0000" + " 0xffff" + " "; # Row, Col, target, diff, # of pulses (Start values should be 0xffff. 0x0000 means the coarse program is over)
+				temp2_aboveVt_swc = temp2_aboveVt_swc + f"0x{(int(target_listArray[i][0])):04x} " + f"0x{(int(target_listArray[i][1])):04x} "  + f"0x{(int(target_listArray[i][4])):04x} " + "0x0000 " + "0xffff " + " "; # Row, Col, target, diff, # of pulses (Start values should be 0xffff. 0x0000 means the coarse program is over)
 				target_l_aboveVt_swc = np.append(target_l_aboveVt_swc, np.array([[target_listArray[i][0], target_listArray[i][1], target_listArray[i][2]]]), axis=0);
 				n_target_aboveVt_swc=n_target_aboveVt_swc+1
 
 			if target_listArray[i][2] <= 1E-7 and target_listArray[i][2] >= 1E-9:
-				temp2_subVt_swc = temp2_subVt_swc + f"0x{(int(target_listArray[i][0])):04x}" + f"0x{(int(target_listArray[i][1])):04x}"  + f"0x{(int(target_listArray[i][4])):04x}" + "0x0000" + " 0xffff" + " "; # Row, Col, target, diff, # of pulses (Start values should be 0xffff. 0x0000 means the coarse program is over)
+				temp2_subVt_swc = temp2_subVt_swc + f"0x{(int(target_listArray[i][0])):04x} " + f"0x{(int(target_listArray[i][1])):04x} "  + f"0x{(int(target_listArray[i][4])):04x} " + "0x0000" + " 0xffff" + " "; # Row, Col, target, diff, # of pulses (Start values should be 0xffff. 0x0000 means the coarse program is over)
 				target_l_subVt_swc = np.append(target_l_subVt_swc, np.array([[target_listArray[i][0], target_listArray[i][1], target_listArray[i][2]]]), axis=0);
 				n_target_subVt_swc=n_target_subVt_swc+1
 		    		
 			if target_listArray[i][2] < 1E-9:
-				temp2_lowsubVt_swc = temp2_lowsubVt_swc + f"0x{(int(target_listArray[i][0])):04x}" + f"0x{(int(target_listArray[i][1])):04x}"  + f"0x{(int(target_listArray[i][4])):04x}" + "0x0000" + " 0xffff" + " "; # Row, Col, target, diff, # of pulses (Start values should be 0xffff. 0x0000 means the coarse program is over)
+				temp2_lowsubVt_swc = temp2_lowsubVt_swc + f"0x{(int(target_listArray[i][0])):04x} " + f"0x{(int(target_listArray[i][1])):04x} "  + f"0x{(int(target_listArray[i][4])):04x} " + "0x0000" + " 0xffff " + " "; # Row, Col, target, diff, # of pulses (Start values should be 0xffff. 0x0000 means the coarse program is over)
 				target_l_lowsubVt_swc = np.append(target_l_lowsubVt_swc, np.array([[target_listArray[i][0], target_listArray[i][1], target_listArray[i][2]]]), axis=0);
 				n_target_lowsubVt_swc = n_target_lowsubVt_swc+1
 		if target_listArray[i][3] == 3:
@@ -249,11 +249,11 @@ def compile(project_name, board_type, chip_num):
 				n_target_lowsubVt_ota= n_target_lowsubVt_ota+1
 		if target_listArray[i][3] == 2:
 			if target_listArray[i][2] > 1E-7:
-				temp2_aboveVt_otaref = temp2_aboveVt_otaref + f"0x{(int(target_listArray[i][0])):04x}" + f"0x{(int(target_listArray[i][1])):04x}"  + f"0x{(int(target_listArray[i][4])):04x}" + "0x0000" + " 0xffff" + " "; # Row, Col, target, diff, # of pulses (Start values should be 0xffff. 0x0000 means the coarse program is over)
+				temp2_aboveVt_otaref = temp2_aboveVt_otaref + f"0x{(int(target_listArray[i][0])):04x} " + f"0x{(int(target_listArray[i][1])):04x} "  + f"0x{(int(target_listArray[i][4])):04x} " + "0x0000" + " 0xffff" + " "; # Row, Col, target, diff, # of pulses (Start values should be 0xffff. 0x0000 means the coarse program is over)
 				target_l_aboveVt_otaref = np.append(target_l_aboveVt_otaref, np.array([[target_listArray[i][0], target_listArray[i][1], target_listArray[i][2]]]), axis=0)
 				n_target_aboveVt_otaref=n_target_aboveVt_otaref+1
 			if target_listArray[i][2] <= 1E-7 and target_listArray[i][2] >= 1E-9:
-				temp2_subVt_otaref = temp2_subVt_otaref + f"0x{(int(target_listArray[i][0])):04x}" + f"0x{(int(target_listArray[i][1])):04x}"  + f"0x{(int(target_listArray[i][4])):04x}" + "0x0000" + " 0xffff" + " "; # Row, Col, target, diff, # of pulses (Start values should be 0xffff. 0x0000 means the coarse program is over)
+				temp2_subVt_otaref = temp2_subVt_otaref + f"0x{(int(target_listArray[i][0])):04x} " + f"0x{(int(target_listArray[i][1])):04x} "  + f"0x{(int(target_listArray[i][4])):04x} " + "0x0000" + " 0xffff" + " "; # Row, Col, target, diff, # of pulses (Start values should be 0xffff. 0x0000 means the coarse program is over)
 				target_l_subVt_otaref = np.append(target_l_subVt_otaref, np.array([[target_listArray[i][0], target_listArray[i][1], target_listArray[i][2]]]), axis=0);
 				n_target_subVt_otaref = n_target_subVt_otaref +1
 		    
@@ -295,7 +295,7 @@ def compile(project_name, board_type, chip_num):
 				target_l_lowsubVt_dirswc = np.append(target_l_lowsubVt_dirswc, np.array([[target_listArray[i][0], target_listArray[i][1], target_listArray[i][2]]]), axis=0);
 				n_target_lowsubVt_dirswc = n_target_lowsubVt_dirswc + 1
 		if target_listArray[i][3] != 0:
-			temp2_tunnel_revtun = temp2_tunnel_revtun + f"0x{(int(target_listArray[i][0])):04x}" + f"0x{(int(target_listArray[i][1])):04x}"  + f"0x{(int(target_listArray[i][4])):04x}" + "0x0000" + " 0xffff" + " "; # Row, Col, target, diff, # of pulses (Start values should be 0xffff. 0x0000 means the coarse program is over)
+			temp2_tunnel_revtun = temp2_tunnel_revtun + f"0x{(int(target_listArray[i][0])):04x} " + f"0x{(int(target_listArray[i][1])):04x} "  + f"0x{(int(target_listArray[i][4])):04x} " + "0x0000" + " 0xffff" + " "; # Row, Col, target, diff, # of pulses (Start values should be 0xffff. 0x0000 means the coarse program is over)
 			n_target_tunnel_revtun=n_target_tunnel_revtun+1;
 
 

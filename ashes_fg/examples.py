@@ -1,4 +1,4 @@
-import ashes_fg.class_lib_ext as fg
+import ashes_fg as fg
 
 def hhn_ex_one():
     V_in = fg.inpad(1)
@@ -130,23 +130,25 @@ def test3():
     outpad2 = fg.outpada(lpf_out2, [13])
 
 ## ORS GUI Examples
-def LPF_offchip():
-    inpad1 = fg.inpad([3])
-    lpf_out1 = fg.lpfota(inpad1)
-    outpad1 = fg.outpada(lpf_out1, [13])
-
 def c4_offchip():
-    inpad1 = fg.inpad([1])
+    inpad1 = fg.inpad([5])
     input_voltage = fg.dc_in(1.3)
     c4_out = fg.c4_sp([inpad1, input_voltage])
-    outpada = fg.outpada(c4_out, [13])
-
-def MSOS02_test01():
-    inpad1 = fg.inpad([1])
-    mead_out = fg.MSOS02(inpad1)
-    outpada = fg.outpada(mead_out, [13])
+    outpada = fg.outpada(c4_out, [6])
 
 def ors_buffer():
-    inpad1 = fg.inpad([9])
+    inpad1 = fg.inpad([5])
     buff_out = fg.ota(inpad1)
-    outpad = fg.outpada(buff_out, [10])
+    outpad = fg.outpada(buff_out, [6])
+    
+def drain_follower():
+	inpad1 = fg.inpad([5])
+	src_fol_out = fg.common_drain_nfet(inpad1, common_drain_nfet_ibias='5e-6')
+	buf = fg.ota_buf(src_fol_out)
+	outpad = fg.outpad(buf, [6])
+	
+def cs_amp():
+	inpad1 = fg.inpad([5])
+	src_fol_out = fg.common_source(inpad1, common_source_ibias='5e-07')
+	buf_out = fg.ota_buf(src_fol_out)
+	outpad = fg.outpad(buf_out, [6])	

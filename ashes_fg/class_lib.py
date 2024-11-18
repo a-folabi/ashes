@@ -220,6 +220,19 @@ class common_drain:
         self.common_drain_ls = common_drain_ls
         self.common_drain_fgswc_ibias = common_drain_fgswc_ibias
 
+class common_drain_nfet:
+    def __init__(self,
+                 input,
+                 num_instances='1',
+                 type='FPAA',
+                 board=['3.0', '3.0a'],
+                 common_drain_ls='0',
+                 common_drain_nfet_ibias='5.000D-06'):
+        self.input = input
+        self.num_instances = num_instances
+        self.common_drain_ls = common_drain_ls
+        self.common_drain_nfet_ibias = common_drain_nfet_ibias
+
 
 class Senseamp1:
     def __init__(self,
