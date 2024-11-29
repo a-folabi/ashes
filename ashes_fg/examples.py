@@ -138,7 +138,7 @@ def c4_offchip():
 
 def ors_buffer():
     inpad1 = fg.inpad([5])
-    buff_out = fg.ota(inpad1)
+    buff_out = fg.ota_buf(inpad1)
     outpad = fg.outpada(buff_out, [6])
     
 def drain_follower():
