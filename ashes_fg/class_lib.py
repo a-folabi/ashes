@@ -267,21 +267,6 @@ class Hyst_diff:
         self.Hyst_diff_ls = Hyst_diff_ls
         self.Hyst_diff_ota1_ibias = Hyst_diff_ota1_ibias
 
-
-class common_drain_nfet:
-    def __init__(self,
-                 input,
-                 num_instances='1',
-                 type='FPAA',
-                 board=['3.0', '3.0a'],
-                 common_drain_nfet_ls='0',
-                 common_drain_nfet_ibias='5.000D-08'):
-        self.input = input
-        self.num_instances = num_instances
-        self.common_drain_nfet_ls = common_drain_nfet_ls
-        self.common_drain_nfet_ibias = common_drain_nfet_ibias
-
-
 class ota_buf:
     def __init__(self,
                  input,
