@@ -139,16 +139,22 @@ def c4_offchip():
 def ors_buffer():
     inpad1 = fg.inpad([5])
     buff_out = fg.ota_buf(inpad1)
-    outpad = fg.outpada(buff_out, [6])
+    outpad = fg.outpad(buff_out, [6])
     
-def drain_follower():
-	inpad1 = fg.inpad([5])
-	src_fol_out = fg.common_drain_nfet(inpad1, common_drain_nfet_ibias='5e-6')
-	buf = fg.ota_buf(src_fol_out)
-	outpad = fg.outpad(buf, [6])
+def drain_follower_nfet():
+    inpad1 = fg.inpad([5])
+    src_fol_out = fg.common_drain_nfet(inpad1, common_drain_nfet_ibias='5e-6')
+    buf = fg.ota_buf(src_fol_out)
+    outpad = fg.outpad(buf, [6])
+
+def drain_follower_pfet():
+    inpad1 = fg.inpad([5])
+    src_fol_out = fg.common_drain(inpad1, common_drain_fgswc_ibias='5e-9')
+    buf = fg.ota_buf(src_fol_out)
+    outpad = fg.outpad(buf, [6])
 	
 def cs_amp():
-	inpad1 = fg.inpad([5])
-	src_fol_out = fg.common_source(inpad1, common_source_ibias='5e-07')
-	buf_out = fg.ota_buf(src_fol_out)
+    inpad1 = fg.inpad([5])
+    src_amp = fg.common_source(inpad1, common_source_ibias='5e-07')
+	buf_out = fg.ota_buf(src_amp)
 	outpad = fg.outpad(buf_out, [6])	
