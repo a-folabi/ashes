@@ -27,8 +27,13 @@ For the detailed router we use the same tool from the [open circuit design flow 
 
 Download qrouter [here](https://github.com/RTimothyEdwards/qrouter)
 
+Double check you have all the dependencies installed
+```
+sudo apt-get install tcl8.5-dev
+sudo apt install tk-dev
+sudo apt-get install libxt-dev
+```
 Run the following commands
-
 ```
 ./configure
 make
