@@ -23,8 +23,8 @@ def blif2swcs(sys_name, project_name, board_type, out_path):
 
 
 	## create input vector file
-	with open(path + "/input_vector", "w") as f:
-		f.write("0x0000 0x0000 0x03e8 0xffff")
+    with open(path + "/input_vector", "w") as f:
+        f.write("0x0000 0x0000 0x03e8 0xffff")
     
 	fix_loc = True
     if fix_loc:
