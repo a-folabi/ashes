@@ -156,5 +156,5 @@ def drain_follower_pfet():
 def cs_amp():
     inpad1 = fg.inpad([5])
     src_amp = fg.common_source(inpad1, common_source_ibias='5e-07')
-	buf_out = fg.ota_buf(src_amp)
-	outpad = fg.outpad(buf_out, [6])	
+    buf_out = fg.ota_buf(src_amp)
+    outpad = fg.outpad(buf_out, [6])	
