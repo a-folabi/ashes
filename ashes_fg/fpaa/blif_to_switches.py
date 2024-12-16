@@ -26,7 +26,7 @@ def blif2swcs(sys_name, project_name, board_type, out_path):
     with open(path + "/input_vector", "w") as f:
         f.write("0x0000 0x0000 0x03e8 0xffff")
     
-	fix_loc = True
+    fix_loc = True
     if fix_loc:
         # TODO: make this system call os independent
     	os.system('/home/ubuntu/rasp30/vtr_release/vpr/vpr /home/ubuntu/ashes/ashes_fg/fpaa/./arch/'+arch+'_arch.xml ' + path + '/' + fname + '  -route_chan_width 17 -timing_analysis off -fix_pins ' + path + '/' + fname + '.pads -nodisp')
