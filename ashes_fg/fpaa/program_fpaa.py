@@ -6,7 +6,12 @@ def main():
 	# subprocess.run(["/usr/local/bin/python", "-c", "print('This is a subprocess')"])
 	print("run subprocess:\n")
 	#a1=subprocess.run(["/usr/bin/python", "-c", "os.system('tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/program.tcl " ,  "-speed", " 115200 tunnel_revtun_SWC_CAB.elf')"])
-	a1=subprocess.run(["tclsh", "/home/ubuntu/rasp30/prog_assembly/libs/tcl/program.tcl", "-speed", "115200", "tunnel_revtun_SWC_CAB.elf"])
+	while True:
+		try:
+			a1=subprocess.run(["tclsh", "/home/ubuntu/rasp30/prog_assembly/libs/tcl/program.tcl", "-speed", "115200", "tunnel_revtun_SWC_CAB.elf"])
+			break
+		except:
+			print("failed: trying again")
 	#return()
 	#performs switch_program_ver05_gui.sce functionality
 	while True: 
