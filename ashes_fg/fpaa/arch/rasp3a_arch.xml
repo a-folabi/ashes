@@ -608,6 +608,30 @@
 				<port name="out"/>
 			</output_ports>
 		</model>
+		<model name="C4_BPF">
+			<input_ports>
+				<port name="in"/>
+			</input_ports>
+			<output_ports>
+				<port name="out"/>
+			</output_ports>
+		</model>
+		<model name="relu2in_v1">
+			<input_ports>
+				<port name="in"/>
+			</input_ports>
+			<output_ports>
+				<port name="out"/>
+			</output_ports>
+		</model>
+		<model name="volt_wta_v1">
+			<input_ports>
+				<port name="in"/>
+			</input_ports>
+			<output_ports>
+				<port name="out"/>
+			</output_ports>
+		</model>
 	</models>
 	<layout width="7" height="14"/>
 	<device>
@@ -1088,6 +1112,21 @@ CAB
 				<output name="out" num_pins="2"/>
 				<delay_constant max="1.667e-9" in_port="vmm_offc.in" out_port="vmm_offc.out"/>
 			</pb_type>
+			<pb_type name="C4_BPF" blif_model=".C4_BPF" num_pb="1">
+				<input name="in" num_pins="2"/>
+				<output name="out" num_pins="1"/>
+				<delay_constant max="1.667e-9" in_port="C4_BPF.in" out_port="C4_BPF.out"/>
+			</pb_type>
+			<pb_type name="relu2in_v1" blif_model=".relu2in_v1" num_pb="1">
+				<input name="in" num_pins="2"/>
+				<output name="out" num_pins="1"/>
+				<delay_constant max="1.667e-9" in_port="relu2in_v1.in" out_port="relu2in_v1.out"/>
+			</pb_type>
+			<pb_type name="volt_wta_v1" blif_model=".volt_wta_v1" num_pb="1">
+				<input name="in" num_pins="2"/>
+				<output name="out" num_pins="2"/>
+				<delay_constant max="1.667e-9" in_port="volt_wta_v1.in" out_port="volt_wta_v1.out"/>
+			</pb_type>
 			<interconnect>		
 				<direct name="volswc1" input="cab.I[5:0]" output="volswc[0].in[5:0]"/>
 				<complete name="crossbar" input="fgota.out ota_buf.out ota.out cap.out nfet.out pfet.out tgate.out nmirror.out volswc[1:0].out" output="volswc[0].in[7:6]"/>
@@ -1232,6 +1271,12 @@ CAB
 				<complete name="crossbar" input="MSOS02[0].out[0]" output="cab.O[4]"/>
 				<complete name="crossbar" input="cab.I[12:0]" output="vmm_offc.in[12:0]"/>
 				<complete name="crossbar" input="vmm_offc[0].out[1:0]" output="cab.O[4:3]"/>
+				<direct name="crossbar" input="cab.I[1:0]" output="C4_BPF.in[1:0]"/>
+				<complete name="crossbar" input="C4_BPF[0].out[0]" output="cab.O[4]"/>
+				<direct name="crossbar" input="cab.I[1:0]" output="relu2in_v1.in[1:0]"/>
+				<complete name="crossbar" input="relu2in_v1[0].out[0]" output="cab.O[4]"/>
+				<direct name="crossbar" input="cab.I[1:0]" output="volt_wta_v1.in[1:0]"/>
+				<direct name="crossbar" input="volt_wta_v1[0].out[1:0]" output="cab.O[4:3]"/>
 			</interconnect>
 			<fc_in type="frac">1</fc_in>
 			<fc_out type="frac">1</fc_out>

@@ -36,10 +36,10 @@ class arrayStats(stats):
 		y_pattern = self.pattern[1]
 
 		if DEBUG:
-			for j in reversed(list(range(len(pattern)))):
+			for j in reversed(range(len(pattern))):
 				for i in range(len(pattern[j])):
-					print(str(pattern[i][j]).rjust(6), end=' ')
-				print()
+					print (str(pattern[i][j]).rjust(6),)
+				print ()
 
 		#y offset is not higher order bits, but the lower bits
 		#base addresses for y are the higher order bits
@@ -143,22 +143,22 @@ class cabStats(stats):
 		#Local Interconnect
 		li_sm_0a = ['gnd','vcc','cab.I[0:15]']
 		# outputs order into the CAB   ## order is very important here
-		li_sm_0b = ['fgota[0].out[0]','ota_buf[0].out[0]','ota[0].out[0]','cap[0].out[0]','nfet[0].out[0]','pfet[0].out[0]','tgate[0].out[0]','nmirror[0].out[0]','c4_sp[0].out[0]','gnd_out[0].out[0]','vdd_out[0].out[0]','in2in_x1[0].out[0]','in2in_x6[0].out[0]','lpf[0].out[0]','nfet_i2v[0].out[0]','pfet_i2v[0].out[0]','i2v_pfet_gatefgota[0].out[0]','mismatch_meas[0].out[0]','mmap_local_swc[0].out[0]','ramp_fe[0].out[0:3]','hhneuron[0].out[0:2]','TIA_blk[0].out[0]','ichar_nfet[0].out[0]','tgate_so[0].out[0]','vmm4x4_SR[0].out[0]','vmm8x4_SR[0].out[0]','SR4[0].out[0:7]','vmm4x4_SR2[0].out[0]','vmm4x4[0].out[0:3]','sftreg[0].out[0]','DAC_sftreg[0].out[0]','sftreg2[0].out[0]','sftreg3[0].out[0]','sftreg4[0].out[0]','vmm8x4[0].out[0]','vmm8inx8in[0].out[0]','vmm8x4_in[0].out[0]','vmm12x1[0].out[0]','vmm12x1_wowta[0].out[0]','ota_vmm[0].out[0]','Hyst_diff[0].out[0]','Max_detect[0].out[0]','Min_detect[0].out[0]','hhn[0].out[0]','fgswitch[0].out[0]','common_drain[0].out[0]','common_drain_nfet[0].out[0]','hhn_debug[0].out[0:2]','wta_new[0].out[0]','common_source[0].out[0]','VolDivide1[0].out[0]','I_SenseAmp[0].out[0]','nmirror_w_bias[0].out[0]','SubbandArray[0].out[0:1]','HH_RG[0].out[0:1]','HH_RG_2s[0].out[0:1]','HH_RG_3s[0].out[0:1]','SOSLPF[0].out[0]','MSOS02[0].out[0]','vmm_offc[0].out[0:1]']
-		li_sm_1 = ['fgota[0].in[0:1]','ota_buf[0].in[0]','ota[0].in[0:1]','cap[0].in[0]','nfet[0].in[0:1]','pfet[0].in[0:1]','tgate[0].in[0:1]','nmirror[0].in[0]','c4_sp[0].in[0:1]','gnd_out[0].in[0:1]','vdd_out[0].in[0:1]','in2in_x1[0].in[0:2]','in2in_x6[0].in[0:12]','lpf[0].in[0]','nfet_i2v[0].in[0]','pfet_i2v[0].in[0]','i2v_pfet_gatefgota[0].in[0]','mismatch_meas[0].in[0:2]','mmap_local_swc[0].in[0:2]','ramp_fe[0].in[0:1]','hhneuron[0].in[0:3]','TIA_blk[0].in[0]','ichar_nfet[0].in[0:1]','tgate_so[0].in[0:7]','vmm4x4_SR[0].in[0:6]','vmm8x4_SR[0].in[0:10]','SR4[0].in[0:3]','vmm4x4_SR2[0].in[0:7]','vmm4x4[0].in[0:3]','sftreg[0].in[0:18]','DAC_sftreg[0].in[0:2]','sftreg2[0].in[0:2]','sftreg3[0].in[0:3]','sftreg4[0].in[0:3]','vmm8x4[0].in[0:12]','vmm8inx8in[0].in[0:16]','vmm8x4_in[0].in[0:12]','vmm12x1[0].in[0:12]','vmm12x1_wowta[0].in[0:11]','ota_vmm[0].in[0:1]','Hyst_diff[0].in[0]','Max_detect[0].in[0]','Min_detect[0].in[0]','hhn[0].in[0:3]','fgswitch[0].in[0]','common_drain[0].in[0]','common_drain_nfet[0].in[0]','hhn_debug[0].in[0:3]','wta_new[0].in[0:2]','common_source[0].in[0]','VolDivide1[0].in[0]','I_SenseAmp[0].in[0:1]','nmirror_w_bias[0].in[0:1]','SubbandArray[0].in[0:1]','HH_RG[0].in[0:4]','HH_RG_2s[0].in[0:5]','HH_RG_3s[0].in[0:6]','SOSLPF[0].in[0]','MSOS02[0].in[0]','vmm_offc[0].in[0:12]','cab.O[0:7]']
+		li_sm_0b = ['fgota[0].out[0]','ota_buf[0].out[0]','ota[0].out[0]','cap[0].out[0]','nfet[0].out[0]','pfet[0].out[0]','tgate[0].out[0]','nmirror[0].out[0]','c4_sp[0].out[0]','gnd_out[0].out[0]','vdd_out[0].out[0]','in2in_x1[0].out[0]','in2in_x6[0].out[0]','lpf[0].out[0]','nfet_i2v[0].out[0]','pfet_i2v[0].out[0]','i2v_pfet_gatefgota[0].out[0]','mismatch_meas[0].out[0]','mmap_local_swc[0].out[0]','ramp_fe[0].out[0:3]','hhneuron[0].out[0:2]','TIA_blk[0].out[0]','ichar_nfet[0].out[0]','tgate_so[0].out[0]','vmm4x4_SR[0].out[0]','vmm8x4_SR[0].out[0]','SR4[0].out[0:7]','vmm4x4_SR2[0].out[0]','vmm4x4[0].out[0:3]','sftreg[0].out[0]','DAC_sftreg[0].out[0]','sftreg2[0].out[0]','sftreg3[0].out[0]','sftreg4[0].out[0]','vmm8x4[0].out[0]','vmm8inx8in[0].out[0]','vmm8x4_in[0].out[0]','vmm12x1[0].out[0]','vmm12x1_wowta[0].out[0]','ota_vmm[0].out[0]','Hyst_diff[0].out[0]','Max_detect[0].out[0]','Min_detect[0].out[0]','hhn[0].out[0]','fgswitch[0].out[0]','common_drain[0].out[0]','common_drain_nfet[0].out[0]','hhn_debug[0].out[0:2]','wta_new[0].out[0]','common_source[0].out[0]','VolDivide1[0].out[0]','I_SenseAmp[0].out[0]','nmirror_w_bias[0].out[0]','SubbandArray[0].out[0:1]','HH_RG[0].out[0:1]','HH_RG_2s[0].out[0:1]','HH_RG_3s[0].out[0:1]','SOSLPF[0].out[0]','MSOS02[0].out[0]','vmm_offc[0].out[0:1]','C4_BPF[0].out[0]']
+		li_sm_1 = ['fgota[0].in[0:1]','ota_buf[0].in[0]','ota[0].in[0:1]','cap[0].in[0]','nfet[0].in[0:1]','pfet[0].in[0:1]','tgate[0].in[0:1]','nmirror[0].in[0]','c4_sp[0].in[0:1]','gnd_out[0].in[0:1]','vdd_out[0].in[0:1]','in2in_x1[0].in[0:2]','in2in_x6[0].in[0:12]','lpf[0].in[0]','nfet_i2v[0].in[0]','pfet_i2v[0].in[0]','i2v_pfet_gatefgota[0].in[0]','mismatch_meas[0].in[0:2]','mmap_local_swc[0].in[0:2]','ramp_fe[0].in[0:1]','hhneuron[0].in[0:3]','TIA_blk[0].in[0]','ichar_nfet[0].in[0:1]','tgate_so[0].in[0:7]','vmm4x4_SR[0].in[0:6]','vmm8x4_SR[0].in[0:10]','SR4[0].in[0:3]','vmm4x4_SR2[0].in[0:7]','vmm4x4[0].in[0:3]','sftreg[0].in[0:18]','DAC_sftreg[0].in[0:2]','sftreg2[0].in[0:2]','sftreg3[0].in[0:3]','sftreg4[0].in[0:3]','vmm8x4[0].in[0:12]','vmm8inx8in[0].in[0:16]','vmm8x4_in[0].in[0:12]','vmm12x1[0].in[0:12]','vmm12x1_wowta[0].in[0:11]','ota_vmm[0].in[0:1]','Hyst_diff[0].in[0]','Max_detect[0].in[0]','Min_detect[0].in[0]','hhn[0].in[0:3]','fgswitch[0].in[0]','common_drain[0].in[0]','common_drain_nfet[0].in[0]','hhn_debug[0].in[0:3]','wta_new[0].in[0:2]','common_source[0].in[0]','VolDivide1[0].in[0]','I_SenseAmp[0].in[0:1]','nmirror_w_bias[0].in[0:1]','SubbandArray[0].in[0:1]','HH_RG[0].in[0:4]','HH_RG_2s[0].in[0:5]','HH_RG_3s[0].in[0:6]','SOSLPF[0].in[0]','MSOS02[0].in[0]','vmm_offc[0].in[0:12]','C4_BPF[0].in[0:1]','cab.O[0:7]']
 		#O/PS        
 		li_sm = ['gnd'             ,[0,  0],     #inputs from CAB and device outputs
 			'vcc'              ,[0,  1],#y
-			'cab.I[0:12]'        ,[0, list(range( 2, 15))],#y to be shifted for the decoder
-			'vmm4x4_dummy[0:3]'	,[0,list(range(19,23))], #middle LI for VMM turn
+			'cab.I[0:12]'        ,[0, range( 2, 15)],#y to be shifted for the decoder
+			'vmm4x4_dummy[0:3]'	,[0,range(19,23)], #middle LI for VMM turn
 			#O/PS OF CAB DEVICES
 			'fgota[0:1].out[0]' ,[0, [15,16]],#y
 			'ota_buf[0].out[0]' ,[0, 17],#y
 			'ota[0:1].out[0]'      ,[0, [17,18]],#y
-			'cap[0:3].out[0]'    ,[0, list(range(19, 23))],#y                                
-			'nfet[0:1].out[0]'   ,[0, list(range(24, 22, -1))],#y numbering chnge for nFET0(24) and nFET1(23), needs to be verified
-			'pfet[0:1].out[0]'   ,[0, list(range(26, 24,-1))],#y numbering chnge for pFETt0(26) and pFET1(23)
-			'tgate[0:3].out[0]'  ,[0, list(range(27, 31))],#y
-			'nmirror[0:1].out[0]',[0, list(range(31, 33))],#y
+			'cap[0:3].out[0]'    ,[0, range(19, 23)],#y                                
+			'nfet[0:1].out[0]'   ,[0, range(24, 22, -1)],#y numbering chnge for nFET0(24) and nFET1(23), needs to be verified
+			'pfet[0:1].out[0]'   ,[0, range(26, 24,-1)],#y numbering chnge for pFETt0(26) and pFET1(23)
+			'tgate[0:3].out[0]'  ,[0, range(27, 31)],#y
+			'nmirror[0:1].out[0]',[0, range(31, 33)],#y
 			'TIA_blk[0].out[0]'	 ,[0,17],
 			'ichar_nfet[0].out[0]',[0,25],
 			'c4_sp[0].out[0]'	 ,[0,15],# c4 with floating gates
@@ -174,7 +174,7 @@ class cabStats(stats):
 			'mismatch_meas[0].out[0]',[0,16], #fgota1 output
 			'mmap_local_swc[0].out[0]'   ,[0,18+15], #chose col-18
 			'ramp_fe[0].out[0:3]' , [0,[18,20,21,22]], #26
-			'volswc[0:1].out[0]',[0, list(range(33, 35))],
+			'volswc[0:1].out[0]',[0, range(33, 35)],
 			'hhneuron[0].out[0:2]',[0,[18,15,16]],#Vmem,VNa,VK
 			'tgate_so[0].out[0]',[0,19],
 			'ota_vmm[0].out[0]'      	,[0, 18],#y
@@ -182,7 +182,7 @@ class cabStats(stats):
 			'vmm4x4_SR2[0].out[0]'  ,[0,34], #19+15--->15 is offset for middle LI
 			'vmm8x4_SR[0].out[0]'  ,[0,34], #19+15--->15 is offset for middle LI
 			'SR4[0].out[0:4]',	[0,[19,20,21,22,18+15]],#cap--ops+15, and the 18+15
-			'vmm4x4[0].out[0:3]',	[0,list(range(19,23))],
+			'vmm4x4[0].out[0:3]',	[0,range(19,23)],
 			'vmm8x4[0].out[0]',	[0,0], #dummy output
 			'vmm8inx8in[0].out[0]',	[0,19], #dummy output cap0's output
 			'vmm8x4_in[0].out[0]',	[0,0], #dummy output
@@ -213,15 +213,16 @@ class cabStats(stats):
 			'SOSLPF[0].out[0]',[0,18],
 			'MSOS02[0].out[0]',[0,18],
 			'vmm_offc[0].out[0:1]',[0,[17,18]],
+			'C4_BPF[0].out[0]',[0,17],
 			'fgota[0].in[0:1]' ,[[33,32], 0],
 			'fgota[1].in[0:1]' ,[[31,30], 0],
 			'ota_buf[0].in[0]' ,  [29, 0],# in<0:7> y
 			'ota[0].in[0:1]'     ,[[29, 28], 0],# in<0:7> y
-			'cap[0:3].in[0]'     ,[list(range(25,21,-1)), 0],# in<8:11 y
+			'cap[0:3].in[0]'     ,[range(25,21,-1), 0],# in<8:11 y
 			'nfet[0:1].in[0:1]'  ,[[19, 18, 21, 20], 0],# in<12:15> y 21, 17,-1) it's flipped
 			'pfet[0:1].in[0:1]'  ,[[15, 14, 17, 16], 0],# in<16:19> n---change (17, 13,-1) it;s flipped
-			'tgate[0:3].in[0:1]' ,[list(range(13,5,-1)), 0],# in<20:27> y
-			'nmirror[0:1].in[0]' ,[list(range(5,3,-1)), 0],# in<28:29> y
+			'tgate[0:3].in[0:1]' ,[range(13,5,-1), 0],# in<20:27> y
+			'nmirror[0:1].in[0]' ,[range(5,3,-1), 0],# in<28:29> y
 			'c4_sp[0].in[0:1]'   ,[[33,25],0],
 			'gnd_out[0].in[0:1]'	 ,[[19,33],0],
 			'vdd_out[0].in[0:1]'	 ,[[19,33],0],
@@ -235,7 +236,7 @@ class cabStats(stats):
 			'TIA_blk[0].in[0]'   ,[26,0],
 			'ramp_fe[0].in[0:1]' , [[31,13],0],
 			'hhneuron[0].in[0:3]',[[25,16,26,33],0],#Vin,ENa,EK,Vref27
-			'ota_vmm[0].in[0:1]'     ,[list(range(27,25,-1)), 0],# in<0:7> y
+			'ota_vmm[0].in[0:1]'     ,[range(27,25,-1), 0],# in<0:7> y
 			'sftreg3[0].in[3]'   ,[21,0], 
 			'sftreg4[0].in[3]'   ,[13,0], #tgate0's sel 
 			'tgate_so[0].in[0:7]'	  ,[[12,21,10,19,8,17,6,15],0],
@@ -269,15 +270,16 @@ class cabStats(stats):
 			'SOSLPF[0].in[0]',[33,0],
 			'MSOS02[0].in[0]',[33,0],
 			'vmm_offc[0].in[0:12]',[[6,7,8,9,10,11,12,13,14,15,16,17,27],0],
-			'cab.O[0:5]'          ,[list(range( 29, 23, -1)), 21]] ## o/ps connectn to i/ps?? ummmmm !!! ---we need this 
+			'C4_BPF[0].in[0:1]',[[33,32],0],
+			'cab.O[0:5]'          ,[range( 29, 23, -1), 21]] ## o/ps connectn to i/ps?? ummmmm !!! ---we need this 
 		self.li = smDictFromList(li_sm)
 		li0b = recStrExpand(li_sm_0b)
 		li0b.reverse()
 		self.li0 = recStrExpand(li_sm_0a) + li0b
 		self.li1 = recStrExpand(li_sm_1)
 		#CAB Devices ## order is very important here
-		self.dev_types =['fgota']*1 +['ota_buf']*1+['ota']*1+['cap']*1+['nfet']*1+['pfet']*1+['tgate']*1+['nmirror']*1+['c4_sp']*1+['gnd_out']*1+['vdd_out']*1+['in2in_x1']*1+['in2in_x6']*1+['lpf']*1+['nfet_i2v']*1+['pfet_i2v']*1+['i2v_pfet_gatefgota']*1+['mismatch_meas']*1+['mmap_local_swc']*1+['ramp_fe']*1+['hhneuron']*1+['TIA_blk']*1+['ichar_nfet']*1+['tgate_so']*1+['vmm4x4_SR']*1+['vmm8x4_SR']*1+['SR4']*1+['vmm4x4_SR2']*1+['vmm4x4']*1+['sftreg']*1+['DAC_sftreg']*1 +['sftreg2']*1+['sftreg3']*1+['sftreg4']*1+['vmm8x4']*1+['vmm8inx8in']*1+['vmm8x4_in']*1+['vmm12x1']*1+['vmm12x1_wowta']*1+['ota_vmm']*1+['Hyst_diff']*1+['Max_detect']*1+['Min_detect']*1+['hhn']*1+['fgswitch']*1+['common_drain']*1+['common_drain_nfet']*1+['hhn_debug']*1+['wta_new']*1+['common_source']*1+['VolDivide1']*1+['I_SenseAmp']*1+['nmirror_w_bias']*1+['SubbandArray']*1+['HH_RG']*1+['HH_RG_2s']*1+['HH_RG_3s']*1+['SOSLPF']*1+['MSOS02']*1+['vmm_offc']*1
-		self.dev_pins = {'fgota_in':2,'ota_buf_in':1,'ota_in':2, 'cap_in':1, 'nfet_in':2, 'pfet_in':2,'tgate_in':2,'nmirror_in':1,'c4_sp_in':2,'gnd_out_in':2,'vdd_out_in':2,'in2in_x1_in':3,'in2in_x6_in':13,'lpf_in':1,'nfet_i2v_in':1,'pfet_i2v_in':1,'i2v_pfet_gatefgota_in':1,'mismatch_meas_in':3,'mmap_local_swc_in':3,'ramp_fe_in':2,'hhneuron_in':4,'TIA_blk_in':1,'ichar_nfet_in':2,'tgate_so_in':8,'vmm4x4_SR_in':7,'vmm8x4_SR_in':11,'SR4_in':4,'vmm4x4_SR2_in':8,'vmm4x4_in':4,'sftreg_in':19, 'DAC_sftreg_in':3,'sftreg2_in':3,'sftreg3_in':4,'sftreg4_in':4,'vmm8x4_in':13,'vmm8inx8in_in':17,'vmm8x4_in_in':13,'vmm12x1_in':13,'vmm12x1_wowta_in':12,'ota_vmm_in':2,'Hyst_diff_in':1,'Max_detect_in':1,'Min_detect_in':1,'hhn_in':4,'fgswitch_in':1,'common_drain_in':1,'common_drain_nfet_in':1,'hhn_debug_in':4,'wta_new_in':3,'common_source_in':1,'VolDivide1_in':1,'I_SenseAmp_in':2,'nmirror_w_bias_in':2,'SubbandArray_in':2,'HH_RG_in':5,'HH_RG_2s_in':6,'HH_RG_3s_in':7,'SOSLPF_in':1,'MSOS02_in':1,'vmm_offc_in':13,'fgota_out':1,'ota_buf_out':1,'ota_out':1, 'cap_out':1, 'nfet_out':1, 'pfet_out':1,'tgate_out':1,'nmirror_out':1,'c4_sp_out':1,'gnd_out_out':1,'vdd_out_out':1,'in2in_x1_out':1,'in2in_x6_out':1,'lpf_out':1,'nfet_i2v_out':1,'pfet_i2v_out':1,'i2v_pfet_gatefgota_out':1,'mismatch_meas_out':1,'mmap_local_swc_out':1,'ramp_fe_out':4,'hhneuron_out':3,'TIA_blk_out':1,'ichar_nfet_out':1,'tgate_so_out':1,'vmm4x4_SR_out':1,'vmm8x4_SR_out':1,'SR4_out':8,'vmm4x4_SR2_out':1,'vmm4x4_out':4,'sftreg_out':1,'DAC_sftreg_out':1,'sftreg2_out':1,'sftreg3_out':1,'sftreg4_out':1,'vmm8x4_out':1,'vmm8inx8in_out':1,'vmm8x4_in_out':1,'vmm12x1_out':1,'vmm12x1_wowta_out':1,'ota_vmm_out':1,'Hyst_diff_out':1,'Max_detect_out':1,'Min_detect_out':1,'hhn_out':1,'fgswitch_out':1,'common_drain_out':1,'common_drain_nfet_out':1,'hhn_debug_out':3,'wta_new_out':1,'common_source_out':1,'VolDivide1_out':1,'I_SenseAmp_out':1,'nmirror_w_bias_out':1,'SubbandArray_out':2,'HH_RG_out':2,'HH_RG_2s_out':2,'HH_RG_3s_out':2,'SOSLPF_out':1,'MSOS02_out':1,'vmm_offc_out':2}
+		self.dev_types =['fgota']*1 +['ota_buf']*1+['ota']*1+['cap']*1+['nfet']*1+['pfet']*1+['tgate']*1+['nmirror']*1+['c4_sp']*1+['gnd_out']*1+['vdd_out']*1+['in2in_x1']*1+['in2in_x6']*1+['lpf']*1+['nfet_i2v']*1+['pfet_i2v']*1+['i2v_pfet_gatefgota']*1+['mismatch_meas']*1+['mmap_local_swc']*1+['ramp_fe']*1+['hhneuron']*1+['TIA_blk']*1+['ichar_nfet']*1+['tgate_so']*1+['vmm4x4_SR']*1+['vmm8x4_SR']*1+['SR4']*1+['vmm4x4_SR2']*1+['vmm4x4']*1+['sftreg']*1+['DAC_sftreg']*1 +['sftreg2']*1+['sftreg3']*1+['sftreg4']*1+['vmm8x4']*1+['vmm8inx8in']*1+['vmm8x4_in']*1+['vmm12x1']*1+['vmm12x1_wowta']*1+['ota_vmm']*1+['Hyst_diff']*1+['Max_detect']*1+['Min_detect']*1+['hhn']*1+['fgswitch']*1+['common_drain']*1+['common_drain_nfet']*1+['hhn_debug']*1+['wta_new']*1+['common_source']*1+['VolDivide1']*1+['I_SenseAmp']*1+['nmirror_w_bias']*1+['SubbandArray']*1+['HH_RG']*1+['HH_RG_2s']*1+['HH_RG_3s']*1+['SOSLPF']*1+['MSOS02']*1+['vmm_offc']*1+['C4_BPF']*1
+		self.dev_pins ={'fgota_in':2,'ota_buf_in':1,'ota_in':2, 'cap_in':1, 'nfet_in':2, 'pfet_in':2,'tgate_in':2,'nmirror_in':1,'c4_sp_in':2,'gnd_out_in':2,'vdd_out_in':2,'in2in_x1_in':3,'in2in_x6_in':13,'lpf_in':1,'nfet_i2v_in':1,'pfet_i2v_in':1,'i2v_pfet_gatefgota_in':1,'mismatch_meas_in':3,'mmap_local_swc_in':3,'ramp_fe_in':2,'hhneuron_in':4,'TIA_blk_in':1,'ichar_nfet_in':2,'tgate_so_in':8,'vmm4x4_SR_in':7,'vmm8x4_SR_in':11,'SR4_in':4,'vmm4x4_SR2_in':8,'vmm4x4_in':4,'sftreg_in':19, 'DAC_sftreg_in':3,'sftreg2_in':3,'sftreg3_in':4,'sftreg4_in':4,'vmm8x4_in':13,'vmm8inx8in_in':17,'vmm8x4_in_in':13,'vmm12x1_in':13,'vmm12x1_wowta_in':12,'ota_vmm_in':2,'Hyst_diff_in':1,'Max_detect_in':1,'Min_detect_in':1,'hhn_in':4,'fgswitch_in':1,'common_drain_in':1,'common_drain_nfet_in':1,'hhn_debug_in':4,'wta_new_in':3,'common_source_in':1,'VolDivide1_in':1,'I_SenseAmp_in':2,'nmirror_w_bias_in':2,'SubbandArray_in':2,'HH_RG_in':5,'HH_RG_2s_in':6,'HH_RG_3s_in':7,'SOSLPF_in':1,'MSOS02_in':1,'vmm_offc_in':13,'C4_BPF_in':2,'fgota_out':1,'ota_buf_out':1,'ota_out':1, 'cap_out':1, 'nfet_out':1, 'pfet_out':1,'tgate_out':1,'nmirror_out':1,'c4_sp_out':1,'gnd_out_out':1,'vdd_out_out':1,'in2in_x1_out':1,'in2in_x6_out':1,'lpf_out':1,'nfet_i2v_out':1,'pfet_i2v_out':1,'i2v_pfet_gatefgota_out':1,'mismatch_meas_out':1,'mmap_local_swc_out':1,'ramp_fe_out':4,'hhneuron_out':3,'TIA_blk_out':1,'ichar_nfet_out':1,'tgate_so_out':1,'vmm4x4_SR_out':1,'vmm8x4_SR_out':1,'SR4_out':8,'vmm4x4_SR2_out':1,'vmm4x4_out':4,'sftreg_out':1,'DAC_sftreg_out':1,'sftreg2_out':1,'sftreg3_out':1,'sftreg4_out':1,'vmm8x4_out':1,'vmm8inx8in_out':1,'vmm8x4_in_out':1,'vmm12x1_out':1,'vmm12x1_wowta_out':1,'ota_vmm_out':1,'Hyst_diff_out':1,'Max_detect_out':1,'Min_detect_out':1,'hhn_out':1,'fgswitch_out':1,'common_drain_out':1,'common_drain_nfet_out':1,'hhn_debug_out':3,'wta_new_out':1,'common_source_out':1,'VolDivide1_out':1,'I_SenseAmp_out':1,'nmirror_w_bias_out':1,'SubbandArray_out':2,'HH_RG_out':2,'HH_RG_2s_out':2,'HH_RG_3s_out':2,'SOSLPF_out':1,'MSOS02_out':1,'vmm_offc_out':2,'C4_BPF_out':1}
 		dev_fgs_sm = [
 			'ota[0]'	,[0, 0],
 			'ota_buf[0]' 	,[0, 0],
@@ -336,6 +338,7 @@ class cabStats(stats):
 			'SOSLPF[0]',[0,0],
 			'MSOS02[0]',[0,0],
 			'vmm_offc[0]',[0,0],
+			'C4_BPF[0]',[0,0],
 			##### now the define parts
 			#'ota_bias'	,[[32, 0],[33,0]],
 			'ladder_fg[0]',[[31,15],[29,16],[32,16],[28,17]],
@@ -700,12 +703,12 @@ class cabStats(stats):
 			'vmm_offc_ls[0]',[[33,17],[32,15],[32,19],[31,18],[30,16],[30,20],[29,27],[28,15],[28,19],[27,27],[26,16],[26,20],[21,31],[19,32],[5,15],[4,16],[31,61],[31,60],[31,59],[31,58]],
 			'vmm_offc_o2_fgibias[0]',[32,60],
 			'vmm_offc_o2_pbias[0]',[33,61],
-			'vmm_offc_o2_nbias[0]',[33,60],
+			'vmm_offc_o2_pbias[0]',[33,60],
 			'vmm_offc_o1_fgibias[0]',[32,58],
 			'vmm_offc_o1_pbias[0]',[33,59],
 			'vmm_offc_o1_nbias[0]',[33,58],
 			'vmm_offc_o1_ibias[0]',[32,62],
-			'vmm_offc_o2_ibias[0]',[32,63],
+			'vmm_offc_o1_ibias[0]',[32,63],
 			'vmm_offc_off1_ibias[0]',[21,1],
 			'vmm_offc_off2_ibias[0]',[19,1],
 			'vmm_offc_w16n[0]',[17,19],
@@ -732,6 +735,20 @@ class cabStats(stats):
 			'vmm_offc_w21n[0]',[7,20],
 			'vmm_offc_w11p[0]',[6,19],
 			'vmm_offc_w21p[0]',[6,20],
+			'C4_BPF_ls[0]',[[32,16],[32,19],[32,20],[31,15],[30,16],[29,15],[28,17],[24,15],[33,3],[25,2],[31,61],[31,60],[31,59],[31,58]],
+			'C4_BPF_Cin_4x_cs[0]',[28,57],
+			'C4_BPF_Cin_2x_cs[0]',[28,58],
+			'C4_BPF_Cin_1x_cs[0]',[28,59],
+			'C4_BPF_Cfb_4x_cs[0]',[28,60],
+			'C4_BPF_Cfb_2x_cs[0]',[28,61],
+			'C4_BPF_Cfb_1x_cs[0]',[28,62],
+			'C4_BPF_Feedback_ibias[0]',[32,60],
+			'C4_BPF_Feedback_pbias[0]',[33,61],
+			'C4_BPF_Feedback_nbias[0]',[33,60],
+			'C4_BPF_Forward_ibias[0]',[32,58],
+			'C4_BPF_Forward_pbias[0]',[33,59],
+			'C4_BPF_Forward_nbias[0]',[33,58],
+			'C4_BPF_Buffer_ibias[0]',[32,62],
 			'cap_4x_cs[0:3]',[[28,29,28,29], 0]]
 		self.dev_fgs = smDictFromList(dev_fgs_sm)
 
@@ -811,29 +828,29 @@ class cab2Stats(stats):
 		#O/PS        
 		li_sm = ['gnd'           ,[0,  0],     #inputs from CAB and device outputs
 			'vcc'                ,[0,  1],#y
-			'cab2.I[0:12]'       ,[0, list(range( 2, 15))],#y to be shifted for the decoder
+			'cab2.I[0:12]'       ,[0, range( 2, 15)],#y to be shifted for the decoder
 			#O/PS OF CAB DEVICES
 			'ota2.out[0]'         ,[0, 15],#y
 			'ota_buffer.out[0]'  ,[0, 15],#y
 			'current_ref.out[0]'  ,[0, 25],#y need to figure out the switch numbers
-			'tgate[0:2].out[0]'  ,[0,list(range(16,19))],
-			'cap2[0:2].out[0]'    ,[0,list(range(19, 22))],#y                                
-			'tgate2[0:2].out[0]' ,[0,list(range(22, 25))],#y numbering chnge for nFET0(24) and nFET1(23)
+			'tgate[0:2].out[0]'  ,[0,range(16,19)],
+			'cap2[0:2].out[0]'    ,[0,range(19, 22)],#y                                
+			'tgate2[0:2].out[0]' ,[0,range(22, 25)],#y numbering chnge for nFET0(24) and nFET1(23)
 			'mite[0:2].out[0]'   ,[0,[25,26,31]],# out<10,11,16>
 			'mite2.out[0:1]'  	 ,[0,[32,18]],# out<17>,out<3> --it's a 2 i/p 2o/p mite
-			'signalmult[0:1].out[0:1]' ,[0,list(range(27,31))],# out<12:14>
+			'signalmult[0:1].out[0:1]' ,[0,range(27,31)],# out<12:14>
 			'meas_volt_mite[0:1].out',[0,[[25,26],[31,32,18]]], # we don't want to connect the outout
-			'ota2.in[0:1]'  	 ,[list(range(33,31,-1)), 0],# in<0:1> y
+			'ota2.in[0:1]'  	 ,[range(33,31,-1), 0],# in<0:1> y
 			'ota_buffer.in[0]'  	 ,[33, 0],# in<0:1> y
-			'tgate[0:2].out'     ,[list(range(31,27,-1)), 0],# in<2:7> y
+			'tgate[0:2].out'     ,[range(31,27,-1), 0],# in<2:7> y
 			'current_ref.in[0:1]'  ,[[13,12], 0],#y
-			'cap2[0:2].in[0]'     ,[list(range(27,22,-1)), 0],# in<8:10> y
+			'cap2[0:2].in[0]'     ,[range(27,22,-1), 0],# in<8:10> y
 			'tgate2[0:1].in[0:1]',[list(range(17,13,-1))+[15,22], 0],# in<> y 21, 17,-1) it's flipped
 			'mite[0:2].in[0:2]'  ,[[13,12,11,10,9,8,31,29,15], 0],# in<16:19> n---change (17, 13,-1) it;s flipped
 			'mite2.in[0:1]' 	 ,[[27,17], 0],# in<6,16> y
 			'signalmult[0:1].in[0:3]'  ,[list(range(7,3,-1))+list(range(21,17,-1)), 0],# in<26:29> +in<12:15>
 			'meas_volt_mite[0:1].in',[[[13,12,10,9],[31,29,27,17]],0],
-			'cab2.O[0:5]'        ,[list(range( 29, 23, -1)), 21]] ##its 21 
+			'cab2.O[0:5]'        ,[range( 29, 23, -1), 21]] ##its 21 
 		self.li = smDictFromList(li_sm)
 		li0b = recStrExpand(li_sm_0b)
 		li0b.reverse()
@@ -938,9 +955,9 @@ class clbStats(stats):
 		li_sm_0 = ['clb.I[0:15]', 'ble[0:7].out[0]']
 		li_sm_1 = ['ble[0:7].in[0:3]']
 		li_sm = [
-			'clb.I[0:15]'        ,[list(range(21,5,-1)), 0],
-			'ble[0:7].out[0]'    ,[list(range(7,-1,-1)), 0],
-			'ble[0:7].in[0:3]'   ,[0, list(range(0,32))]]
+			'clb.I[0:15]'        ,[range(21,5,-1), 0],
+			'ble[0:7].out[0]'    ,[range(7,-1,-1), 0],
+			'ble[0:7].in[0:3]'   ,[0, range(0,32)]]
 		self.li0 = recStrExpand(li_sm_0)
 		self.li1 = recStrExpand(li_sm_1)
 		self.li = smDictFromList(li_sm)
@@ -1596,31 +1613,31 @@ class clb(complexBlock):
 		#printing connectivity matrix
 		x = 2
 		for i in range(len(self.li_in)):
-			print('%s'%str(i).ljust(2), end=' ')
-		print()
+			print ('%s'%str(i).ljust(2),)
+		print ()
 
 		for i in range(len(self.li_in)):
 			if self.li_in[i] != 'open':
-				if verbose: print('%s'%self.li_in[i].ljust(x), end=' ')
+				if verbose: print ('%s'%self.li_in[i].ljust(x),)
 			else:
-				if verbose: print(''.ljust(x), end=' ')
-		if verbose: print()
+				if verbose: print (''.ljust(x),)
+		if verbose: print ()
 
 		for i in range(len(self.li_out_dev)):
 			if self.li_out[i] != 'open':
 				for j in range(len(self.li_in)):
 					if self.li_out[i] == self.li_in[j]:
-						if verbose: print(str('X').ljust(x), end=' ')
+						if verbose: print (str('X').ljust(x),)
 						self.li[i][j] = 1
 					else:
-						if verbose: print(str('.').ljust(x), end=' ')
+						if verbose: print (str('.').ljust(x),)
 				if verbose: 
-					print(self.li_out[i].ljust(2), end=' ') 
-					print(str(i).ljust(2))
+					print (self.li_out[i].ljust(2),) 
+					print (str(i).ljust(2))
 			else:
 				for j in range(len(self.li_in)):
-					if verbose: print(str('.').ljust(x), end=' ')
-				if verbose: print('%s%s'%(''.ljust(3), str(i).ljust(2)))    
+					if verbose: print (str('.').ljust(x),)
+				if verbose: print ('%s%s'%(''.ljust(3), str(i).ljust(2)))    
 
 		#actually generating the switch addresses here    
 		self.swcsFromLi()
@@ -1650,9 +1667,9 @@ class clb(complexBlock):
 				p0 = sb.inputs_orig
 				#p0.reverse() #need to reverse ble input order, not sure why, but it works
 				p1 = sb.inputs 
-				print("ble input re-ordered")
-				print(p0)
-				print(p1)
+				print ("ble input re-ordered")
+				print (p0)
+				print (p1)
 				if ex_fgs_orig[0] == 'ff_in': #counter lut hack
 					kk = ex_fgs_orig              
 				elif ex_fgs_orig[-1] == 'ff_out': #flip flop lut hack
@@ -1680,7 +1697,7 @@ class clb(complexBlock):
 							swc1=swc2[n]
 						swc = [swc0[0]+swc1[0], swc0[1]+swc1[1]]
 						swcx = self.array_stats.getTileOffset(swc, self.grid_loc)
-						if verbose: print('999%s %s -> (%g %g) -> (%g %g)'%(swc_name0, swc_name1, swc[0], swc[1], swcx[0], swcx[1]))
+						if verbose: print ('999%s %s -> (%g %g) -> (%g %g)'%(swc_name0, swc_name1, swc[0], swc[1], swcx[0], swcx[1]))
 						self.swcs.append(swcx)
 
 class cab(complexBlock):
@@ -1733,42 +1750,42 @@ class cab(complexBlock):
 		#printing connectivity matrix and filling the local interconnect matrix
 		x = 2
 		for i in range(len(self.li_in)):
-			if verbose: print('%s'%str(i).ljust(2), end=' ')
-		if verbose: print()
+			if verbose: print ('%s'%str(i).ljust(2),)
+		if verbose: print ()
 		for i in range(len(self.li_in)):
 			if self.li_in[i] != 'open':
-				if verbose: print('%s'%self.li_in[i].ljust(x), end=' ')
+				if verbose: print ('%s'%self.li_in[i].ljust(x),)
 			else:
-				if verbose: print(''.ljust(x), end=' ')
-		if verbose: print()
+				if verbose: print (''.ljust(x),)
+		if verbose: print ()
 		for i in range(len(self.li_out_dev)):
 			if self.li_out[i] != 'open':
 				for j in range(len(self.li_in)):
 					if self.li_out[i] == self.li_in[j]:
-						if verbose: print(str('X').ljust(x), end=' ')
+						if verbose: print (str('X').ljust(x),)
 						self.li[i][j] = 1
 					else:
-						if verbose: print(str('.').ljust(x), end=' ')
+						if verbose: print (str('.').ljust(x),)
 				if verbose: 
-					print(self.li_out[i].ljust(2), end=' ') 
-					print(str(i).ljust(2))
+					print (self.li_out[i].ljust(2),) 
+					print (str(i).ljust(2))
 			else:
 				for j in range(len(self.li_in)):
-					if verbose: print(str('.').ljust(x), end=' ')
-				if verbose: print('%s%s'%(''.ljust(3), str(i).ljust(2)))
+					if verbose: print (str('.').ljust(x),)
+				if verbose: print ('%s%s'%(''.ljust(3), str(i).ljust(2)))
 		for i in range(len(self.li_out_out)):
 			for j in range(len(self.li_in_in)):
-				if verbose: print(''.ljust(x), end=' ')
+				if verbose: print (''.ljust(x),)
 			for j in range(len(self.li_in_dev)):
 				if self.li_out_out[i] == self.li_in_dev[j] and self.li_out_out[i] != 'open':
-					if verbose: print('X'.ljust(x), end=' ')
+					if verbose: print ('X'.ljust(x),)
 					self.li[i+len(self.li_out_dev)][j+len(self.li_in_in)] = 1
 				else:
-					if verbose: print('.'.ljust(x), end=' ')
+					if verbose: print ('.'.ljust(x),)
 			if self.li_out_out[i] == 'open':
-				if verbose: print(self.li_out_out[i])
+				if verbose: print (self.li_out_out[i])
 			else:
-				if verbose: print(self.li_out_out[i])
+				if verbose: print (self.li_out_out[i])
 
 		#actually generating the switches addresses here  
 		self.swcsFromLi()    
@@ -1777,14 +1794,16 @@ class cab(complexBlock):
 		self.genLI('verbose')
 
 	def genDevFgs(self):
-		print("getting here!")
+		print ("getting here!")
 		verbose = 1
 		for i in range(len(self.subblocks)):
 			sb = self.getSub(i)
 			if sb.outputs != 'open':
 				swc_name0 = sb.name
+				print("\nSubblock Name: " + swc_name0)
 				if sb.ex_fgs:
 					ex_fg=sb.ex_fgs.split("&")
+					print("\n Extra FGs: " + sb.ex_fgs)
 					for s in range(len(ex_fg)):
 						for j in ex_fg[s].split()[::2]:
 							if swc_name0 in["c4_sp[0]","TIA_blk[0]","lpf[0]","hhneuron[0]","ramp_fe[0]",'nmirror[0]','ichar_nfet[0]']:
@@ -1818,7 +1837,7 @@ class cab(complexBlock):
 										swcx.append(targets[h])
 										swcx.append(1)
 										self.swcs.append(swcx)
-										if verbose: print('%s %s -> (%g %g) -> (%g %g)'%(swc_name0, swc_name1, swc2[0], swc2[1], swcx[0], swcx[1]))
+										if verbose: print ('%s %s -> (%g %g) -> (%g %g)'%(swc_name0, swc_name1, swc2[0], swc2[1], swcx[0], swcx[1]))
 									continue
 								elif swc_name1=='vmm_bias[0]':
 									targets=list(ex_fg[s].split("=")[1].split(","))
@@ -1829,7 +1848,7 @@ class cab(complexBlock):
 										swcx.append(targets[h])
 										swcx.append(1)
 										self.swcs.append(swcx)
-										if verbose: print('%s %s -> (%g %g) -> (%g %g)'%(swc_name0, swc_name1, swc2[0], swc2[1], swcx[0], swcx[1]))
+										if verbose: print ('%s %s -> (%g %g) -> (%g %g)'%(swc_name0, swc_name1, swc2[0], swc2[1], swcx[0], swcx[1]))
 									continue
 								else:
 									swc_name1 = j+'['+sb.name.split('[')[1]
@@ -1844,7 +1863,7 @@ class cab(complexBlock):
 									swc1=swc2[n]
 								swc = [swc0[0]+swc1[0], swc0[1]+swc1[1]]
 								swcx = self.array_stats.getTileOffset(swc, self.grid_loc)
-								if verbose: print('%s %s -> (%g %g) -> (%g %g)'%(swc_name0, swc_name1, swc[0], swc[1], swcx[0], swcx[1]))
+								if verbose: print ('%s %s -> (%g %g) -> (%g %g)'%(swc_name0, swc_name1, swc[0], swc[1], swcx[0], swcx[1]))
 								if n==0 and swc_name1 not in ['sftreg_fg[0]', 'DAC_sftreg_fg[0]','sftreg2_fg[0]','sftreg3_fg[0]','sftreg4_fg[0]','nfet_i2v_fg[0]','pfet_i2v_fg[0]','i2v_pfet_gatefgota_fg[0]','mismatch_meas_fg[0]','mmap_ls_fg[0]','mmap_ls_in_r0_vdd[0]','mmap_ls_in_r0[0]','mmap_ls_in_r1_vdd[0]','mmap_ls_in_r1[0]','mmap_ls_in_r2_vdd[0]','mmap_ls_in_r2[0]','mmap_ls_in_r3_vdd[0]','mmap_ls_in_r3[0]','mmap_ls_in_r4_vdd[0]','mmap_ls_in_r4[0]','mmap_ls_in_r5_vdd[0]','mmap_ls_in_r5[0]','mmap_ls_in_r6_vdd[0]','mmap_ls_in_r6[0]','mmap_ls_in_r7_vdd[0]','mmap_ls_in_r7[0]','mmap_ls_in_r8_vdd[0]','mmap_ls_in_r8[0]','mmap_ls_in_r9_vdd[0]','mmap_ls_in_r9[0]','mmap_ls_in_r10_vdd[0]','mmap_ls_in_r10[0]','mmap_ls_in_r11_vdd[0]','mmap_ls_in_r11[0]','mmap_ls_in_r12_vdd[0]','mmap_ls_in_r12[0]','mmap_ls_in_r13_vdd[0]','mmap_ls_in_r13[0]','mmap_ls_in_r14_vdd[0]','mmap_ls_in_r14[0]','mmap_ls_in_r15_vdd[0]','mmap_ls_in_r15[0]','mmap_ls_in_r16_vdd[0]','mmap_ls_in_r16[0]','mmap_ls_in_r17_vdd[0]','mmap_ls_in_r17[0]','mmap_ls_in_r18_vdd[0]','mmap_ls_in_r18[0]','mmap_ls_in_r19_vdd[0]','mmap_ls_in_r19[0]','mmap_ls_in_r20_vdd[0]','mmap_ls_in_r20[0]','mmap_ls_in_r21_vdd[0]','mmap_ls_in_r21[0]','mmap_ls_in_r22_vdd[0]','mmap_ls_in_r22[0]','mmap_ls_in_r23_vdd[0]','mmap_ls_in_r23[0]','mmap_ls_in_r24_vdd[0]','mmap_ls_in_r24[0]','mmap_ls_in_r25_vdd[0]','mmap_ls_in_r25[0]','mmap_ls_in_r26_vdd[0]','mmap_ls_in_r26[0]','mmap_ls_in_r27_vdd[0]','mmap_ls_in_r27[0]','mmap_ls_in_r28_vdd[0]','mmap_ls_in_r28[0]','mmap_ls_in_r29_vdd[0]','mmap_ls_in_r29[0]','mmap_ls_in_vdd1_vdd[0]','mmap_ls_in_vdd1[0]','mmap_ls_in_vdd2_vdd[0]','mmap_ls_in_vdd2[0]','mmap_ls_in_vdd3_vdd[0]','mmap_ls_in_vdd3[0]','mmap_ls_in_in12_1_vdd[0]','mmap_ls_in_in12_1[0]','mmap_ls_in_in12_2_vdd[0]','mmap_ls_in_in12_2[0]','mmap_ls_in_in12_3_vdd[0]','mmap_ls_in_in12_3[0]']: 
 									swcx.append(ex_fg[s].split('=')[1])
 								if ex_fg[s].split('=')[0] in ['fgota0nbias ','fgota0pbias ','fgota1nbias ','fgota1pbias ','i2v_pfet_gatefgota_fgotapbias[0]','i2v_pfet_gatefgota_fgotanbias[0]','mismatch_meas_pfetg_fgotapbias[0]','mismatch_meas_pfetg_fgotanbias[0]','mismatch_meas_out_fgotapbias[0]','mismatch_meas_out_fgotanbias[0]']:
@@ -1942,9 +1961,13 @@ class cab(complexBlock):
 									swcx.append(3)
 								elif swc_name1 in ['vmm_offc_off1_ibias[0]','vmm_offc_off2_ibias[0]','vmm_offc_w16n[0]','vmm_offc_w26n[0]','vmm_offc_w16p[0]','vmm_offc_w26p[0]','vmm_offc_w15n[0]','vmm_offc_w25n[0]','vmm_offc_w15p[0]','vmm_offc_w25p[0]','vmm_offc_w14n[0]','vmm_offc_w24n[0]','vmm_offc_w14p[0]','vmm_offc_w24p[0]','vmm_offc_w13n[0]','vmm_offc_w23n[0]','vmm_offc_w13p[0]','vmm_offc_w23p[0]','vmm_offc_w12n[0]','vmm_offc_w22n[0]','vmm_offc_w12p[0]','vmm_offc_w22p[0]','vmm_offc_w11n[0]','vmm_offc_w21n[0]','vmm_offc_w11p[0]','vmm_offc_w21p[0]']:
 									swcx.append(1)
-								elif swc_name1 in ['vmm_offc_o2_ibias[0]','vmm_offc_o1_ibias[0]','vmm_offc_o2_fgibias[0]','vmm_offc_o1_fgibias[0]']:
+								elif swc_name1 in ['vmm_offc_o1_ibias[0]','vmm_offc_o1_ibias[0]','vmm_offc_o2_fgibias[0]','vmm_offc_o1_fgibias[0]']:
 									swcx.append(2)
-								elif swc_name1 in ['vmm_offc_o2_pbias[0]','vmm_offc_o2_nbias[0]','vmm_offc_o1_pbias[0]','vmm_offc_o1_nbias[0]']:
+								elif swc_name1 in ['vmm_offc_o2_pbias[0]','vmm_offc_o2_pbias[0]','vmm_offc_o1_pbias[0]','vmm_offc_o1_nbias[0]']:
+									swcx.append(3)
+								elif swc_name1 in ['C4_BPF_Buffer_ibias[0]','C4_BPF_Feedback_ibias[0]','C4_BPF_Forward_ibias[0]']:
+									swcx.append(2)
+								elif swc_name1 in ['C4_BPF_Feedback_pbias[0]','C4_BPF_Feedback_nbias[0]','C4_BPF_Forward_pbias[0]','C4_BPF_Forward_nbias[0]']:
 									swcx.append(3)
 								self.swcs.append(swcx)
 								if isinstance(swc2[0],int): break
@@ -1994,42 +2017,42 @@ class cab2(complexBlock):
 		#printing connectivity matrix and filling the local interconnect matrix
 		x = 2
 		for i in range(len(self.li_in)):
-			if verbose: print('%s'%str(i).ljust(2), end=' ')
-		if verbose: print("Hallelujah!")
+			if verbose: print ('%s'%str(i).ljust(2),)
+		if verbose: print ("Hallelujah!")
 		for i in range(len(self.li_in)):
 			if self.li_in[i] != 'open':
-				if verbose: print('%s'%self.li_in[i].ljust(x), end=' ')
+				if verbose: print ('%s'%self.li_in[i].ljust(x),)
 			else:
-				if verbose: print(''.ljust(x), end=' ')
-		if verbose: print()
+				if verbose: print (''.ljust(x),)
+		if verbose: print ()
 		for i in range(len(self.li_out_dev)):
 			if self.li_out[i] != 'open':
 				for j in range(len(self.li_in)):
 					if self.li_out[i] == self.li_in[j]:
-						if verbose: print(str('X').ljust(x), end=' ')
+						if verbose: print (str('X').ljust(x),)
 						self.li[i][j] = 1
 					else:
-						if verbose: print(str('.').ljust(x), end=' ')
+						if verbose: print (str('.').ljust(x),)
 				if verbose: 
-					print(self.li_out[i].ljust(2), end=' ') 
-					print(str(i).ljust(2))
+					print (self.li_out[i].ljust(2),) 
+					print (str(i).ljust(2))
 			else:
 				for j in range(len(self.li_in)):
-					if verbose: print(str('.').ljust(x), end=' ')
-				if verbose: print('%s%s'%(''.ljust(3), str(i).ljust(2)))
+					if verbose: print (str('.').ljust(x),)
+				if verbose: print ('%s%s'%(''.ljust(3), str(i).ljust(2)))
 		for i in range(len(self.li_out_out)):
 			for j in range(len(self.li_in_in)):
-				if verbose: print(''.ljust(x), end=' ')
+				if verbose: print (''.ljust(x),)
 			for j in range(len(self.li_in_dev)):
 				if self.li_out_out[i] == self.li_in_dev[j] and self.li_out_out[i] != 'open':
-					if verbose: print('X'.ljust(x), end=' ')
+					if verbose: print ('X'.ljust(x),)
 					self.li[i+len(self.li_out_dev)][j+len(self.li_in_in)] = 1
 				else:
-					if verbose: print('.'.ljust(x), end=' ')
+					if verbose: print ('.'.ljust(x),)
 			if self.li_out_out[i] == 'open':
-				if verbose: print(self.li_out_out[i])
+				if verbose: print (self.li_out_out[i])
 			else:
-				if verbose: print(self.li_out_out[i])
+				if verbose: print (self.li_out_out[i])
 
 		#actually generating the switches addresses here  
 		self.swcsFromLi()    
@@ -2038,7 +2061,7 @@ class cab2(complexBlock):
 		self.genLI('verbose')
 
 	def genDevFgs(self):
-		print("getting here!")
+		print ("getting here!")
 		verbose = 0
 		for i in range(len(self.subblocks)):
 			sb = self.getSub(i)
@@ -2047,7 +2070,7 @@ class cab2(complexBlock):
 				if sb.ex_fgs:
 					ex_fg=sb.ex_fgs.split("&")
 					for s in range(len(ex_fg)):
-						print("ok here too22")
+						print ("ok here too22")
 						for j in ex_fg[s].split()[::2]:
 							swc_name1 = j+'['+sb.name.split('[')[1]
 							swc0 = self.stats.dev_fgs[swc_name0]
@@ -2059,7 +2082,7 @@ class cab2(complexBlock):
 									swc1=swc2[n]
 								swc = [swc0[0]+swc1[0], swc0[1]+swc1[1]]
 								swcx = self.array_stats.getTileOffset(swc, self.grid_loc)
-								if verbose: print('%s %s -> (%g %g) -> (%g %g)'%(swc_name0, swc_name1, swc[0], swc[1], swcx[0], swcx[1]))
+								if verbose: print ('%s %s -> (%g %g) -> (%g %g)'%(swc_name0, swc_name1, swc[0], swc[1], swcx[0], swcx[1]))
 								if n==0: ##double check
 									swcx.append(ex_fg[s].split('=')[1])
 								else:
@@ -2131,27 +2154,27 @@ class ioblock(complexBlock):
 						swc_name1 = csub.type
 						swc_name1 = swc_name1.strip()
 				elif(csub.grid_loc[0] == 0):       #Michelle
-					print('Using a DAC')
+					print ('Using a DAC')
 					self.stats=ioeStats()
 					swc_name0 = port_east[csub.number]
 					swc_name1 = csub.type
 				else:
-					print('IO block does not exist!')
+					print ('IO block does not exist!')
 				if (swc_name1 == 'int[0]' or swc_name1 == '') :
 					pdb.set_trace()
 				if (swc_name1[1:-3] != 'int'and csub.name != 'gnd' and csub.name != 'vcc' and csub.name != 'out:gnd') :    #we'll pick these up in the devFG generation          
-					print(csub)
+					print (csub)
 					swc_name1=swc_name1[1:]
 					swc0 = self.stats.li[swc_name0] #get input name
 					swc1 = self.stats.li[swc_name1] #get input type
 					swc = [swc0[0]+swc1[0],swc0[1]+swc1[1]]
 					swcx = self.array_stats.getTileOffset(swc, self.grid_loc)
-					if verbose: print('%s %s -> (%g %g) -> (%g %g)'%(swc_name0, swc_name1, swc[0], swc[1], swcx[0], swcx[1]))
+					if verbose: print ('%s %s -> (%g %g) -> (%g %g)'%(swc_name0, swc_name1, swc[0], swc[1], swcx[0], swcx[1]))
 					self.swcs.append(swcx)
 
 	###gendevFgs --IO BLOCK $$
 	def genDevFgs(self):
-		print("I/O Blocks dev FGs")
+		print ("I/O Blocks dev FGs")
 		for i in range(len(self.subblocks)):
 			csub = self.getSub(i)
 			if csub.outputs != 'open' and csub.type[1:-3] in ['int','tgate','ana_buff_out','ana_buff_in','dig_buff_out','dig_buff_in'] : #?? dunno why was a condition
@@ -2170,18 +2193,18 @@ class ioblock(complexBlock):
 					else:
 						self.stats=ionaStats()	
 				else:
-					print('I/O block does not exist!!!')  
+					print ('I/O block does not exist!!!')  
 				if csub.grid_loc[0] in [0]:
-					print('NO FGSSSSSS!')
+					print ('NO FGSSSSSS!')
 					continue
 				else:
 					dev_type = csub.type[1:]		
 					nswcs = self.stats.dev_fgs[dev_type]
 					for i in range(len(nswcs)):
 						swc = [nswcs[i][0],nswcs[i][1]]
-						print('!!!!!!!!!!!!!!%s --> '%(dev_type), end=' ')
+						print ('!!!!!!!!!!!!!!%s --> '%(dev_type),)
 						swcx = self.array_stats.getTileOffset(swc, self.grid_loc)
-						print('DEV FGs  -> (%g %g) -> (%g %g)'%(swc[0], swc[1], swcx[0], swcx[1]))
+						print ('DEV FGs  -> (%g %g) -> (%g %g)'%(swc[0], swc[1], swcx[0], swcx[1]))
 						if csub.type[1:-3] in ['ana_buff_out','ana_buff_in'] and i==1:
 							swcx.append('0.000002')
 							swcx.append(2)
