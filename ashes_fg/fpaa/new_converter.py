@@ -40,10 +40,14 @@ assign pad_num = %s;
 endmodule
 '''
 
+## modified
 dc_in_pat = '''
 module dc_in();
 output %s;
 assign parameter = %s;
+assign fix_loc_enabled = %s;
+assign fix_loc_x = %s;
+assign fix_loc_y = %s;
 endmodule
 '''
 
@@ -57,15 +61,18 @@ module_list = []
 
 # pase root node recursively to construct verilog syntax
 def parse_py(node):
-    # print("start parsing")
+    print("start parsing")
     if isinstance(node, ast.Module):
         for b in node.body:
-            mod_obj = parse_py(b)
+        	print(ast.dump(b))
+        	print("\n")
+        	mod_obj = parse_py(b)
         return mod_obj
     if isinstance(node, ast.FunctionDef):
         mod_obj = table_class.module_ast(node.name, board_type="FPAA")
         for b in node.body:
             mod_obj = module_parse(b, mod_obj)
+            print("mod_obj after module_parse in FunctionDef:\n\n", vars(mod_obj))
         return mod_obj
     # construct verilog code
 
@@ -178,7 +185,7 @@ def construct_in_out_module(mod):
         elif isinstance(mod.in_out_submod[sub_m], fg.dc_in):
             t_net = add_net(sub_m)
             module_v_code_list.append(
-                dc_in_pat % (t_net, mod.in_out_submod[sub_m].DC_value))
+                dc_in_pat % (t_net, mod.in_out_submod[sub_m].DC_value, mod.in_out_submod[sub_m].fix_loc_enabled, mod.in_out_submod[sub_m].fix_loc_x, mod.in_out_submod[sub_m].fix_loc_y)) ## modified ##
         elif isinstance(mod.submod[sub_m], fg.gpio_in):
             t_net = add_net(sub_m)
             module_v_code_list.append(gpio_in_pat % (t_net))
@@ -333,6 +340,9 @@ def fpaa_compile(funcName):
     if "flag_std_lib." in func:
         func = func.replace("flag_std_lib.", "fg.")
     root = ast.parse(func)
+    print("PARSED MODULE\n\n")
+    print(ast.dump(root))
+    print("END PARSED MODULE\n\n")
     m = parse_py(root)
     v_code += "module %s();\n" % (m.mod_name)
     construct_in_out_module(m)
@@ -341,6 +351,8 @@ def fpaa_compile(funcName):
     for i in module_v_code_list:
         v_code += i
     v_code += '\n'
+    print("V code is... \n\n")
+    print(v_code)
     return v_code
 
 if __name__ == "__main__":

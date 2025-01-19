@@ -132,13 +132,24 @@ def test3():
 ## ORS GUI Examples
 def c4_offchip():
     inpad1 = fg.inpad([5])
-    input_voltage = fg.dc_in(1.3)
-    c4_out = fg.c4_sp([inpad1, input_voltage])
+    input_voltage = fg.dc_in(1.9, fix_loc = [0,5,5])
+    c4_out = fg.C4_BPF([input_voltage, inpad1], C4_BPF_Feedback_ibias =0.4e-09, C4_BPF_Forward_ibias = 3.5e-09, fix_loc=[0,5,6])
     outpada = fg.outpada(c4_out, [6])
+    
+#C4_BPF_ls =0&
+#C4_BPF_Feedback_ibias =5.000000e-09&
+#C4_BPF_Feedback_pbias =1.000000e-06&
+#C4_BPF_Feedback_nbias =1.000000e-06&
+#C4_BPF_Forward_ibias =1.000000e-06&
+#C4_BPF_Forward_pbias =1.000000e-06&
+#C4_BPF_Forward_nbias =1.000000e-06&
+#C4_BPF_Buffer_ibias =1.000000e-05&
+#C4_BPF_Cin_1x_cs =1&
+#C4_BPF_Cfb_1x_cs =1
 
 def ors_buffer():
     inpad1 = fg.inpad([5])
-    buff_out = fg.ota_buf(inpad1)
+    buff_out = fg.ota_buf(inpad1, fix_loc = [1,5,5])
     outpad = fg.outpad(buff_out, [6])
     
 def drain_follower_nfet():
@@ -154,7 +165,7 @@ def drain_follower_pfet():
     outpad = fg.outpad(buf, [6])
 	
 def cs_amp():
-    inpad1 = fg.inpad([5])
-    src_amp = fg.common_source(inpad1, common_source_ibias='5e-07')
-    buf_out = fg.ota_buf(src_amp)
-    outpad = fg.outpad(buf_out, [6])	
+	inpad1 = fg.inpad([5])
+	src_amp = fg.common_source(inpad1, common_source_ibias='5e-07', fix_loc = [1,1,5])
+	buf_out = fg.ota_buf(src_amp, fix_loc = [1,3,5])
+	outpad = fg.outpad(buf_out, [6])	

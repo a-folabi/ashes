@@ -199,7 +199,16 @@ def v2blif(verilog_data, out_path):
                     n_bias_ln = 1.658236340989905*volt-16.781129443839024
                     n_bias = round(math.exp(n_bias_ln),10)
                     f.write(' #fgota_bias =2e-06&fgota_p_bias =2e-06&fgota_n_bias ='+str(n_bias))
-                    f.write('&fgota_small_cap =0\n\n')
+                    ## MODIFIED
+                    f.write('&fgota_small_cap =0') ## remove double line break after =0
+                    f.write('&fix_loc_enabled =' + str(modules[i].assignments[1].assignments[0][1][1:]))  
+                    f.write('&fix_loc_x =' + str(modules[i].assignments[2].assignments[0][1][1:]))
+                    f.write('&fix_loc_y =' + str(modules[i].assignments[3].assignments[0][1][1:]))
+                    f.write('\n\n') ## double line break after new parameters
+                    '''
+                    print("Assingments")
+                    print('&fix_loc_enabled =' + str(modules[i].assignments[1].assignments[0][1][1:]))
+                    '''
                 #lpf handling
                 elif modules[i].module_name == 'lpfota':
                     f.write('# LPF\n')

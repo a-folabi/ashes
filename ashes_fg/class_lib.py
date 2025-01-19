@@ -30,9 +30,12 @@ class outpad:
         self.pad_number = pad_number
 
 class outpada:
-	def __init__(self,input,pad_number):
+	def __init__(self,input,pad_number, fix_loc = [0,0,0]):
 		self.input=input
 		self.pad_number=pad_number
+		self.fix_loc_enabled = fix_loc[0]
+		self.fix_loc_x = fix_loc[1]
+		self.fix_loc_y = fix_loc[2]
 
 class BPF:
     def __init__(self,
@@ -273,11 +276,16 @@ class ota_buf:
                  num_instances='1',
                  type='FPAA',
                  board=['3.0', '3.0a'],
-                 ota_buf_bias='1e-05'):
+                 ota_buf_bias='1e-05', 
+                 fix_loc = [0,0,0]):
         self.input = input
         self.num_instances = num_instances
         self.ota_buf_bias = ota_buf_bias
         self.ota_buf_ls = 0
+        self.fix_loc_enabled = fix_loc[0]
+        self.fix_loc_x = fix_loc[1]
+        self.fix_loc_y = fix_loc[2]
+
 
 
 class hhn:
@@ -351,11 +359,15 @@ class common_source:
                  type='FPAA',
                  board=['3.0', '3.0a'],
                  common_source_ls='0',
-                 common_source_ibias='5.000D-08'):
+                 common_source_ibias='5.000D-08',
+                 fix_loc = [0,0,0]):
         self.input = input
         self.num_instances = num_instances
         self.common_source_ls = common_source_ls
         self.common_source_ibias = common_source_ibias
+        self.fix_loc_enabled = fix_loc[0]
+        self.fix_loc_x = fix_loc[1]
+        self.fix_loc_y = fix_loc[2]
 
 
 class VolDivide1:
@@ -547,6 +559,47 @@ class c4_sp:
         self.Feedback_bias_p = Feedback_bias_p
         self.num_caps = num_caps
 
+class C4_BPF:
+    def __init__(self,
+                 input,
+                 num_instances='1',
+                 type='FPAA',
+                 board=['3.0', '3.0a'],
+				 C4_BPF_Feedback_ibias =5.000000e-09,
+        		 C4_BPF_Feedback_pbias =1.000000e-06,
+        		C4_BPF_Feedback_nbias =1.000000e-06,
+        		C4_BPF_Forward_ibias =1.000000e-06,
+        		C4_BPF_Forward_pbias =1.000000e-06,
+        		C4_BPF_Forward_nbias =1.000000e-06,
+        		C4_BPF_Buffer_ibias =1.000000e-05, 
+        		fix_loc = [0,0,0]
+        		):
+        self.input = input
+        self.num_instances = num_instances
+        self.C4_BPF_ls = 0
+        self.C4_BPF_Feedback_ibias =C4_BPF_Feedback_ibias
+        self.C4_BPF_Feedback_pbias =C4_BPF_Feedback_pbias
+        self.C4_BPF_Feedback_nbias =C4_BPF_Feedback_nbias
+        self.C4_BPF_Forward_ibias =C4_BPF_Forward_ibias
+        self.C4_BPF_Forward_pbias =C4_BPF_Forward_pbias
+        self.C4_BPF_Forward_nbias =C4_BPF_Forward_nbias
+        self.C4_BPF_Buffer_ibias =C4_BPF_Buffer_ibias
+        self.C4_BPF_Cin_1x_cs = 1
+        self.C4_BPF_Cfb_1x_cs = 1
+        self.fix_loc_enabled = fix_loc[0]
+        self.fix_loc_x = fix_loc[1]
+        self.fix_loc_y = fix_loc[2]
+
+#C4_BPF_ls =0&
+#C4_BPF_Feedback_ibias =5.000000e-09&
+#C4_BPF_Feedback_pbias =1.000000e-06&
+#C4_BPF_Feedback_nbias =1.000000e-06&
+#C4_BPF_Forward_ibias =1.000000e-06&
+#C4_BPF_Forward_pbias =1.000000e-06&
+#C4_BPF_Forward_nbias =1.000000e-06&
+#C4_BPF_Buffer_ibias =1.000000e-05&
+#C4_BPF_Cin_1x_cs =1&
+#C4_BPF_Cfb_1x_cs =1
 
 class HH_RG:
     def __init__(self,
@@ -592,8 +645,11 @@ class gpio_in:
 
 
 class dc_in:
-    def __init__(self, DC_value):
+    def __init__(self, DC_value, fix_loc = [0,0,0]):
         self.DC_value = DC_value
+        self.fix_loc_enabled = fix_loc[0]
+        self.fix_loc_x = fix_loc[1]
+        self.fix_loc_y = fix_loc[2]
 
 
 class GENARB_f:

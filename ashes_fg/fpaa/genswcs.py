@@ -7,6 +7,7 @@ import pdb
 from subprocess import call
 from os.path import isfile
 import copy
+import re
 
 
 from ashes_fg.fpaa.rasp30 import *
@@ -18,6 +19,7 @@ from ashes_fg.fpaa.rasp30a import rasp30a as chipStats_30a
 from ashes_fg.fpaa.rasp30a import arrayStats as arrayStats_used_rasp30a
 
 def main(bs_circuit_loc, bs_run_dir, bs_board_arch, bs_vpr_disp=None, bs_pins_file=None):
+
 	#Change: moved initialization variables inside main function and made them global
 	#intialization
 	global rasp3a
@@ -73,11 +75,35 @@ def main(bs_circuit_loc, bs_run_dir, bs_board_arch, bs_vpr_disp=None, bs_pins_fi
 	circuit_name = circuit_loc.split('/')[-1]
 	if not pins_file and isfile(circuit_loc + '.pads'): pins_file = circuit_loc + '.pads'        
 	print(run_dir)
-	#--- main functions ---    
+	#--- main functions ---  
+	
+	# FIRST THING: get fixed locations from blif file and repair blif file (remove fixed locations) before other fucntions use it. 
+	
+	## Go through blif and find fixed locations
+	fixed_locations = extract_fixed_locations(circuit_loc + '.blif') # fixed_locations stores [subblock name, x location, y location]
+	print("Fixed Locations: ")
+	print(fixed_locations)
+	  
+	## remove fixed location information from blif as to not interfere with other functions. 
+	removeFixedLocationFromBlif(circuit_loc + '.blif')
+	
 	if not arch_file: arch_file = dirx + parseBlif(circuit_loc + '.blif')
 	xarray = pbarray(len(chipStats().array.pattern),len(chipStats().array.pattern[0])) #initial import
 
+	## Call first pass VTR
+	print('/home/ubuntu/rasp30/vtr_release/vpr/vpr /home/ubuntu/ashes/ashes_fg/fpaa/arch/'+bs_board_arch+'_arch.xml ' + bs_circuit_loc  +'  -route_chan_width 17 -timing_analysis off -fix_pins ' + bs_circuit_loc + '.pads -nodisp')
+	os.system('/home/ubuntu/rasp30/vtr_release/vpr/vpr /home/ubuntu/ashes/ashes_fg/fpaa/arch/'+bs_board_arch+'_arch.xml ' + bs_circuit_loc + '  -route_chan_width 17 -timing_analysis off -fix_pins ' + bs_circuit_loc + '.pads -nodisp')
+		
+	## Go through net and pair name - net using fixed_locations block names
+	fixed_locations = extract_net_values('%s/%s.net'%(run_dir, circuit_name), fixed_locations)
+	print(fixed_locations)
+	
+	## go through place and modify place file accordingly
+	modifyPlaceFile('%s/%s.place'%(run_dir, circuit_name), fixed_locations)
+	
+	
 	runVTR(arch_file, circuit_loc, pins_file, run_dir, vpr_disp)   
+
 	parseNet('%s/%s.net'%(run_dir, circuit_name))
 	parsePlace('%s/%s.place'%(run_dir, circuit_name))
 	if (pins_file): parsePads(pins_file)
@@ -86,6 +112,72 @@ def main(bs_circuit_loc, bs_run_dir, bs_board_arch, bs_vpr_disp=None, bs_pins_fi
 	printSwcs('%s/%s.swcs'%(run_dir, circuit_name))
 	saveCaps('%s/%s.caps'%(run_dir, circuit_name))
     
+def extract_fixed_locations(blif_file):
+	fixed_modules = []
+	
+	f = open(blif_file ,'r')	
+	for line in f:
+		words = line.split()
+		if len(words):
+			if words[0] == '.subckt':
+				subckt = words[1] # on a block
+				line_no_spaces = re.sub(r"\s+", "", line)
+				fix_loc_x = re.search(r'fix_loc_x=(-?\d+)', line_no_spaces)
+				fix_loc_y = re.search(r'fix_loc_y=(-?\d+)', line_no_spaces)
+				fix_loc_enable = re.search(r'fix_loc_enabled\s*=\s*1', line)
+				print("Fixed Loc Enable Result")
+				print(fix_loc_enable)
+				#print(fix_loc_enable.group(1))
+				if fix_loc_enable:
+					fixed_modules.append([subckt, fix_loc_x.group(1), fix_loc_y.group(1)])
+	return fixed_modules
+	
+	
+def extract_net_values(net_file, name_loc_array):
+	new_array = []
+	for block in name_loc_array:
+		name = block[0]
+		f = open(net_file ,'r')	
+		for line in f:
+			if name in line and not("open" in line): # check the block is present and not open
+				# found the netx_x line
+				net = re.search(r'name\s*=\s*"([^"]+)"', line)
+				if not(net): print("NO NET FOUND FOR " + name)
+				new_array.append([block[0], block[1], block[2], net.group(1)])
+	return new_array
+
+def modifyPlaceFile(place_file, locations_list):
+	# store place file into lines
+	with open(place_file, 'r') as f:
+		lines = f.readlines()
+	
+	# go through modifications
+	for mod in locations_list:
+		net_name = mod[3]
+		for i, line in enumerate(lines):
+			if line.startswith(net_name):
+				parts = line.split()
+				# new x and new y
+				parts[1] = str(mod[1])
+				parts[2] = str(mod[2])
+				lines[i] = ' '.join(parts) + '\n' # place line back together
+	
+	with open(place_file, 'w') as f:
+		f.writelines(lines)		
+
+def removeFixedLocationFromBlif(blif_file):
+
+	with open(blif_file, 'r') as f:
+		lines = f.readlines()
+		
+	for i in range(len(lines)):
+		lines[i] = re.sub(r'&\s*fix_loc_[a-zA-Z0-9_]*\s*=\s*[^&]*', '', lines[i])
+		print(lines[i])
+	
+	with open(blif_file, 'w') as file:
+		file.writelines(lines)
+		
+
 def runVTR(arch_file, circuit, pins_file, run_dir, vpr_disp):
 	DEBUG = 0
 	vpr_loc = '/home/ubuntu/rasp30/vtr_release/vpr/vpr'
@@ -97,19 +189,26 @@ def runVTR(arch_file, circuit, pins_file, run_dir, vpr_disp):
 	place_file = '%s/%s.place'%(run_dir, circuit_name)
 	route_file = '%s/%s.route'%(run_dir, circuit_name)
 
-	if fix_cab>0:
+
+	exec_str = '%s %s -route %s '\
+	%(vpr_loc, arch_file, circuit)
+
+
+	'''
+	if fixed_location>0:
 		exec_str = '%s %s -route %s '\
 		%(vpr_loc, arch_file, circuit)
 	else:
 		exec_str = '%s %s %s -net_file %s -place_file %s -route_file %s '\
 		%(vpr_loc, arch_file, circuit, net_file, place_file, route_file )
-
+	'''	
 	if chan_width > 0: exec_str = exec_str + ' -route_chan_width %g'%(chan_width)
 	if pins_file and fix_cab==0: exec_str = exec_str + ' -fix_pins %s'%(pins_file)   
 	if vpr_disp == 0: exec_str = exec_str + ' -nodisp'
 	if ff_custom >0: exec_str= exec_str + ' -timing_analysis off' #Michelle added on
 	#exec_str= exec_str + ' -place_algorithm net_timing_driven -seed 20' #Michelle added this line
 
+	print("genswcs - Call VRT: ")
 	print(exec_str)
 	if not DEBUG: call(exec_str.split())
 
@@ -645,13 +744,14 @@ def parseBlif(file_name):
 				subckt = words[1]
 				print('%s %s'%(words[0], subckt))
 
+
 				#count vmm type and num
 				if subckt in ['hyst_diff']: macroblk=macroblk+1
 				#a = '.subckt ota in[1] = i4  out=o3 # ota_bias 0.9 ota_p_bias 0.5 ota_n_bias 0.5'
 				dev_type = line.split(' ')[1]
 
 				if len(line.split('#')) > 1:
-					ex_fgs = line.split('#')[1].rstrip()
+					ex_fgs = line.split('#')[1].rstrip() # parameters after # in .blif file. 
 				else:
 					ex_fgs = 0
 
@@ -659,6 +759,7 @@ def parseBlif(file_name):
 				for i in line.split('=')[1:]:
 					port = i.lstrip().split(' ')[0].rstrip()
 					ports.append(port)
+				print("Ports: ")
 				print(ports)               
                 #key = dev_type + ' ' + ' '.join(ports) # this key is type + port list
 				if subckt in ['lpf_2','meas_volt_mite','cap','ota_buf','ota_buffer','lpf','nfet_i2v','pfet_i2v','i2v_pfet_gatefgota','nmirror','TIA_blk']: ## single i/ps
@@ -723,6 +824,8 @@ def parseBlif(file_name):
 					key=ports[1]
 				elif subckt in ['vmm_offc']:
 					key=ports[13]
+				elif subckt in ['C4_BPF']:
+					key=ports[2]
 				else:
 					key = ports[2] #this key is just output port name
 				if ex_fgs:
@@ -751,7 +854,8 @@ def parseBlif(file_name):
 	# print 'vmm types: 4x4, 8x8, 12x12, 16x16: %g %g %g %g'%(num_4x4, num_8x8, num_12x12, num_16x16)
             
 	arch_file = './arch/rasp3_arch.xml'
-	if rasp3a > 0:   arch_file = './arch/rasp3a_arch.xml'
+	#if rasp3a > 0:   arch_file = '/home/ubuntu/rasp30/vpr2swcs/arch/rasp3a_arch.xml'
+	if rasp3a > 0:   arch_file = 'arch/rasp3a_arch.xml'
 	return arch_file  
             
             
@@ -889,12 +993,12 @@ def parseRoute(file_name):
 							swc = getSwcCblock(tile_t, cgl, 'CHANX', track, lgl, new_route['name'], c_outin)
 						else:
 							swc = getSwcCblock(tile_t, cgl, 'CHANY', track, lgl, new_route['name'], c_outin)
-						print('~~~~ PIN SINK ~~~~ || net %s -> pin %s in %s %s'%(new_route['name'], cur[3], cgl[0], cgl[1]))
+						print ('~~~~ PIN SINK ~~~~ || net %s -> pin %s in %s %s'%(new_route['name'], cur[3], cgl[0], cgl[1]))
 
 						#update pin order
 						xarray.getSub(int(cgl[0]),int(cgl[1])).movePort(new_route['name'][1:-1], tile_t)
 
-					if VERBOSE: print('SWC ')
+					if VERBOSE: print ('SWC ')
 					swcs.append(swc)
 
 				if cur[0] == 'IPIN': #$$ add the pin number for 
