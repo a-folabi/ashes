@@ -4,11 +4,14 @@ def main():
 	#os.chdir(path)
 	#performs tunnel_revtun_ver00_gui.sce functionality
 	# subprocess.run(["/usr/local/bin/python", "-c", "print('This is a subprocess')"])
-	print("run subprocess:\n")
+	print("run subprocess 1:\n")
 	#a1=subprocess.run(["/usr/bin/python", "-c", "os.system('tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/program.tcl " ,  "-speed", " 115200 tunnel_revtun_SWC_CAB.elf')"])
+	cmd_path = "%s:%s" % ("/home/ubuntu/rasp30/prog_assembly/libs/tcl/", os.environ["PATH"])
+	cmd_env = os.environ.copy().update(PATH=cmd_path)
 	while True:
 		try:
-			a1=subprocess.run(["tclsh", "/home/ubuntu/rasp30/prog_assembly/libs/tcl/program.tcl", "-speed", "115200", "tunnel_revtun_SWC_CAB.elf"])
+			a1=subprocess.run(["tclsh", "program.tcl", "-speed", "115200", "/home/ubuntu/ashes/ors_buffer/tunnel_revtun_SWC_CAB.elf"], cwd="/home/ubuntu/rasp30/prog_assembly/libs/tcl")
+			print("Ran subprocess 1")
 			break
 		except:
 			print("failed: trying again")
@@ -16,7 +19,10 @@ def main():
 	#performs switch_program_ver05_gui.sce functionality
 	while True: 
 		try:
+			print("run subprocess 2:\n")
 			subprocess.run(["tclsh", "/home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl", "start_address", "0x5500", "-input_file_name switch_info"])
+			#cwd="/home/ubuntu/rasp30/prog_assembly/libs/tcl"
+			print("ran subprocess 2")
 			break
 		except:
 			print("failed: trying again")
