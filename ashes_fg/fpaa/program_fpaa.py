@@ -17,7 +17,7 @@ def main():
 			output = a1.communicate()
 			success_message = "Program completed."
 			failure_message = "failed"
-			if success_message in output[0]:
+			if success_message in output[0] and returncode == 0:
 				print("Ran subprocess 1: success")
 				break
 			else:
@@ -31,11 +31,17 @@ def main():
 	while True: 
 		try:
 			print("run subprocess 2:\n")
-			subprocess.run(["tclsh", "/home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl", "start_address", "0x5500", "-input_file_name switch_info"])
-			#cwd="/home/ubuntu/rasp30/prog_assembly/libs/tcl"
-			print("ran subprocess 2")
-			break
-		except:
+			proc = subprocess.run(["tclsh", "/home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl", "start_address", "0x5500", "-input_file_name switch_info"], cwd="/home/ubuntu/rasp30/prog_assembly/libs/tcl", stdout = subprocess.PIPE, text=True)
+			returncode = proc.wait()
+			output = proc.communicate()
+			success_message = "Writing file: "
+			if success_message in output[0] and returncode == 0:
+				print("Ran subprocess 2: success")
+				break
+			else:
+				print(output[0])
+				raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
+		except subprocess.CalledProcessError:
 			print("failed: trying again")
 	while True: 
 		try:
