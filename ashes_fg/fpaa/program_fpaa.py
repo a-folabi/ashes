@@ -6,17 +6,25 @@ def main():
 	# subprocess.run(["/usr/local/bin/python", "-c", "print('This is a subprocess')"])
 	print("run subprocess 1:\n")
 	#a1=subprocess.run(["/usr/bin/python", "-c", "os.system('tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/program.tcl " ,  "-speed", " 115200 tunnel_revtun_SWC_CAB.elf')"])
-	cmd_path = "%s:%s" % ("/home/ubuntu/rasp30/prog_assembly/libs/tcl/", os.environ["PATH"])
-	cmd_env = os.environ.copy().update(PATH=cmd_path)
+	#cmd_path = "%s:%s" % ("/home/ubuntu/rasp30/prog_assembly/libs/tcl/", os.environ["PATH"])
+	#cmd_env = os.environ.copy().update(PATH=cmd_path)
+	returncode = -1
+	#returncode != 0
 	while True:
-		a1=subprocess.run(["tclsh", "program.tcl", "-speed", "115200", "/home/ubuntu/ashes/ors_buffer/tunnel_revtun_SWC_CAB.elf"], cwd="/home/ubuntu/rasp30/prog_assembly/libs/tcl", stdout = subprocess.PIPE, text=True)
-		output = a1.stdout
-		success_message = "Program completed."
-		if success_message in output:
-			print("Ran subprocess 1: success")
-			break
-		print(output)
-		print("failed: trying again")
+		try:
+			a1=subprocess.Popen(["tclsh", "program.tcl", "-speed", "115200", "/home/ubuntu/ashes/ors_buffer/tunnel_revtun_SWC_CAB.elf"], cwd="/home/ubuntu/rasp30/prog_assembly/libs/tcl", stdout = subprocess.PIPE, text=True)
+			returncode = a1.wait()
+			output = a1.stdout
+			success_message = "Program completed."
+			if success_message in output:
+				print("Ran subprocess 1: success")
+				break
+			else:
+				print(output.readline())
+				raise subprocess.CalledProcessError(returncode=a1.returncode, cmd=a1.args)
+		except subprocess.CalledProcessError:
+			print("failed: trying again")
+
 	#return()
 	#performs switch_program_ver05_gui.sce functionality
 	while True: 
@@ -31,6 +39,7 @@ def main():
 	while True: 
 		try:
 			subprocess.run(["tclsh", "/home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -" ,"start_address", "0x7000", "-input_file_name switch_info"])
+			print("ran subprocess 3")
 			break
 		except:
 			print("failed: trying again")
