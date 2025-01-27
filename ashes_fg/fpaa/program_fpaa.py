@@ -14,13 +14,14 @@ def main():
 		try:
 			a1=subprocess.Popen(["tclsh", "program.tcl", "-speed", "115200", "/home/ubuntu/ashes/ors_buffer/tunnel_revtun_SWC_CAB.elf"], cwd="/home/ubuntu/rasp30/prog_assembly/libs/tcl", stdout = subprocess.PIPE, text=True)
 			returncode = a1.wait()
-			output = a1.stdout
+			output = a1.communicate()
 			success_message = "Program completed."
-			if success_message in output:
+			failure_message = "failed"
+			if success_message in output[0]:
 				print("Ran subprocess 1: success")
 				break
 			else:
-				print(output.readline())
+				print(output[0])
 				raise subprocess.CalledProcessError(returncode=a1.returncode, cmd=a1.args)
 		except subprocess.CalledProcessError:
 			print("failed: trying again")
