@@ -9,12 +9,14 @@ def main():
 	cmd_path = "%s:%s" % ("/home/ubuntu/rasp30/prog_assembly/libs/tcl/", os.environ["PATH"])
 	cmd_env = os.environ.copy().update(PATH=cmd_path)
 	while True:
-		try:
-			a1=subprocess.run(["tclsh", "program.tcl", "-speed", "115200", "/home/ubuntu/ashes/ors_buffer/tunnel_revtun_SWC_CAB.elf"], cwd="/home/ubuntu/rasp30/prog_assembly/libs/tcl")
-			print("Ran subprocess 1")
+		a1=subprocess.run(["tclsh", "program.tcl", "-speed", "115200", "/home/ubuntu/ashes/ors_buffer/tunnel_revtun_SWC_CAB.elf"], cwd="/home/ubuntu/rasp30/prog_assembly/libs/tcl", stdout = subprocess.PIPE, text=True)
+		output = a1.stdout
+		success_message = "Program completed."
+		if success_message in output:
+			print("Ran subprocess 1: success")
 			break
-		except:
-			print("failed: trying again")
+		print(output)
+		print("failed: trying again")
 	#return()
 	#performs switch_program_ver05_gui.sce functionality
 	while True: 
