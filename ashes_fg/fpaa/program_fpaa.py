@@ -12,22 +12,19 @@ def main():
 	#returncode != 0
 	while True:
 		try:
-			a1=subprocess.Popen(["tclsh", "program.tcl", "-speed", "115200", "/home/ubuntu/ashes/ors_buffer/tunnel_revtun_SWC_CAB.elf"], cwd="/home/ubuntu/rasp30/prog_assembly/libs/tcl")
+			a1=subprocess.Popen(["tclsh", "program.tcl", "-speed", "115200", "/home/ubuntu/ashes/ors_buffer/tunnel_revtun_SWC_CAB.elf"], cwd="/home/ubuntu/rasp30/prog_assembly/libs/tcl", stdout = subprocess.PIPE, text=True)
 			returncode = a1.wait()
-			print(returncode)
-			if returncode != 0:
+			output = a1.stdout
+			success_message = "Program completed."
+			if success_message in output:
+				print("Ran subprocess 1: success")
+				break
+			else:
+				print(output.readline())
 				raise subprocess.CalledProcessError(returncode=a1.returncode, cmd=a1.args)
-				#print("failed: trying again")
 		except subprocess.CalledProcessError:
 			print("failed: trying again")
-		#except KeyboardInterrupt:
-		# 	print("keyboard interrupt triggered")
-		#	a1.send_signal(9)
-		#	a1.wait()
-		#	print("process killed")
-			#os.killpg(os.getpgid(a1.pid), signal.SIGKILL)
-			
-	print("Ran subprocess 1")
+
 	#return()
 	#performs switch_program_ver05_gui.sce functionality
 	while True: 
