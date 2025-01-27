@@ -22,6 +22,7 @@ def compile(system, project_name, chip_num, board_type = '3.0a'):
     bs.blif2swcs(sys_name, project_name, board_type, out_path)
     ca(project_name, board_type, chip_num)
     os.chdir(f'{out_path}')
+
     
     pf.main()
     #os.system('python /home/ubuntu/ashes/ashes_fg/fpaa/program_fpaa.py')
