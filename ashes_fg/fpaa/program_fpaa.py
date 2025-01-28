@@ -5,45 +5,55 @@ def main():
 	#performs tunnel_revtun_ver00_gui.sce functionality
 	# subprocess.run(["/usr/local/bin/python", "-c", "print('This is a subprocess')"])
 	print("run subprocess 1:\n")
-	#a1=subprocess.run(["/usr/bin/python", "-c", "os.system('tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/program.tcl " ,  "-speed", " 115200 tunnel_revtun_SWC_CAB.elf')"])
+	#os.system("sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/program.tcl -speed 115200 tunnel_revtun_SWC_CAB.elf")
+	#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/program.tcl -speed 115200 tunnel_revtun_SWC_CAB.elf"], shell=True)
+	
+	#a1 = subprocess.run(["tclsh /home/ubuntu/Documents/temp.tcl"], shell=True)
+	
+	#print(f"stdout {a1.stdout}")
+	#a1=subprocess.Popen(["tclsh", "/home/ubuntu/rasp30/prog_assembly/libs/tcl/program.tcl", "-speed", "115200", "tunnel_revtun_SWC_CAB.elf"], stdout = subprocess.PIPE, shell=True)
+	#output = a1.communicate()
+	#print(f"{output[0]}")
 	#cmd_path = "%s:%s" % ("/home/ubuntu/rasp30/prog_assembly/libs/tcl/", os.environ["PATH"])
 	#cmd_env = os.environ.copy().update(PATH=cmd_path)
 	returncode = -1
 	#returncode != 0
 	while True:
 		try:
-			a1=subprocess.Popen(["tclsh", "program.tcl", "-speed", "115200", "/home/ubuntu/ashes/ors_buffer/tunnel_revtun_SWC_CAB.elf"], cwd="/home/ubuntu/rasp30/prog_assembly/libs/tcl", stdout = subprocess.PIPE, text=True)
-			returncode = a1.wait()
-			output = a1.communicate()
+			#a1=subprocess.Popen(["tclsh", "/home/ubuntu/rasp30/prog_assembly/libs/tcl/program.tcl", "-speed", "115200", "/home/ubuntu/ashes/ors_buffer/tunnel_revtun_SWC_CAB.elf"], stdout = subprocess.PIPE, text=True)
+			a1=subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/program.tcl speed 115200 tunnel_revtun_SWC_CAB.elf"], shell=True, capture_output=True, text=True)
+			#returncode = a1.wait()
+			output = a1.stdout
+			print(output)
 			success_message = "Program completed."
 			failure_message = "failed"
-			if success_message in output[0] and returncode == 0:
+			if success_message in output and a1.returncode == 0:
+			#if returncode == 0:
 				print("Ran subprocess 1: success")
 				break
 			else:
-				print(output[0])
+				print(output)
 				raise subprocess.CalledProcessError(returncode=a1.returncode, cmd=a1.args)
 		except subprocess.CalledProcessError:
-			print("failed: trying again")
+			print("failed tunnel: trying again")
 
 	#return()
 	#performs switch_program_ver05_gui.sce functionality
 	while True: 
 		try:
 			print("run subprocess 2:\n")
-			proc = subprocess.run(["tclsh", "/home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl", "start_address", "0x5500", "-input_file_name switch_info"], cwd="/home/ubuntu/rasp30/prog_assembly/libs/tcl", stdout = subprocess.PIPE, text=True)
-			returncode = proc.wait()
-			output = proc.communicate()
+			proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl start_address 0x5500 -input_file_name switch_info"], shell=True, capture_output=True, text=True)
+			output = proc.stdout
+			print(output)
 			success_message = "Writing file: "
-			if success_message in output[0] and returncode == 0:
+			if success_message in output and proc.returncode == 0:
 				print("Ran subprocess 2: success")
 				break
 			else:
-				print(output[0])
 				raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 		except subprocess.CalledProcessError:
 			print("failed: trying again")
-	while True: 
+'''	while True: 
 		try:
 			subprocess.run(["tclsh", "/home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -" ,"start_address", "0x7000", "-input_file_name switch_info"])
 			print("ran subprocess 3")
@@ -1215,4 +1225,4 @@ def main():
 			break
 		except:
 			print("failed: trying again")
-	os.system("sleep 30")
+	os.system("sleep 30")'''
