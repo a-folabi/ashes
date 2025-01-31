@@ -64,7 +64,7 @@ def main():
 				break
 			else:
 				raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-		except:
+		except subprocess.CalledProcessError:
 			print("failed: trying again")
 	while True: 
 		try:
@@ -73,7 +73,7 @@ def main():
 			print(output)
 			success_message = "Program completed."
 			break
-		except:
+		except subprocess.CalledProcessError:
 			print("failed: trying again")
 
 	#performs target_program_ver02_gui.sce functionality
@@ -108,7 +108,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -121,7 +121,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -134,7 +134,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length", "7000". "-output_file_name data_highaboveVt_swc_2.hex"], shell=True, capture_output=True, text=True)
 				
@@ -149,7 +149,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -162,7 +162,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address", "" 0x5000 -length 7000 -output_file_name data_highaboveVt_swc_3.hex"], shell=True, capture_output=True, text=True)
 	
@@ -177,7 +177,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -190,7 +190,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_highaboveVt_swc_4.hex"], shell=True, capture_output=True, text=True)
 				
@@ -205,7 +205,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -218,7 +218,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -231,7 +231,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_highaboveVt_swc_5.hex"], shell=True, capture_output=True, text=True)
 				
@@ -247,7 +247,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -260,7 +260,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -273,7 +273,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_aboveVt_swc_2.hex"], shell=True, capture_output=True, text=True)
 				
@@ -288,7 +288,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -301,7 +301,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_aboveVt_swc_3.hex"], shell=True, capture_output=True, text=True)
 			
@@ -316,7 +316,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -329,7 +329,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_aboveVt_swc_4.hex"], shell=True, capture_output=True, text=True)
 				
@@ -344,7 +344,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -357,7 +357,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -370,7 +370,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_aboveVt_swc_5.hex"], shell=True, capture_output=True, text=True)
 				
@@ -386,7 +386,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -399,7 +399,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -412,7 +412,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_subVt_swc_2.hex"], shell=True, capture_output=True, text=True)
 				
@@ -427,7 +427,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -440,7 +440,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_subVt_swc_3.hex"], shell=True, capture_output=True, text=True)
 				
@@ -455,7 +455,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -468,7 +468,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_subVt_swc_4.hex"], shell=True, capture_output=True, text=True)
 			
@@ -483,7 +483,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -496,7 +496,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -509,7 +509,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_subVt_swc_5.hex"], shell=True, capture_output=True, text=True)
 				
@@ -525,7 +525,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -538,7 +538,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -551,7 +551,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_lowsubVt_swc_2.hex"], shell=True, capture_output=True, text=True)
 				
@@ -566,7 +566,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -579,7 +579,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_lowsubVt_swc_3.hex"], shell=True, capture_output=True, text=True)
 				
@@ -594,7 +594,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -607,7 +607,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_lowsubVt_swc_4.hex"], shell=True, capture_output=True, text=True)
 				
@@ -622,7 +622,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -635,7 +635,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -648,7 +648,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_lowsubVt_swc_5.hex"], shell=True, capture_output=True, text=True)
 				
@@ -664,7 +664,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -677,7 +677,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -690,7 +690,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_highaboveVt_ota_2.hex"], shell=True, capture_output=True, text=True)
 				
@@ -705,7 +705,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -718,7 +718,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_highaboveVt_ota_3.hex"], shell=True, capture_output=True, text=True)
 				
@@ -733,7 +733,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -746,7 +746,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_highaboveVt_ota_4.hex"], shell=True, capture_output=True, text=True)
 		
@@ -761,7 +761,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -774,7 +774,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -787,7 +787,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_highaboveVt_ota_5.hex"], shell=True, capture_output=True, text=True)
 				
@@ -803,7 +803,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -816,7 +816,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -829,7 +829,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_aboveVt_ota_2.hex"], shell=True, capture_output=True, text=True)
 				
@@ -844,7 +844,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -857,7 +857,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_aboveVt_ota_3.hex"], shell=True, capture_output=True, text=True)
 				
@@ -872,7 +872,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -885,7 +885,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_aboveVt_ota_4.hex"], shell=True, capture_output=True, text=True)
 			
@@ -900,7 +900,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -913,7 +913,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -926,7 +926,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_aboveVt_ota_5.hex"], shell=True, capture_output=True, text=True)
 				
@@ -942,7 +942,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -955,7 +955,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -968,7 +968,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_subVt_ota_2.hex"], shell=True, capture_output=True, text=True)
 			
@@ -983,7 +983,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -996,7 +996,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_subVt_ota_3.hex"], shell=True, capture_output=True, text=True)
 			
@@ -1011,7 +1011,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -1024,7 +1024,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_subVt_ota_4.hex"], shell=True, capture_output=True, text=True)
 		while True: 
@@ -1038,7 +1038,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -1051,7 +1051,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -1064,7 +1064,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_subVt_ota_5.hex"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
@@ -1082,7 +1082,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -1095,7 +1095,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -1108,7 +1108,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_lowsubVt_ota_2.hex"], shell=True, capture_output=True, text=True)
 		while True: 
@@ -1122,7 +1122,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -1135,7 +1135,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_lowsubVt_ota_3.hex"], shell=True, capture_output=True, text=True)
 		while True: 
@@ -1149,7 +1149,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -1162,7 +1162,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_lowsubVt_ota_4.hex"], shell=True, capture_output=True, text=True)
 		while True: 
@@ -1176,7 +1176,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -1189,7 +1189,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -1202,7 +1202,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_lowsubVt_ota_5.hex"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
@@ -1220,7 +1220,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -1233,7 +1233,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -1246,7 +1246,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_aboveVt_otaref_2.hex"], shell=True, capture_output=True, text=True)
 		while True: 
@@ -1260,7 +1260,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -1273,7 +1273,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_aboveVt_otaref_3.hex"], shell=True, capture_output=True, text=True)
 		while True: 
@@ -1287,7 +1287,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -1300,7 +1300,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_aboveVt_otaref_4.hex"], shell=True, capture_output=True, text=True)
 		while True: 
@@ -1314,7 +1314,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -1327,7 +1327,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -1340,7 +1340,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_aboveVt_otaref_5.hex"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
@@ -1358,7 +1358,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -1371,7 +1371,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -1384,7 +1384,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_subVt_otaref_2.hex"], shell=True, capture_output=True, text=True)
 		while True: 
@@ -1398,7 +1398,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -1411,7 +1411,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_subVt_otaref_3.hex"], shell=True, capture_output=True, text=True)
 		while True: 
@@ -1425,7 +1425,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -1438,7 +1438,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_subVt_otaref_4.hex"], shell=True, capture_output=True, text=True)
 		while True: 
@@ -1452,7 +1452,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -1465,7 +1465,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -1478,7 +1478,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_subVt_otaref_5.hex"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
@@ -1496,7 +1496,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -1509,7 +1509,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -1522,7 +1522,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_lowsubVt_otaref_2.hex"], shell=True, capture_output=True, text=True)
 		while True: 
@@ -1536,7 +1536,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -1549,7 +1549,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_lowsubVt_otaref_3.hex"], shell=True, capture_output=True, text=True)
 		while True: 
@@ -1563,7 +1563,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -1576,7 +1576,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_lowsubVt_otaref_4.hex"], shell=True, capture_output=True, text=True)
 		while True: 
@@ -1590,7 +1590,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -1603,7 +1603,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -1616,7 +1616,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_lowsubVt_otaref_5.hex"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
@@ -1634,7 +1634,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -1647,7 +1647,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -1660,7 +1660,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_aboveVt_mite_2.hex"], shell=True, capture_output=True, text=True)
 		while True: 
@@ -1674,7 +1674,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -1687,7 +1687,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_aboveVt_mite_3.hex"], shell=True, capture_output=True, text=True)
 		while True: 
@@ -1701,7 +1701,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -1714,7 +1714,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_aboveVt_mite_4.hex"], shell=True, capture_output=True, text=True)
 		while True: 
@@ -1728,7 +1728,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -1741,7 +1741,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -1754,7 +1754,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_aboveVt_mite_5.hex"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
@@ -1772,7 +1772,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -1785,7 +1785,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -1798,7 +1798,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_subVt_mite_2.hex"], shell=True, capture_output=True, text=True)
 		while True: 
@@ -1812,7 +1812,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -1825,7 +1825,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_subVt_mite_3.hex"], shell=True, capture_output=True, text=True)
 		while True: 
@@ -1839,7 +1839,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -1852,7 +1852,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_subVt_mite_4.hex"], shell=True, capture_output=True, text=True)
 		while True: 
@@ -1866,7 +1866,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -1879,7 +1879,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -1892,7 +1892,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_subVt_mite_5.hex"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
@@ -1910,7 +1910,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -1923,7 +1923,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -1936,7 +1936,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_lowsubVt_mite_2.hex"], shell=True, capture_output=True, text=True)
 		while True: 
@@ -1950,7 +1950,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -1963,7 +1963,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_lowsubVt_mite_3.hex"], shell=True, capture_output=True, text=True)
 		while True: 
@@ -1977,7 +1977,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -1990,7 +1990,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_lowsubVt_mite_4.hex"], shell=True, capture_output=True, text=True)
 		while True: 
@@ -2004,7 +2004,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -2017,7 +2017,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -2030,7 +2030,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_lowsubVt_mite_5.hex"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
@@ -2048,7 +2048,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -2061,7 +2061,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -2074,7 +2074,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_aboveVt_dirswc_2.hex"], shell=True, capture_output=True, text=True)
 		while True: 
@@ -2088,7 +2088,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -2101,7 +2101,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_aboveVt_dirswc_3.hex"], shell=True, capture_output=True, text=True)
 		while True: 
@@ -2115,7 +2115,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -2128,7 +2128,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_aboveVt_dirswc_4.hex"], shell=True, capture_output=True, text=True)
 		while True: 
@@ -2142,7 +2142,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -2155,7 +2155,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -2168,7 +2168,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_aboveVt_dirswc_5.hex"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
@@ -2186,7 +2186,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -2199,7 +2199,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -2212,7 +2212,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_subVt_dirswc_2.hex"], shell=True, capture_output=True, text=True)
 		while True: 
@@ -2226,7 +2226,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -2239,7 +2239,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_subVt_dirswc_3.hex"], shell=True, capture_output=True, text=True)
 		while True: 
@@ -2253,7 +2253,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -2266,7 +2266,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_subVt_dirswc_4.hex"], shell=True, capture_output=True, text=True)
 		while True: 
@@ -2280,7 +2280,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -2293,7 +2293,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -2306,7 +2306,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_subVt_dirswc_5.hex"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
@@ -2324,7 +2324,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -2337,7 +2337,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -2350,7 +2350,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_lowsubVt_dirswc_2.hex"], shell=True, capture_output=True, text=True)
 		while True: 
@@ -2364,7 +2364,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -2377,7 +2377,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_lowsubVt_dirswc_3.hex"], shell=True, capture_output=True, text=True)
 		while True: 
@@ -2391,7 +2391,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -2404,7 +2404,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_lowsubVt_dirswc_4.hex"], shell=True, capture_output=True, text=True)
 		while True: 
@@ -2418,7 +2418,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -2431,7 +2431,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		while True: 
 			try:
@@ -2444,7 +2444,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_lowsubVt_dirswc_5.hex"], shell=True, capture_output=True, text=True)
 	TL.close()
@@ -2459,7 +2459,7 @@ def main():
 				break
 			else:
 				raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-		except:
+		except subprocess.CalledProcessError:
 			print("failed: trying again")
 	while True: 
 		try:
@@ -2472,7 +2472,7 @@ def main():
 				break
 			else:
 				raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-		except:
+		except subprocess.CalledProcessError:
 			print("failed: trying again")
 	if os.path.exists('./gpin_vector'):
 		while True: 
@@ -2486,7 +2486,7 @@ def main():
 					break
 				else:
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except:
+			except subprocess.CalledProcessError:
 				print("failed: trying again")
 	while True: 
 		try:
@@ -2499,7 +2499,7 @@ def main():
 				break
 			else:
 				raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-		except:
+		except subprocess.CalledProcessError:
 			print("failed: trying again")
 	os.system("sleep 30")
 	while True: 
@@ -2513,6 +2513,6 @@ def main():
 				break
 			else:
 				raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-		except:
+		except subprocess.CalledProcessError:
 			print("failed: trying again")
 	os.system("sleep 30")
