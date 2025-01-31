@@ -68,11 +68,16 @@ def main():
 			print("failed: trying again")
 	while True: 
 		try:
+			#os.system("sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/program.tcl -speed 115200 switch_program.elf")
 			proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/program.tcl -speed 115200 switch_program.elf"], shell=True, capture_output=True, text=True)
 			output = proc.stdout
 			print(output)
 			success_message = "Program completed."
-			break
+			if success_message in output and proc.returncode == 0:
+				print("Ran subprocess: success")
+				break
+			else:
+				raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 		except subprocess.CalledProcessError:
 			print("failed: trying again")
 
@@ -487,7 +492,7 @@ def main():
 				print("failed: trying again")
 		while True: 
 			try:
-				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x6800 -input _file_name Vd_table_30mV"], shell=True, capture_output=True, text=True)
+				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x6800 -input_file_name Vd_table_30mV"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
 				print(output)
 				success_message = "Writing file: "
@@ -585,7 +590,7 @@ def main():
 				
 		while True: 
 			try:
-				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input _file_name target_info_lowsubVt_swc"], shell=True, capture_output=True, text=True)
+				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input_file_name target_info_lowsubVt_swc"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
 				print(output)
 				success_message = "Writing file: "
@@ -613,7 +618,7 @@ def main():
 				
 		while True: 
 			try:
-				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input _file_name target_info_lowsubVt_swc"], shell=True, capture_output=True, text=True)
+				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input_file_name target_info_lowsubVt_swc"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
 				print(output)
 				success_message = "Writing file: "
@@ -626,7 +631,7 @@ def main():
 				print("failed: trying again")
 		while True: 
 			try:
-				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x6800 -input _file_name Vd_table_30mV"], shell=True, capture_output=True, text=True)
+				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x6800 -input_file_name Vd_table_30mV"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
 				print(output)
 				success_message = "Writing file: "
@@ -655,7 +660,7 @@ def main():
 	if n_target_highaboveVt_ota != "0.000000000000000\n":
 		while True: 
 			try:
-				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input _file_name target_info_highaboveVt_ota"], shell=True, capture_output=True, text=True)
+				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input_file_name target_info_highaboveVt_ota"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
 				print(output)
 				success_message = "Writing file: "
@@ -668,7 +673,7 @@ def main():
 				print("failed: trying again")
 		while True: 
 			try:
-				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x6800 -input _file_name pulse_width_table_highaboveVt_ota"], shell=True, capture_output=True, text=True)
+				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x6800 -input_file_name pulse_width_table_highaboveVt_ota"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
 				print(output)
 				success_message = "Writing file: "
@@ -696,7 +701,7 @@ def main():
 				
 		while True: 
 			try:
-				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input _file_name target_info_highaboveVt_ota"], shell=True, capture_output=True, text=True)
+				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input_file_name target_info_highaboveVt_ota"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
 				print(output)
 				success_message = "Writing file: "
@@ -724,7 +729,7 @@ def main():
 				
 		while True: 
 			try:
-				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input _file_name target_info_highaboveVt_ota"], shell=True, capture_output=True, text=True)
+				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input_file_name target_info_highaboveVt_ota"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
 				print(output)
 				success_message = "Writing file: "
@@ -752,7 +757,7 @@ def main():
 		
 		while True: 
 			try:
-				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input _file_name target_info_highaboveVt_ota"], shell=True, capture_output=True, text=True)
+				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input_file_name target_info_highaboveVt_ota"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
 				print(output)
 				success_message = "Writing file: "
@@ -765,7 +770,7 @@ def main():
 				print("failed: trying again")
 		while True: 
 			try:
-				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x6800 -input _file_name Vd_table_30mV"], shell=True, capture_output=True, text=True)
+				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x6800 -input_file_name Vd_table_30mV"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
 				print(output)
 				success_message = "Writing file: "
@@ -794,7 +799,7 @@ def main():
 	if n_target_aboveVt_ota != "0.000000000000000\n":
 		while True: 
 			try:
-				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input _file_name target_info_aboveVt_ota"], shell=True, capture_output=True, text=True)
+				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input_file_name target_info_aboveVt_ota"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
 				print(output)
 				success_message = "Writing file: "
@@ -807,7 +812,7 @@ def main():
 				print("failed: trying again")
 		while True: 
 			try:
-				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x6800 -input _file_name pulse_width_table_ota"], shell=True, capture_output=True, text=True)
+				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x6800 -input_file_name pulse_width_table_ota"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
 				print(output)
 				success_message = "Writing file: "
@@ -835,7 +840,7 @@ def main():
 				
 		while True: 
 			try:
-				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input _file_name target_info_aboveVt_ota"], shell=True, capture_output=True, text=True)
+				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input_file_name target_info_aboveVt_ota"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
 				print(output)
 				success_message = "Writing file: "
@@ -863,7 +868,7 @@ def main():
 				
 		while True: 
 			try:
-				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input _file_name target_info_aboveVt_ota"], shell=True, capture_output=True, text=True)
+				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input_file_name target_info_aboveVt_ota"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
 				print(output)
 				success_message = "Writing file: "
@@ -891,7 +896,7 @@ def main():
 			
 		while True: 
 			try:
-				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input _file_name target_info_aboveVt_ota"], shell=True, capture_output=True, text=True)
+				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input_file_name target_info_aboveVt_ota"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
 				print(output)
 				success_message = "Writing file: "
@@ -904,7 +909,7 @@ def main():
 				print("failed: trying again")
 		while True: 
 			try:
-				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x6800 -input _file_name Vd_table_30mV"], shell=True, capture_output=True, text=True)
+				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x6800 -input_file_name Vd_table_30mV"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
 				print(output)
 				success_message = "Writing file: "
@@ -933,7 +938,7 @@ def main():
 	if n_target_subVt_ota != "0.000000000000000\n":
 		while True: 
 			try:
-				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input _file_name target_info_subVt_ota"], shell=True, capture_output=True, text=True)
+				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input_file_name target_info_subVt_ota"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
 				print(output)
 				success_message = "Writing file: "
@@ -946,7 +951,7 @@ def main():
 				print("failed: trying again")
 		while True: 
 			try:
-				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x6800 -input _file_name pulse_width_table_ota"], shell=True, capture_output=True, text=True)
+				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x6800 -input_file_name pulse_width_table_ota"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
 				print(output)
 				success_message = "Writing file: "
@@ -974,7 +979,7 @@ def main():
 			
 		while True: 
 			try:
-				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input _file_name target_info_subVt_ota"], shell=True, capture_output=True, text=True)
+				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input_file_name target_info_subVt_ota"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
 				print(output)
 				success_message = "Writing file: "
@@ -1002,7 +1007,7 @@ def main():
 			
 		while True: 
 			try:
-				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input _file_name target_info_subVt_ota"], shell=True, capture_output=True, text=True)
+				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input_file_name target_info_subVt_ota"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
 				print(output)
 				success_message = "Writing file: "
@@ -1029,7 +1034,7 @@ def main():
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_subVt_ota_4.hex"], shell=True, capture_output=True, text=True)
 		while True: 
 			try:
-				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input _file_name target_info_subVt_ota"], shell=True, capture_output=True, text=True)
+				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input_file_name target_info_subVt_ota"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
 				print(output)
 				success_message = "Writing file: "
@@ -1042,7 +1047,7 @@ def main():
 				print("failed: trying again")
 		while True: 
 			try:
-				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x6800 -input _file_name Vd_table_30mV"], shell=True, capture_output=True, text=True)
+				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x6800 -input_file_name Vd_table_30mV"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
 				print(output)
 				success_message = "Writing file: "
@@ -1073,7 +1078,7 @@ def main():
 	if n_target_lowsubVt_ota != "0.000000000000000\n":
 		while True: 
 			try:
-				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input _file_name target_info_lowsubVt_ota"], shell=True, capture_output=True, text=True)
+				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input_file_name target_info_lowsubVt_ota"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
 				print(output)
 				success_message = "Writing file: "
@@ -1086,7 +1091,7 @@ def main():
 				print("failed: trying again")
 		while True: 
 			try:
-				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x6800 -input _file_name pulse_width_table_lowsubVt_ota"], shell=True, capture_output=True, text=True)
+				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x6800 -input_file_name pulse_width_table_lowsubVt_ota"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
 				print(output)
 				success_message = "Writing file: "
@@ -1113,7 +1118,7 @@ def main():
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_lowsubVt_ota_2.hex"], shell=True, capture_output=True, text=True)
 		while True: 
 			try:
-				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input _file_name target_info_lowsubVt_ota"], shell=True, capture_output=True, text=True)
+				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input_file_name target_info_lowsubVt_ota"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
 				print(output)
 				success_message = "Writing file: "
@@ -1140,7 +1145,7 @@ def main():
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_lowsubVt_ota_3.hex"], shell=True, capture_output=True, text=True)
 		while True: 
 			try:
-				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input _file_name target_info_lowsubVt_ota"], shell=True, capture_output=True, text=True)
+				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input_file_name target_info_lowsubVt_ota"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
 				print(output)
 				success_message = "Writing file: "
@@ -1167,7 +1172,7 @@ def main():
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_lowsubVt_ota_4.hex"], shell=True, capture_output=True, text=True)
 		while True: 
 			try:
-				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input _file_name target_info_lowsubVt_ota"], shell=True, capture_output=True, text=True)
+				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input_file_name target_info_lowsubVt_ota"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
 				print(output)
 				success_message = "Writing file: "
@@ -1180,7 +1185,7 @@ def main():
 				print("failed: trying again")
 		while True: 
 			try:
-				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x6800 -input _file_name Vd_table_30mV"], shell=True, capture_output=True, text=True)
+				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x6800 -input_file_name Vd_table_30mV"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
 				print(output)
 				success_message = "Writing file: "
@@ -1211,7 +1216,7 @@ def main():
 	if n_target_aboveVt_otaref != "0.000000000000000\n":
 		while True: 
 			try:
-				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input _file_name target_info_aboveVt_otaref"], shell=True, capture_output=True, text=True)
+				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input_file_name target_info_aboveVt_otaref"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
 				print(output)
 				success_message = "Writing file: "
@@ -1224,7 +1229,7 @@ def main():
 				print("failed: trying again")
 		while True: 
 			try:
-				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x6800 -input _file_name pulse_width_table_otaref"], shell=True, capture_output=True, text=True)
+				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x6800 -input_file_name pulse_width_table_otaref"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
 				print(output)
 				success_message = "Writing file: "
@@ -1240,7 +1245,7 @@ def main():
 				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/program.tcl -speed 115200 recover_inject_aboveVt_CAB_ota_ref.elf"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
 				print(output)
-				success_message = "Writing file: "
+				success_message = "Program completed."
 				if success_message in output and proc.returncode == 0:
 					print("Ran subprocess: success")
 					break
@@ -1251,7 +1256,7 @@ def main():
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_aboveVt_otaref_2.hex"], shell=True, capture_output=True, text=True)
 		while True: 
 			try:
-				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input _file_name target_info_aboveVt_otaref"], shell=True, capture_output=True, text=True)
+				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input_file_name target_info_aboveVt_otaref"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
 				print(output)
 				success_message = "Writing file: "
@@ -1278,7 +1283,7 @@ def main():
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_aboveVt_otaref_3.hex"], shell=True, capture_output=True, text=True)
 		while True: 
 			try:
-				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input _file_name target_info_aboveVt_otaref"], shell=True, capture_output=True, text=True)
+				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input_file_name target_info_aboveVt_otaref"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
 				print(output)
 				success_message = "Writing file: "
@@ -1305,7 +1310,7 @@ def main():
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_aboveVt_otaref_4.hex"], shell=True, capture_output=True, text=True)
 		while True: 
 			try:
-				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input _file_name target_info_aboveVt_otaref"], shell=True, capture_output=True, text=True)
+				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input_file_name target_info_aboveVt_otaref"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
 				print(output)
 				success_message = "Writing file: "
@@ -1318,7 +1323,7 @@ def main():
 				print("failed: trying again")
 		while True: 
 			try:
-				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x6800 -input _file_name Vd_table_30mV"], shell=True, capture_output=True, text=True)
+				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x6800 -input_file_name Vd_table_30mV"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
 				print(output)
 				success_message = "Writing file: "
@@ -1349,7 +1354,7 @@ def main():
 	if n_target_subVt_otaref != "0.000000000000000\n":
 		while True: 
 			try:
-				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input _file_name target_info_subVt_otaref"], shell=True, capture_output=True, text=True)
+				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input_file_name target_info_subVt_otaref"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
 				print(output)
 				success_message = "Writing file: "
@@ -1362,7 +1367,7 @@ def main():
 				print("failed: trying again")
 		while True: 
 			try:
-				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x6800 -input _file_name pulse_width_table_otaref"], shell=True, capture_output=True, text=True)
+				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x6800 -input_file_name pulse_width_table_otaref"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
 				print(output)
 				success_message = "Writing file: "
@@ -1389,7 +1394,7 @@ def main():
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_subVt_otaref_2.hex"], shell=True, capture_output=True, text=True)
 		while True: 
 			try:
-				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input _file_name target_info_subVt_otaref"], shell=True, capture_output=True, text=True)
+				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input_file_name target_info_subVt_otaref"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
 				print(output)
 				success_message = "Writing file: "
@@ -1416,7 +1421,7 @@ def main():
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_subVt_otaref_3.hex"], shell=True, capture_output=True, text=True)
 		while True: 
 			try:
-				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input _file_name target_info_subVt_otaref"], shell=True, capture_output=True, text=True)
+				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input_file_name target_info_subVt_otaref"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
 				print(output)
 				success_message = "Writing file: "
@@ -1443,7 +1448,7 @@ def main():
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_subVt_otaref_4.hex"], shell=True, capture_output=True, text=True)
 		while True: 
 			try:
-				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input _file_name target_info_subVt_otaref"], shell=True, capture_output=True, text=True)
+				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input_file_name target_info_subVt_otaref"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
 				print(output)
 				success_message = "Writing file: "
@@ -1456,7 +1461,7 @@ def main():
 				print("failed: trying again")
 		while True: 
 			try:
-				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x6800 -input _file_name Vd_table_30mV"], shell=True, capture_output=True, text=True)
+				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x6800 -input_file_name Vd_table_30mV"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
 				print(output)
 				success_message = "Writing file: "
@@ -1487,7 +1492,7 @@ def main():
 	if n_target_lowsubVt_otaref != "0.000000000000000\n":
 		while True: 
 			try:
-				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input _file_name target_info_lowsubVt_otaref"], shell=True, capture_output=True, text=True)
+				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input_file_name target_info_lowsubVt_otaref"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
 				print(output)
 				success_message = "Writing file: "
@@ -1500,7 +1505,7 @@ def main():
 				print("failed: trying again")
 		while True: 
 			try:
-				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x6800 -input _file_name pulse_width_table_lowsubVt_otaref"], shell=True, capture_output=True, text=True)
+				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x6800 -input_file_name pulse_width_table_lowsubVt_otaref"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
 				print(output)
 				success_message = "Writing file: "
@@ -1527,7 +1532,7 @@ def main():
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_lowsubVt_otaref_2.hex"], shell=True, capture_output=True, text=True)
 		while True: 
 			try:
-				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input _file_name target_info_lowsubVt_otaref"], shell=True, capture_output=True, text=True)
+				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input_file_name target_info_lowsubVt_otaref"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
 				print(output)
 				success_message = "Writing file: "
@@ -1554,7 +1559,7 @@ def main():
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_lowsubVt_otaref_3.hex"], shell=True, capture_output=True, text=True)
 		while True: 
 			try:
-				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input _file_name target_info_lowsubVt_otaref"], shell=True, capture_output=True, text=True)
+				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input_file_name target_info_lowsubVt_otaref"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
 				print(output)
 				success_message = "Writing file: "
@@ -1581,7 +1586,7 @@ def main():
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_lowsubVt_otaref_4.hex"], shell=True, capture_output=True, text=True)
 		while True: 
 			try:
-				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input _file_name target_info_lowsubVt_otaref"], shell=True, capture_output=True, text=True)
+				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input_file_name target_info_lowsubVt_otaref"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
 				print(output)
 				success_message = "Writing file: "
@@ -1594,7 +1599,7 @@ def main():
 				print("failed: trying again")
 		while True: 
 			try:
-				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x6800 -input _file_name Vd_table_30mV"], shell=True, capture_output=True, text=True)
+				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x6800 -input_file_name Vd_table_30mV"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
 				print(output)
 				success_message = "Writing file: "
@@ -1625,7 +1630,7 @@ def main():
 	if n_target_aboveVt_mite != "0.000000000000000\n":
 		while True: 
 			try:
-				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input _file_name target_info_aboveVt_mite"], shell=True, capture_output=True, text=True)
+				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input_file_name target_info_aboveVt_mite"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
 				print(output)
 				success_message = "Writing file: "
@@ -1638,7 +1643,7 @@ def main():
 				print("failed: trying again")
 		while True: 
 			try:
-				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x6800 -input _file_name pulse_width_table_mite"], shell=True, capture_output=True, text=True)
+				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x6800 -input_file_name pulse_width_table_mite"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
 				print(output)
 				success_message = "Writing file: "
@@ -1665,7 +1670,7 @@ def main():
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_aboveVt_mite_2.hex"], shell=True, capture_output=True, text=True)
 		while True: 
 			try:
-				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input _file_name target_info_aboveVt_mite"], shell=True, capture_output=True, text=True)
+				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input_file_name target_info_aboveVt_mite"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
 				print(output)
 				success_message = "Writing file: "
@@ -1692,7 +1697,7 @@ def main():
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_aboveVt_mite_3.hex"], shell=True, capture_output=True, text=True)
 		while True: 
 			try:
-				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input _file_name target_info_aboveVt_mite"], shell=True, capture_output=True, text=True)
+				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input_file_name target_info_aboveVt_mite"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
 				print(output)
 				success_message = "Writing file: "
@@ -1719,7 +1724,7 @@ def main():
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_aboveVt_mite_4.hex"], shell=True, capture_output=True, text=True)
 		while True: 
 			try:
-				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input _file_name target_info_aboveVt_mite"], shell=True, capture_output=True, text=True)
+				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input_file_name target_info_aboveVt_mite"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
 				print(output)
 				success_message = "Writing file: "
@@ -1732,7 +1737,7 @@ def main():
 				print("failed: trying again")
 		while True: 
 			try:
-				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x6800 -input _file_name Vd_table_30mV"], shell=True, capture_output=True, text=True)
+				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x6800 -input_file_name Vd_table_30mV"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
 				print(output)
 				success_message = "Writing file: "
@@ -1763,7 +1768,7 @@ def main():
 	if n_target_subVt_mite != "0.000000000000000\n":
 		while True: 
 			try:
-				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input _file_name target_info_subVt_mite"], shell=True, capture_output=True, text=True)
+				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input_file_name target_info_subVt_mite"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
 				print(output)
 				success_message = "Writing file: "
@@ -1776,7 +1781,7 @@ def main():
 				print("failed: trying again")
 		while True: 
 			try:
-				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x6800 -input _file_name pulse_width_table_mite"], shell=True, capture_output=True, text=True)
+				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x6800 -input_file_name pulse_width_table_mite"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
 				print(output)
 				success_message = "Writing file: "
@@ -1803,7 +1808,7 @@ def main():
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_subVt_mite_2.hex"], shell=True, capture_output=True, text=True)
 		while True: 
 			try:
-				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input _file_name target_info_subVt_mite"], shell=True, capture_output=True, text=True)
+				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input_file_name target_info_subVt_mite"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
 				print(output)
 				success_message = "Writing file: "
@@ -1830,7 +1835,7 @@ def main():
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_subVt_mite_3.hex"], shell=True, capture_output=True, text=True)
 		while True: 
 			try:
-				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input _file_name target_info_subVt_mite"], shell=True, capture_output=True, text=True)
+				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input_file_name target_info_subVt_mite"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
 				print(output)
 				success_message = "Writing file: "
@@ -1857,7 +1862,7 @@ def main():
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_subVt_mite_4.hex"], shell=True, capture_output=True, text=True)
 		while True: 
 			try:
-				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input _file_name target_info_subVt_mite"], shell=True, capture_output=True, text=True)
+				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input_file_name target_info_subVt_mite"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
 				print(output)
 				success_message = "Writing file: "
@@ -1870,7 +1875,7 @@ def main():
 				print("failed: trying again")
 		while True: 
 			try:
-				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x6800 -input _file_name Vd_table_30mV"], shell=True, capture_output=True, text=True)
+				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x6800 -input_file_name Vd_table_30mV"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
 				print(output)
 				success_message = "Writing file: "
@@ -1901,7 +1906,7 @@ def main():
 	if n_target_lowsubVt_mite != "0.000000000000000\n":
 		while True: 
 			try:
-				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input _file_name target_info_lowsubVt_mite"], shell=True, capture_output=True, text=True)
+				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input_file_name target_info_lowsubVt_mite"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
 				print(output)
 				success_message = "Writing file: "
@@ -1914,7 +1919,7 @@ def main():
 				print("failed: trying again")
 		while True: 
 			try:
-				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x6800 -input _file_name pulse_width_table_lowsubVt_mite"], shell=True, capture_output=True, text=True)
+				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x6800 -input_file_name pulse_width_table_lowsubVt_mite"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
 				print(output)
 				success_message = "Writing file: "
@@ -1941,7 +1946,7 @@ def main():
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_lowsubVt_mite_2.hex"], shell=True, capture_output=True, text=True)
 		while True: 
 			try:
-				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input _file_name target_info_lowsubVt_mite"], shell=True, capture_output=True, text=True)
+				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input_file_name target_info_lowsubVt_mite"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
 				print(output)
 				success_message = "Writing file: "
@@ -1968,7 +1973,7 @@ def main():
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_lowsubVt_mite_3.hex"], shell=True, capture_output=True, text=True)
 		while True: 
 			try:
-				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input _file_name target_info_lowsubVt_mite"], shell=True, capture_output=True, text=True)
+				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input_file_name target_info_lowsubVt_mite"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
 				print(output)
 				success_message = "Writing file: "
@@ -1995,7 +2000,7 @@ def main():
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_lowsubVt_mite_4.hex"], shell=True, capture_output=True, text=True)
 		while True: 
 			try:
-				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input _file_name target_info_lowsubVt_mite"], shell=True, capture_output=True, text=True)
+				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input_file_name target_info_lowsubVt_mite"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
 				print(output)
 				success_message = "Writing file: "
@@ -2008,7 +2013,7 @@ def main():
 				print("failed: trying again")
 		while True: 
 			try:
-				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x6800 -input _file_name Vd_table_30mV"], shell=True, capture_output=True, text=True)
+				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x6800 -input_file_name Vd_table_30mV"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
 				print(output)
 				success_message = "Writing file: "
@@ -2039,7 +2044,7 @@ def main():
 	if n_target_aboveVt_dirswc != "0.000000000000000\n":
 		while True: 
 			try:
-				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input _file_name target_info_aboveVt_dirswc"], shell=True, capture_output=True, text=True)
+				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input_file_name target_info_aboveVt_dirswc"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
 				print(output)
 				success_message = "Writing file: "
@@ -2052,7 +2057,7 @@ def main():
 				print("failed: trying again")
 		while True: 
 			try:
-				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x6800 -input _file_name pulse_width_table_dirswc"], shell=True, capture_output=True, text=True)
+				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x6800 -input_file_name pulse_width_table_dirswc"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
 				print(output)
 				success_message = "Writing file: "
@@ -2079,7 +2084,7 @@ def main():
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_aboveVt_dirswc_2.hex"], shell=True, capture_output=True, text=True)
 		while True: 
 			try:
-				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input _file_name target_info_aboveVt_dirswc"], shell=True, capture_output=True, text=True)
+				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input_file_name target_info_aboveVt_dirswc"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
 				print(output)
 				success_message = "Writing file: "
@@ -2106,7 +2111,7 @@ def main():
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_aboveVt_dirswc_3.hex"], shell=True, capture_output=True, text=True)
 		while True: 
 			try:
-				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input _file_name target_info_aboveVt_dirswc"], shell=True, capture_output=True, text=True)
+				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input_file_name target_info_aboveVt_dirswc"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
 				print(output)
 				success_message = "Writing file: "
@@ -2133,7 +2138,7 @@ def main():
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_aboveVt_dirswc_4.hex"], shell=True, capture_output=True, text=True)
 		while True: 
 			try:
-				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input _file_name target_info_aboveVt_dirswc"], shell=True, capture_output=True, text=True)
+				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input_file_name target_info_aboveVt_dirswc"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
 				print(output)
 				success_message = "Writing file: "
@@ -2146,7 +2151,7 @@ def main():
 				print("failed: trying again")
 		while True: 
 			try:
-				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x6800 -input _file_name Vd_table_30mV"], shell=True, capture_output=True, text=True)
+				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x6800 -input_file_name Vd_table_30mV"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
 				print(output)
 				success_message = "Writing file: "
@@ -2177,7 +2182,7 @@ def main():
 	if n_target_subVt_dirswc != "0.000000000000000\n":
 		while True: 
 			try:
-				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input _file_name target_info_subVt_dirswc"], shell=True, capture_output=True, text=True)
+				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input_file_name target_info_subVt_dirswc"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
 				print(output)
 				success_message = "Writing file: "
@@ -2190,7 +2195,7 @@ def main():
 				print("failed: trying again")
 		while True: 
 			try:
-				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x6800 -input _file_name pulse_width_table_dirswc"], shell=True, capture_output=True, text=True)
+				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x6800 -input_file_name pulse_width_table_dirswc"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
 				print(output)
 				success_message = "Writing file: "
@@ -2217,7 +2222,7 @@ def main():
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_subVt_dirswc_2.hex"], shell=True, capture_output=True, text=True)
 		while True: 
 			try:
-				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input _file_name target_info_subVt_dirswc"], shell=True, capture_output=True, text=True)
+				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input_file_name target_info_subVt_dirswc"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
 				print(output)
 				success_message = "Writing file: "
@@ -2244,7 +2249,7 @@ def main():
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_subVt_dirswc_3.hex"], shell=True, capture_output=True, text=True)
 		while True: 
 			try:
-				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input _file_name target_info_subVt_dirswc"], shell=True, capture_output=True, text=True)
+				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input_file_name target_info_subVt_dirswc"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
 				print(output)
 				success_message = "Writing file: "
@@ -2271,7 +2276,7 @@ def main():
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_subVt_dirswc_4.hex"], shell=True, capture_output=True, text=True)
 		while True: 
 			try:
-				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input _file_name target_info_subVt_dirswc"], shell=True, capture_output=True, text=True)
+				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input_file_name target_info_subVt_dirswc"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
 				print(output)
 				success_message = "Writing file: "
@@ -2284,7 +2289,7 @@ def main():
 				print("failed: trying again")
 		while True: 
 			try:
-				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x6800 -input _file_name Vd_table_30mV"], shell=True, capture_output=True, text=True)
+				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x6800 -input_file_name Vd_table_30mV"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
 				print(output)
 				success_message = "Writing file: "
@@ -2315,7 +2320,7 @@ def main():
 	if n_target_lowsubVt_dirswc != "0.000000000000000\n":
 		while True: 
 			try:
-				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input _file_name target_info_lowsubVt_dirswc"], shell=True, capture_output=True, text=True)
+				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input_file_name target_info_lowsubVt_dirswc"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
 				print(output)
 				success_message = "Writing file: "
@@ -2328,7 +2333,7 @@ def main():
 				print("failed: trying again")
 		while True: 
 			try:
-				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x6800 -input _file_name pulse_width_table_lowsubVt_dirswc"], shell=True, capture_output=True, text=True)
+				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x6800 -input_file_name pulse_width_table_lowsubVt_dirswc"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
 				print(output)
 				success_message = "Writing file: "
@@ -2355,7 +2360,7 @@ def main():
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_lowsubVt_dirswc_2.hex"], shell=True, capture_output=True, text=True)
 		while True: 
 			try:
-				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input _file_name target_info_lowsubVt_dirswc"], shell=True, capture_output=True, text=True)
+				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input_file_name target_info_lowsubVt_dirswc"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
 				print(output)
 				success_message = "Writing file: "
@@ -2382,7 +2387,7 @@ def main():
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_lowsubVt_dirswc_3.hex"], shell=True, capture_output=True, text=True)
 		while True: 
 			try:
-				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input _file_name target_info_lowsubVt_dirswc"], shell=True, capture_output=True, text=True)
+				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input_file_name target_info_lowsubVt_dirswc"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
 				print(output)
 				success_message = "Writing file: "
@@ -2409,7 +2414,7 @@ def main():
 		#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x5000 -length 7000 -output_file_name data_lowsubVt_dirswc_4.hex"], shell=True, capture_output=True, text=True)
 		while True: 
 			try:
-				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input _file_name target_info_lowsubVt_dirswc"], shell=True, capture_output=True, text=True)
+				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input_file_name target_info_lowsubVt_dirswc"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
 				print(output)
 				success_message = "Writing file: "
@@ -2422,7 +2427,7 @@ def main():
 				print("failed: trying again")
 		while True: 
 			try:
-				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x6800 -input _file_name Vd_table_30mV"], shell=True, capture_output=True, text=True)
+				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x6800 -input_file_name Vd_table_30mV"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
 				print(output)
 				success_message = "Writing file: "
@@ -2450,7 +2455,7 @@ def main():
 	TL.close()
 	while True: 
 		try:
-			proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x4300 -input _file_name input_vector"], shell=True, capture_output=True, text=True)
+			proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x4300 -input_file_name input_vector"], shell=True, capture_output=True, text=True)
 			output = proc.stdout
 			print(output)
 			success_message = "Writing file: "
@@ -2463,7 +2468,7 @@ def main():
 			print("failed: trying again")
 	while True: 
 		try:
-			proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x4200 -input _file_name output_info"], shell=True, capture_output=True, text=True)
+			proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x4200 -input_file_name output_info"], shell=True, capture_output=True, text=True)
 			output = proc.stdout
 			print(output)
 			success_message = "Writing file: "
@@ -2477,7 +2482,7 @@ def main():
 	if os.path.exists('./gpin_vector'):
 		while True: 
 			try:
-				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x5500 -input _file_name gpin_vector"], shell=True, capture_output=True, text=True)
+				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x5500 -input_file_name gpin_vector"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
 				print(output)
 				success_message = "Writing file: "
@@ -2493,7 +2498,7 @@ def main():
 			proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/run_new.tcl -speed 115200 voltage_meas.elf"], shell=True, capture_output=True, text=True)
 			output = proc.stdout
 			print(output)
-			success_message = "Program completed."
+			success_message = "Run-mode."
 			if success_message in output and proc.returncode == 0:
 				print("Ran subprocess: success")
 				break
@@ -2507,7 +2512,7 @@ def main():
 			proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x6000 -length 1000 -output_file_name output_vector"], shell=True, capture_output=True, text=True)
 			output = proc.stdout
 			print(output)
-			success_message = "Program completed."
+			success_message = "Writing to file: "
 			if success_message in output and proc.returncode == 0:
 				print("Ran subprocess: success")
 				break
