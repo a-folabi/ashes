@@ -1,4 +1,3 @@
-#hid_dir = path + '.' + fname;
 import os
 import numpy as np
 
@@ -32,7 +31,7 @@ def compile(project_name, board_type, chip_num):
 	#########################################
 	## Make programm reverse program files ##
 	#########################################
-	os.system(f"~/rasp30/prog_assembly/libs/sh/asm2ihex2.sh tunnel_revtun_SWC_CAB ~/rasp30/prog_assembly/libs/asm_code/tunnel_revtun_SWC_CAB_ver00.s43 16384 16384 16384 {path}");
+	os.system(f"~/rasp30/prog_assembly/libs/sh/asm2ihex2.sh tunnel_revtun_SWC_CAB ~/rasp30/prog_assembly/libs/asm_code/tunnel_revtun_SWC_CAB_ver00.s43 16384 16384 16384 {path}")
 	zip_list = zip_list + "tunnel_revtun_SWC_CAB.elf ";
 	
 	###############################
@@ -147,12 +146,13 @@ def compile(project_name, board_type, chip_num):
 		np.savetxt(f"{path}/mmap_cal_list", mmap_cal_list, "%5.15f", ' ')
 		print(mmap_cal_list)
 
-	target_list_copy = target_list;
+	target_list_copy = np.array(target_list).copy()
 
 	#ADC_Current_copy = ADC_Current;
 	temp_size = len(target_list);
 	#temp_size2=size(ADC_Current_copy); n2=temp_size2(1,1);
 	kappa_constant = 30; # relationship of target current between subVt and lowsubVt range.
+	
 	
 	for i in range(n):
 		if target_list_copy[i][2] < 1*10**(-9):
@@ -229,12 +229,12 @@ def compile(project_name, board_type, chip_num):
 				n_target_lowsubVt_swc = n_target_lowsubVt_swc+1
 		if target_listArray[i][3] == 3:
 			if target_listArray[i][3] > 10E-6:
-				temp2_highaboveVt_ota = temp2_highaboveVt_ota + f"0x{(int(target_listArray[i][0])):04x}" + f"0x{(int(target_listArray[i][1])):04x}"  + f"0x{(int(target_listArray[i][4])):04x}" + "0x0000" + " 0xffff" + " "; # Row, Col, target, diff, # of pulses (Start values should be 0xffff. 0x0000 means the coarse program is over)
+				temp2_highaboveVt_ota = temp2_highaboveVt_ota + f"0x{(int(target_listArray[i][0])):04x} " + f"0x{(int(target_listArray[i][1])):04x} "  + f"0x{(int(target_listArray[i][4])):04x} " + "0x0000" + " 0xffff" + " "; # Row, Col, target, diff, # of pulses (Start values should be 0xffff. 0x0000 means the coarse program is over)
 				target_l_highaboveVt_ota = np.append(target_l_highaboveVt_ota, np.array([[target_listArray[i][0], target_listArray[i][1], target_listArray[i][2]]]), axis=0);
 				n_target_highaboveVt_ota = n_target_highaboveVt_ota + 1
 
 			if target_listArray[i][2] <= 10E-6 and target_listArray[i][2] > 1E-7:
-				temp2_aboveVt_ota = temp2_aboveVt_ota + f"0x{(int(target_listArray[i][0])):04x}" + f"0x{(int(target_listArray[i][1])):04x}"  + f"0x{(int(target_listArray[i][4])):04x}" + "0x0000" + " 0xffff" + " "; # Row, Col, target, diff, # of pulses (Start values should be 0xffff. 0x0000 means the coarse program is over)
+				temp2_aboveVt_ota = temp2_aboveVt_ota + f"0x{(int(target_listArray[i][0])):04x} " + f"0x{(int(target_listArray[i][1])):04x} "  + f"0x{(int(target_listArray[i][4])):04x} " + "0x0000" + " 0xffff" + " "; # Row, Col, target, diff, # of pulses (Start values should be 0xffff. 0x0000 means the coarse program is over)
 				target_l_aboveVt_ota = np.append(target_l_aboveVt_ota, np.array([[target_listArray[i][0], target_listArray[i][1], target_listArray[i][2]]]), axis=0);
 				n_target_aboveVt_ota = n_target_aboveVt_ota + 1
 
@@ -258,7 +258,7 @@ def compile(project_name, board_type, chip_num):
 				n_target_subVt_otaref = n_target_subVt_otaref +1
 		    
 			if target_listArray[i][2] < 1E-9:
-				temp2_lowsubVt_otaref = temp2_lowsubVt_otaref + f"0x{(int(target_listArray[i][0])):04x}" + f"0x{(int(target_listArray[i][1])):04x}"  + f"0x{(int(target_listArray[i][4])):04x}" + "0x0000" + " 0xffff" + " "; # Row, Col, target, diff, # of pulses (Start values should be 0xffff. 0x0000 means the coarse program is over)
+				temp2_lowsubVt_otaref = temp2_lowsubVt_otaref + f"0x{(int(target_listArray[i][0])):04x} " + f"0x{(int(target_listArray[i][1])):04x} "  + f"0x{(int(target_listArray[i][4])):04x} " + "0x0000" + " 0xffff" + " "; # Row, Col, target, diff, # of pulses (Start values should be 0xffff. 0x0000 means the coarse program is over)
 				target_l_lowsubVt_otaref = np.append(target_l_lowsubVt_otaref, np.array([[target_listArray[i][0], target_listArray[i][1], target_listArray[i][2]]]), axis=0);
 				n_target_lowsubVt_otaref = n_target_lowsubVt_otaref + 1
 			
