@@ -33,7 +33,7 @@ sudo apt-get install tcl8.5-dev
 sudo apt install tk-dev
 sudo apt-get install libxt-dev
 ```
-Run the following commands
+*After downloading the Qrouter repository, `cd` into the folder* then run the following commands
 ```
 ./configure
 make
