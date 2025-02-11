@@ -22,7 +22,7 @@ def main():
 	while True:
 		try:
 			#a1=subprocess.Popen(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/program.tcl -speed 115200 /home/ubuntu/ashes/ors_buffer/tunnel_revtun_SWC_CAB.elf"], stdout = subprocess.PIPE, text=True)
-			a1=subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/program.tcl speed 115200 tunnel_revtun_SWC_CAB.elf"], shell=True, capture_output=True, text=True)
+			a1=subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/program.tcl -speed 115200 tunnel_revtun_SWC_CAB.elf"], shell=True, capture_output=True, text=True)
 			#returncode = a1.wait()
 			output = a1.stdout
 			print(output)
@@ -42,7 +42,7 @@ def main():
 	while True: 
 		try:
 			print("run subprocess 2:\n")
-			proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl start_address 0x5500 -input_file_name switch_info"], shell=True, capture_output=True, text=True)
+			proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x5500 -input_file_name switch_info"], shell=True, capture_output=True, text=True)
 			output = proc.stdout
 			print(output)
 			success_message = "Writing file: "
@@ -55,7 +55,7 @@ def main():
 			print("failed: trying again")
 	while True: 
 		try:
-			proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl  -start_address 0x7000 -input_file_name switch_info"], shell=True, capture_output=True, text=True)
+			proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input_file_name switch_info"], shell=True, capture_output=True, text=True)
 			output = proc.stdout
 			print(output)
 			success_message = "Writing file: "
