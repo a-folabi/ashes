@@ -33,7 +33,7 @@ def main():
 				print("Ran subprocess 1: success")
 				break
 			else:
-				print(output)
+				print(a1.stderr)
 				raise subprocess.CalledProcessError(returncode=a1.returncode, cmd=a1.args)
 		except subprocess.CalledProcessError:
 			print("failed tunnel: trying again")
@@ -50,6 +50,7 @@ def main():
 				print("Ran subprocess 2: success")
 				break
 			else:
+				print(proc.stderr)
 				raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 		except subprocess.CalledProcessError:
 			print("failed: trying again")
@@ -63,6 +64,7 @@ def main():
 				print("Ran subprocess: success")
 				break
 			else:
+				print(proc.stderr)
 				raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 		except subprocess.CalledProcessError:
 			print("failed: trying again")
@@ -77,6 +79,7 @@ def main():
 				print("Ran subprocess: success")
 				break
 			else:
+				print(proc.stderr)
 				raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 		except subprocess.CalledProcessError:
 			print("failed: trying again")
@@ -112,6 +115,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -125,6 +129,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -138,6 +143,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -153,6 +159,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -166,6 +173,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -181,6 +189,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -194,6 +203,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -209,6 +219,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -222,6 +233,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -235,6 +247,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -251,6 +264,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -264,6 +278,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -277,6 +292,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -292,6 +308,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -305,6 +322,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -320,6 +338,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -333,6 +352,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -348,6 +368,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -361,6 +382,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -374,6 +396,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -390,6 +413,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -403,6 +427,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -416,6 +441,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -431,6 +457,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -444,6 +471,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -459,6 +487,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -472,6 +501,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -487,6 +517,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -500,6 +531,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -513,6 +545,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -529,6 +562,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -542,6 +576,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -555,6 +590,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -570,6 +606,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -583,6 +620,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -598,6 +636,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -611,6 +650,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -626,6 +666,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -639,6 +680,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -652,6 +694,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -662,15 +705,20 @@ def main():
 			try:
 				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x7000 -input_file_name target_info_highaboveVt_ota"], shell=True, capture_output=True, text=True)
 				output = proc.stdout
+				print(proc.stderr)
 				print(output)
 				success_message = "Writing file: "
 				if success_message in output and proc.returncode == 0:
 					print("Ran subprocess: success")
 					break
 				else:
+					#print(err)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except subprocess.CalledProcessError:
-				print("failed: trying again")
+			except subprocess.CalledProcessError as e:
+				#print(proc.stderr)
+				#print("e.message: ", e.message)
+				print("e: ", e)
+				print("failed writing to target_info_highaboveVt_ota: trying again")
 		while True: 
 			try:
 				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x6800 -input_file_name pulse_width_table_highaboveVt_ota"], shell=True, capture_output=True, text=True)
@@ -681,9 +729,11 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
-			except subprocess.CalledProcessError:
-				print("failed: trying again")
+			except subprocess.CalledProcessError as e:
+				#print("e: ", e)
+				print("failed writing to pulse_width_table_highaboveVt_ota: trying again")
 		while True: 
 			try:
 				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/program.tcl -speed 115200 recover_inject_highaboveVt_CAB_ota.elf"], shell=True, capture_output=True, text=True)
@@ -694,6 +744,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -709,6 +760,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -722,6 +774,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -737,6 +790,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -750,6 +804,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -765,6 +820,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -778,6 +834,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -791,6 +848,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -807,6 +865,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -820,6 +879,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -833,6 +893,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -848,6 +909,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -861,6 +923,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -876,6 +939,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -889,6 +953,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -904,6 +969,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -917,6 +983,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -930,6 +997,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -946,6 +1014,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -959,6 +1028,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -972,6 +1042,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -987,6 +1058,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -1000,6 +1072,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -1015,6 +1088,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -1028,6 +1102,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -1042,6 +1117,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -1055,6 +1131,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -1068,6 +1145,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -1086,6 +1164,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -1099,6 +1178,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -1112,6 +1192,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -1126,6 +1207,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -1139,6 +1221,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -1153,6 +1236,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -1166,6 +1250,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -1180,6 +1265,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -1193,6 +1279,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -1206,6 +1293,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -1224,6 +1312,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -1237,6 +1326,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -1250,6 +1340,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -1264,6 +1355,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -1277,6 +1369,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -1291,6 +1384,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -1304,6 +1398,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -1318,6 +1413,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -1331,6 +1427,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -1344,6 +1441,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -1362,6 +1460,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -1375,6 +1474,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -1388,6 +1488,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -1402,6 +1503,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -1415,6 +1517,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -1429,6 +1532,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -1442,6 +1546,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -1456,6 +1561,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -1469,6 +1575,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -1482,6 +1589,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -1500,6 +1608,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -1513,6 +1622,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -1526,6 +1636,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -1540,6 +1651,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -1553,6 +1665,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -1567,6 +1680,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -1580,6 +1694,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -1594,6 +1709,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -1607,6 +1723,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -1620,6 +1737,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -1638,6 +1756,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -1651,6 +1770,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -1664,6 +1784,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -1678,6 +1799,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -1691,6 +1813,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -1705,6 +1828,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -1718,6 +1842,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -1732,6 +1857,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -1745,6 +1871,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -1758,6 +1885,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -1776,6 +1904,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -1789,6 +1918,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -1802,6 +1932,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -1816,6 +1947,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -1829,6 +1961,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -1843,6 +1976,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -1856,6 +1990,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -1870,6 +2005,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -1883,6 +2019,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -1896,6 +2033,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -1914,6 +2052,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -1927,6 +2066,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -1940,6 +2080,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -1954,6 +2095,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -1967,6 +2109,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -1981,6 +2124,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -1994,6 +2138,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -2008,6 +2153,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -2021,6 +2167,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -2034,6 +2181,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -2052,6 +2200,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -2065,6 +2214,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -2078,6 +2228,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -2092,6 +2243,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -2105,6 +2257,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -2119,6 +2272,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -2132,6 +2286,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -2146,6 +2301,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -2159,6 +2315,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -2172,6 +2329,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -2190,6 +2348,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -2203,6 +2362,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -2216,6 +2376,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -2230,6 +2391,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -2243,6 +2405,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -2257,6 +2420,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -2270,6 +2434,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -2284,6 +2449,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -2297,6 +2463,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -2310,6 +2477,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -2328,6 +2496,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -2341,6 +2510,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -2354,6 +2524,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -2368,6 +2539,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -2381,6 +2553,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -2395,6 +2568,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -2408,6 +2582,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -2422,6 +2597,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -2435,6 +2611,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -2448,6 +2625,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -2463,6 +2641,7 @@ def main():
 				print("Ran subprocess: success")
 				break
 			else:
+				print(proc.stderr)
 				raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 		except subprocess.CalledProcessError:
 			print("failed: trying again")
@@ -2476,6 +2655,7 @@ def main():
 				print("Ran subprocess: success")
 				break
 			else:
+				print(proc.stderr)
 				raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 		except subprocess.CalledProcessError:
 			print("failed: trying again")
@@ -2490,6 +2670,7 @@ def main():
 					print("Ran subprocess: success")
 					break
 				else:
+					print(proc.stderr)
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError:
 				print("failed: trying again")
@@ -2503,6 +2684,7 @@ def main():
 				print("Ran subprocess: success")
 				break
 			else:
+				print(proc.stderr)
 				raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 		except subprocess.CalledProcessError:
 			print("failed: trying again")
@@ -2517,6 +2699,7 @@ def main():
 				print("Ran subprocess: success")
 				break
 			else:
+				print(proc.stderr)
 				raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 		except subprocess.CalledProcessError:
 			print("failed: trying again")
