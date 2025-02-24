@@ -228,7 +228,7 @@ def compile(project_name, board_type, chip_num):
 				target_l_lowsubVt_swc = np.append(target_l_lowsubVt_swc, np.array([[target_listArray[i][0], target_listArray[i][1], target_listArray[i][2]]]), axis=0);
 				n_target_lowsubVt_swc = n_target_lowsubVt_swc+1
 		if target_listArray[i][3] == 3:
-			if target_listArray[i][3] > 10E-6:
+			if target_listArray[i][2] > 10E-6:
 				temp2_highaboveVt_ota = temp2_highaboveVt_ota + f"0x{(int(target_listArray[i][0])):04x} " + f"0x{(int(target_listArray[i][1])):04x} "  + f"0x{(int(target_listArray[i][4])):04x} " + "0x0000" + " 0xffff" + " "; # Row, Col, target, diff, # of pulses (Start values should be 0xffff. 0x0000 means the coarse program is over)
 				target_l_highaboveVt_ota = np.append(target_l_highaboveVt_ota, np.array([[target_listArray[i][0], target_listArray[i][1], target_listArray[i][2]]]), axis=0);
 				n_target_highaboveVt_ota = n_target_highaboveVt_ota + 1
