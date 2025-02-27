@@ -25,12 +25,11 @@ from ashes_fg.asic.utils import *
 
 # TODO: 
 # - write output directly as binary
-# - Place decoders either on top or to the side depending on die size
 
 # Qs:
 # - Why are island numbers zero indexed but row and cols are 1 indexed?
 
-verbose = False
+verbose = True
 pypath = sys.executable
 
 
@@ -428,86 +427,140 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
 
     for val, island in island_info.items():
         # Determine relative cell orderings within the island
-        col_widths = {}
-        prev_row, prev_height, prev_col, prev_width = -1, -1, -1, -1
-        block_left, block_bot, block_right, block_top = None, None, None, None
-        first_cell = True
         cell_order = []
         if not cells_only_module:
+            # read through the instances in the island once and pull out relevant info to be used for cell ordering during core coagulation
+            col_widths = {}
             for inst in island['deq']:
                 details = inst.ports
                 cell_width = int(cell_info[str(inst.module_name)]['width'])
                 cell_height = int(cell_info[str(inst.module_name)]['height'])
                 curr_row = int(details['row'])
                 curr_col = int(details['col'])
-
-                # Track column widths for cells that need to skip
-                # TODO: Add a feature to find col widths when bottom row needs offset
                 if curr_col not in col_widths:
-                    if 'matrix_row' in details:
-                        col_widths[curr_col] = cell_width
-                        for idx in range(curr_col + 1, int(details['matrix_col']) + 1):
-                            col_widths[idx] = cell_width
-                    else:
-                        col_widths[curr_col] = cell_width
-                
-                # Reset x and update y for each row
-                # Y location is estimated assuming that rows are defined in the ascending order in the verilog file
-                if not first_cell and prev_row != curr_row:
-                    x_loc = x_base
-                    if curr_col != 1:
-                        x_loc += calculate_offset(col_widths, curr_col-1)
-                    y_loc = y_base + (island['max_row'] - curr_row)*cell_pitch if not block_top else block_top
-                elif first_cell: 
-                    first_cell = False
-                    x_loc = x_base
-                    y_loc = y_base
-                
-                prev_row = curr_row
-                prev_height = cell_height
-                prev_col = curr_col
-                
-                if 'matrix_row' in details:
-                    mat_col, mat_row = int(details['matrix_col']), int(details['matrix_row'])
-                    ref_str = 'AREF\n'
-                    ret_string.append(ref_str)
-                    ret_string.append(f'SNAME: "{inst.module_name}"\n')
-                    col_row = f'COLROW: {mat_col}, {mat_row}\n'
-                    ret_string.append(col_row)
-                    if (x_loc == 0 and curr_col != 1) or (curr_col - prev_col > 1 and x_loc != 0):
-                        x_loc += calculate_offset(col_widths, curr_col-1)
-                    xy_tag = f'XY: {x_loc}, {y_loc}, {x_loc + mat_col*cell_width}, {y_loc}, {x_loc}, {y_loc + mat_row*cell_height}\n'
-                    ret_string.append(xy_tag)
-                    details['placement'] = (x_loc, y_loc, x_loc + mat_col*cell_width, y_loc + mat_row*cell_height )
-                    block_left = x_loc if block_left is None else min(block_left, x_loc)
-                    block_bot = y_loc if block_bot is None else min(block_bot, y_loc)
-                    block_right = x_loc + mat_col*cell_width if block_right is None else max(block_right, x_loc + mat_col*cell_width)
-                    block_top = y_loc + mat_row*cell_height if block_top is None else max(block_top, y_loc + mat_row*cell_height)
-                    x_loc += mat_col*cell_width
+                    col_widths[curr_col] = (cell_width, 'cell')
                 else:
-                    ref_str = 'SREF\n'
-                    ret_string.append(ref_str)
-                    ret_string.append(f'SNAME: "{inst.module_name}"\n')
-                    # TODO: Possibly Remove. Isn't this calculating offset twice?
-                    if (x_loc == 0 and curr_col != 1) or (curr_col - prev_col > 1 and x_loc != 0):
-                        x_loc += calculate_offset(col_widths, curr_col-1)
-                    xy_tag = f'XY: {x_loc}, {y_loc}\n'
-                    ret_string.append(xy_tag)
-                    details['placement'] = (x_loc, y_loc, x_loc + cell_width, y_loc + cell_height )
-                    block_left = x_loc if block_left is None else min(block_left, x_loc)
-                    block_bot = y_loc if block_bot is None else min(block_bot, y_loc)
-                    block_right = x_loc + cell_width if block_right is None else max(block_right, x_loc + cell_width)
-                    block_top = y_loc + cell_height if block_top is None else max(block_top, y_loc + cell_height)
-                    x_loc += cell_width
-                
-                ret_string.append('ENDEL\n')
-            island_place.append((block_left, block_bot, block_right, block_top))
+                    col_widths[curr_col] = (max(col_widths[curr_col][0], cell_width), 'cell')
+                matrix_row, matrix_col = None, None
+                mat_or_cell = 'cell'
+                key_except = ['island_num', 'row', 'col', 'matrix_row', 'matrix_col']
+                if 'matrix_row' in details:
+                    matrix_row = int(details['matrix_row'])
+                    matrix_col = int(details['matrix_col'])
+                    for mat_col in range(curr_col, curr_col+matrix_col):
+                        if mat_col not in col_widths:
+                            col_widths[mat_col] = (cell_width, 'matrix')
+                        else:
+                            col_widths[mat_col] = (max(col_widths[mat_col][0], cell_width), 'matrix')
+                    cell_width = matrix_col*cell_width
+                    cell_height = matrix_row*cell_height
+                    mat_or_cell = 'matrix'
+                temp_order = [str(inst.module_name), (curr_row, curr_col), (cell_width, cell_height), mat_or_cell, (0, 0)]
+                temp_nets = {}
+                if mat_or_cell == 'cell':
+                    for pin_key, pin_val in details.items():
+                        pin_val = str(pin_val)
+                        if pin_key not in key_except:
+                            if "[" in pin_val:
+                                match = re.search(r'\[(\d+)\]', pin_val)
+                                net_idx = int(match.group(1))
+                                lbrace_ind = pin_val.find('[')
+                                pin_val = f"{pin_val[:lbrace_ind]}_{net_idx}"
+                            temp_nets[pin_key] = pin_val
+                elif mat_or_cell == 'matrix':
+                    for pin_key, pin_val in details.items():
+                        pin_val = str(pin_val)
+                        if pin_key not in key_except:
+                            shorted_pin = False
+                            fixed_row, fixed_col = None, None
+                            # figure out if the pins are shorted and pull out the fixed dimension from pin name
+                            if "[" not in pin_val: shorted_pin = True
+                            fixed_row_idx = pin_key.find("row")
+                            fixed_row_idx = None if fixed_row_idx == -1 else fixed_row_idx
+                            if fixed_row_idx:
+                                fixed_row = int(pin_key[fixed_row_idx+4:])
+                                pin_key = pin_key[:fixed_row_idx]
+                            fixed_col_idx = pin_key.find("col")
+                            fixed_col_idx = None if fixed_col_idx == -1 else fixed_col_idx
+                            if fixed_col_idx:
+                                fixed_col = int(pin_key[fixed_col_idx+4:])
+                                pin_key = pin_key[:fixed_col_idx]
+                            if fixed_row is None and fixed_col is None:
+                                raise ParsingError(f"Pins on a matrix need to specify a fixed dimension in their name. {inst.module_name}: {pin_key} {pin_val} is missing row_# or col_# in the pin name.")
+                            # Pull the range of the bus net from the pin value
+                            vector_dim = None
+                            if not shorted_pin:
+                                matches = re.findall(r'\[(.*?)\]', pin_val)
+                                vector_dim = tuple(map(int, matches[0].split(':'))) if ':' in matches[0] else int(matches[0])
+                                lbrace_ind = pin_val.find('[')
+                                pin_val = pin_val[:lbrace_ind]
+                            # given the fixed dimension group (offset loc, pin name, net name) on the matrix  
+                            matrix_col = int(details['matrix_col'])
+                            matrix_row = int(details['matrix_row'])
+                            if shorted_pin:
+                                stop_idx = matrix_col if fixed_row is not None else matrix_row
+                                for shorted_val in range(stop_idx):
+                                    temp_key = (shorted_val, fixed_col) if fixed_col else (fixed_row, shorted_val)
+                                    if temp_key not in temp_nets:
+                                        temp_entry = [(pin_key, pin_val)]
+                                        temp_nets.update({temp_key: temp_entry})
+                                    else:
+                                        temp_nets[temp_key].append((pin_key, pin_val))
+                            # same grouping but for the wider case of non shorted pins
+                            else:
+                                # handle single index nets on a matrix
+                                if isinstance(vector_dim, int):
+                                    temp_key = (vector_dim, fixed_col) if fixed_col is not None else (fixed_row, vector_dim)
+                                    if temp_key not in temp_nets:
+                                        temp_entry = [(pin_key, f"{pin_val}_{vector_dim}")]
+                                        temp_nets.update({temp_key: temp_entry})
+                                    else:
+                                        temp_nets[temp_key].append((pin_key, f'{pin_val}_{vector_dim}'))
+                                # handle the net range
+                                else:
+                                    start_idx, stop_idx = vector_dim[0], vector_dim[1]
+                                    for net_val in range(start_idx, stop_idx):
+                                        temp_key = (net_val, fixed_col) if fixed_col else (fixed_row, net_val)
+                                        if temp_key not in temp_nets:
+                                            temp_entry = [(pin_key, f'{pin_val}_{net_val}')]
+                                            temp_nets.update({temp_key: temp_entry})
+                                        else:
+                                            temp_nets[temp_key].append((pin_key, f'{pin_val}_{net_val}'))
+                temp_order.append(temp_nets)
+                if mat_or_cell == 'matrix': temp_order.append((matrix_row, matrix_col))
+                cell_order.append(temp_order)
+            
+            # sort rows from bottom to top but columns from left to right of the island so as to keep relative x,y accumulation consistent with GDS writeout
+            cell_order.sort(key=lambda x: (-x[1][0], x[1][1]))
+            if cell_order[0][3] == 'cell':
+                max_row = cell_order[0][1][0]
+            else:
+                single_cell_height = int(cell_info[cell_order[0][0]]['height'])
+                max_row = curr_row +  int(cell_order[0][2][1] / single_cell_height) -1
+            mat_to_cell_padding = int(9.9*dbu)
+            for idx in range(len(cell_order)):
+                # implicit assumption that col_widths has outlined every column up to requested value. 
+                # Fine to assume so because a violation would be the fault of py-to-verilog
+                curr_col = cell_order[idx][1][1]
+                rel_x = 0
+                if cell_order[idx][3] == 'cell':
+                    rel_x += mat_to_cell_padding
+                rel_x += calculate_offset(col_widths, curr_col, mat_to_cell_padding)
+                if verbose: print(f'{cell_order[idx][0]} \ncol_widths: {col_widths}')
+                # For relative y, if its a cell I could use the accumulated height or calculate from pitch which should match
+                # if its a matrix, the relative y is the bottom of the matrix. so row+num_rows. Then its pitch*(max_row - summed_val)
+                curr_row = cell_order[idx][1][0]
+                if cell_order[idx][3] == 'matrix':
+                    single_cell_height = int(cell_info[cell_order[idx][0]]['height'])
+                    curr_row = curr_row +  int(cell_order[idx][2][1] / single_cell_height) -1
+                rel_y = cell_pitch*(max_row - curr_row)
+                cell_order[idx][4] = (rel_x, rel_y)
         else:
             for inst in island['deq']:
                 details = inst.ports
                 cell_width = int(cell_info[str(inst.module_name)]['width'])
                 curr_col = int(details['col'])
-                temp_order = [str(inst.module_name), curr_col, cell_width]
+                temp_order = [str(inst.module_name), (None, curr_col), (cell_width, None)]
                 key_except = ['island_num', 'row', 'col']
                 temp_nets = {}
                 for pin_key, pin_val in details.items():
@@ -515,14 +568,14 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
                         temp_nets[pin_key] = pin_val
                 if temp_nets: temp_order.append(temp_nets)
                 cell_order.append(temp_order)
-            cell_order.sort(key=lambda x: x[1])
+            cell_order.sort(key=lambda x: x[1][1])
             prev_x = 0
             intra_cell_padding = int(50*dbu)
             for idx in range(len(cell_order)):
                 rel_x = prev_x
                 rel_y = 0 if idx % 2 == 0 else cell_pitch
-                cell_order[idx] = cell_order[idx][0:3] + [rel_x, rel_y] + cell_order[idx][3:]
-                cell_width = cell_order[idx][2]
+                cell_order[idx] = cell_order[idx][0:3] + ['cell'] + [(rel_x, rel_y)] + cell_order[idx][3:]
+                cell_width = cell_order[idx][2][0]
                 prev_x += cell_width + intra_cell_padding
         if verbose: print(f'Cell order in island {cell_order}')
         
@@ -670,7 +723,7 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
                 for inst in island['switch_ind']:
                     details = inst.ports
                     direction = details['direction']
-                    col_id = int(details['col']) - 1
+                    col_id = int(details['col'])
                     swc_name = inst.module_name
                     nets = {}
                     for pin_key, pin_val in details.items():
@@ -731,19 +784,30 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
             drainmux_spacing = 8.5*dbu #7.5 is okay
             x_drainmux_offset += drain_select_width + prog_switch_width + drainmux_spacing
             x_drainmux_offset = round(x_drainmux_offset/track_spacing)*track_spacing
+            # Deal with the column widths calculated for matrix islands, append offset to only first column
+            col_w_keys = list(col_widths.keys())
+            col_w_keys.sort()
+            first_col = col_widths[col_w_keys[0]]
+            temp_val = (first_col[0] + x_drainmux_offset, first_col[1])
+            col_widths[col_w_keys[0]] = temp_val
             # Deal with core cells inside island
             for cell in cell_order:
-                cell_width = cell[2]
-                cell_height = cell_info[cell[0]]['height']
+                cell_width = cell[2][0]
+                cell_height = cell[2][1]
                 cell_order_in_island[val]['items'][coords_id] = {}
-                cell_order_in_island[val]['items'][coords_id]['type'] = 'cell'
+                cell_order_in_island[val]['items'][coords_id]['type'] = cell[3]
                 cell_order_in_island[val]['items'][coords_id]['pin_blockage'] = True
                 cell_order_in_island[val]['items'][coords_id]['name'] = cell[0]
-                temp_coord = [x_drainmux_offset + cell[3], cell[4], x_drainmux_offset + cell[3] + cell_width, cell[4] + cell_height]
+                left, bottom, right, top = x_drainmux_offset + cell[4][0], cell[4][1], x_drainmux_offset + cell[4][0] + cell_width, cell[4][1] + cell_height
+                temp_coord = [left, bottom, right, top]
                 cell_order_in_island[val]['coords'].append(temp_coord)
                 # Forward along the nets
-                if len(cell) > 5: cell_order_in_island[val]['items'][coords_id]['nets'] = cell[5]
-                cell[3] = x_drainmux_offset + cell[3]
+                if cell[3] != 'matrix':
+                    if len(cell) > 5: cell_order_in_island[val]['items'][coords_id]['nets'] = cell[5]
+                else:
+                    cell_order_in_island[val]['items'][coords_id]['insts'] = cell[5]
+                    cell_order_in_island[val]['items'][coords_id]['mat_info'] = {'mat_row': cell[6][0], 'mat_col': cell[6][1]}
+                cell[4] = (x_drainmux_offset + cell[4][0], cell[4][1])
                 coords_id += 1
             # Deal with horizontal switches
             gatemux_spacing = int(15*dbu)
@@ -751,11 +815,16 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
             for idx, switch in enumerate(horz_switch_array[0]):
                 #Semi-Hardcode connecting net from switch to decoder
                 temp_net_num = idx*4
-                switch['nets']['decode<0>'] = f'swc_net{temp_net_num + 0}'
-                switch['nets']['RUN_IN<0>'] = f'swc_net{temp_net_num + 1}'
-                switch['nets']['decode<1>'] = f'swc_net{temp_net_num + 2}'
-                switch['nets']['RUN_IN<1>'] = f'swc_net{temp_net_num + 3}'
-                x_loc = cell_order[idx][3]
+                switch['nets']['decode<0>'] = f'isle{val}_swc_net{temp_net_num + 0}'
+                switch['nets']['RUN_IN<0>'] = f'isle{val}_swc_net{temp_net_num + 1}'
+                switch['nets']['decode<1>'] = f'isle{val}_swc_net{temp_net_num + 2}'
+                switch['nets']['RUN_IN<1>'] = f'isle{val}_swc_net{temp_net_num + 3}'
+                if cells_only_module:
+                    x_loc = cell_order[idx][4][0]
+                else:
+                    x_loc = calculate_offset(col_widths, idx, mat_to_cell_padding)
+                    if idx == 0: x_loc += x_drainmux_offset
+                    if col_widths[idx][1] == 'cell': x_loc += mat_to_cell_padding
                 y_loc = height_accum
                 cell_width = cell_info[switch['name']]['width']
                 cell_height = cell_info[switch['name']]['height']
@@ -791,16 +860,32 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
                     if row_idx == 0:
                         #Semi-Hardcode connecting net from switch to decoder
                         temp_net_num = idx*8
-                        col['nets']['OUT<0>'] = f'swc_net{temp_net_num + 0}'
-                        col['nets']['RUN_OUT<0>'] = f'swc_net{temp_net_num + 1}'
-                        col['nets']['OUT<1>'] = f'swc_net{temp_net_num + 2}'
-                        col['nets']['RUN_OUT<1>'] = f'swc_net{temp_net_num + 3}'
-                        col['nets']['OUT<2>'] = f'swc_net{temp_net_num + 4}'
-                        col['nets']['RUN_OUT<2>'] = f'swc_net{temp_net_num + 5}'
-                        col['nets']['OUT<3>'] = f'swc_net{temp_net_num + 6}' if 'OUT<3>' not in col['nets'] else col['nets']['OUT<3>']
-                        col['nets']['RUN_OUT<3>'] = f'swc_net{temp_net_num + 7}' if 'RUN_OUT<3>' not in col['nets'] else col['nets']['RUN_OUT<3>']
-                    if (idx*2) < len(cell_order):
-                        x_loc = cell_order[idx*2][3]
+                        col['nets']['OUT<0>'] = f'isle{val}_swc_net{temp_net_num + 0}'
+                        col['nets']['RUN_OUT<0>'] = f'isle{val}_swc_net{temp_net_num + 1}'
+                        col['nets']['OUT<1>'] = f'isle{val}_swc_net{temp_net_num + 2}'
+                        col['nets']['RUN_OUT<1>'] = f'isle{val}_swc_net{temp_net_num + 3}'
+                        col['nets']['OUT<2>'] = f'isle{val}_swc_net{temp_net_num + 4}'
+                        col['nets']['RUN_OUT<2>'] = f'isle{val}_swc_net{temp_net_num + 5}'
+                        col['nets']['OUT<3>'] = f'isle{val}_swc_net{temp_net_num + 6}' if 'OUT<3>' not in col['nets'] else col['nets']['OUT<3>']
+                        col['nets']['RUN_OUT<3>'] = f'isle{val}_swc_net{temp_net_num + 7}' if 'RUN_OUT<3>' not in col['nets'] else col['nets']['RUN_OUT<3>']
+                    if cells_only_module and (idx*2) < len(cell_order):
+                        x_loc = cell_order[idx*2][4][0]
+                        y_loc = height_accum
+                        cell_width = cell_info[col['name']]['width']
+                        cell_height = cell_info[col['name']]['height']
+                        cell_order_in_island[val]['items'][coords_id] = {}
+                        cell_order_in_island[val]['items'][coords_id]['type'] = 'cell'
+                        cell_order_in_island[val]['items'][coords_id]['name'] = col['name']
+                        cell_order_in_island[val]['items'][coords_id]['nets'] = col['nets']
+                        if 'cell_pins' not in cell_info[col['name']]:
+                            cell_info[col['name']]['cell_pins'] = {}
+                        cell_order_in_island[val]['items'][coords_id]['pin_blockage'] = True
+                        temp_coord = [x_loc, y_loc, x_loc + cell_width, y_loc + cell_height]
+                        cell_order_in_island[val]['coords'].append(temp_coord)
+                        coords_id += 1
+                    elif not cells_only_module and (idx*2) < len(col_widths):
+                        x_loc = calculate_offset(col_widths, idx*2, mat_to_cell_padding)
+                        if idx == 0: x_loc += x_drainmux_offset
                         y_loc = height_accum
                         cell_width = cell_info[col['name']]['width']
                         cell_height = cell_info[col['name']]['height']
@@ -840,13 +925,13 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
             if val not in cell_order_in_island:
                 cell_order_in_island[val] = {'items': {}, 'coords': []}
             for cell in cell_order:
-                cell_width = cell[2]
-                cell_height = cell_info[cell[0]]['height']
+                cell_width = cell[2][0]
+                cell_height = cell[2][1]
                 cell_order_in_island[val]['items'][coords_id] = {}
-                cell_order_in_island[val]['items'][coords_id]['type'] = 'cell'
+                cell_order_in_island[val]['items'][coords_id]['type'] = cell[3]
                 cell_order_in_island[val]['items'][coords_id]['name'] = cell[0]
                 cell_order_in_island[val]['items'][coords_id]['pin_blockage'] = True
-                temp_coord = [cell[3], cell[4], cell[3] + cell_width, cell[4] + cell_height]
+                temp_coord = [cell[4][0], cell[4][1], cell[4][0] + cell_width, cell[4][1] + cell_height]
                 cell_order_in_island[val]['coords'].append(temp_coord)
                 # Forward along the nets
                 if len(cell) > 5: cell_order_in_island[val]['items'][coords_id]['nets'] = cell[5]
@@ -867,37 +952,36 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
         island_dims.append([island_width, island_height, val])
         if verbose: print(f'island dims {island_width} x {island_height}')
     
-    if cells_only_module:
-        # find center left design area. starting with island 0, place them all in a row and update cell order doc
-        x_loc = round(design_area[0]/track_spacing)*track_spacing - int(track_spacing/2)
-        y_loc = round(int(design_height/3), -1) + int(design_area[1])
-        total_islands_width = sum(row[0] for row in island_dims)
-        island_row_spacing = int(round((design_width - total_islands_width)/(len(island_dims) + 1), -3))
-        island_row_spacing = round(island_row_spacing/track_spacing)*track_spacing
-        # Option to have island locations set externally or dynamically
-        if isle_loc:
-            for idx, value in cell_order_in_island.items():
-                array = np.array(value['coords'])
-                x_loc = isle_loc[idx][0]
-                y_loc = isle_loc[idx][1]
-                array[:, 0] += x_loc
-                array[:, 2] += x_loc
-                array[:, 1] += y_loc
-                array[:, 3] += y_loc
-                island_place.append([x_loc, y_loc])
-                value['coords'] = array.tolist()
-        else:
-            if verbose: print(f'dynamic spacing {island_row_spacing}')
-            for dim in island_dims:
-                array = np.array(cell_order_in_island[dim[2]]['coords'])
-                x_loc += island_row_spacing
-                array[:, 0] += x_loc
-                array[:, 2] += x_loc
-                array[:, 1] += y_loc
-                array[:, 3] += y_loc
-                island_place.append([x_loc, y_loc])
-                x_loc += dim[0] 
-                cell_order_in_island[dim[2]]['coords'] = array.tolist()
+    # find center left design area. starting with island 0, place them all in a row and update cell order doc
+    x_loc = round(design_area[0]/track_spacing)*track_spacing - int(track_spacing/2)
+    y_loc = round(int(design_height/3), -1) + int(design_area[1])
+    total_islands_width = sum(row[0] for row in island_dims)
+    island_row_spacing = int(round((design_width - total_islands_width)/(len(island_dims) + 1), -3))
+    island_row_spacing = round(island_row_spacing/track_spacing)*track_spacing
+    # Option to have island locations set externally or dynamically
+    if isle_loc:
+        for idx, value in cell_order_in_island.items():
+            array = np.array(value['coords'])
+            x_loc = isle_loc[idx][0]
+            y_loc = isle_loc[idx][1]
+            array[:, 0] += x_loc
+            array[:, 2] += x_loc
+            array[:, 1] += y_loc
+            array[:, 3] += y_loc
+            island_place.append([x_loc, y_loc])
+            value['coords'] = array.tolist()
+    else:
+        if verbose: print(f'dynamic spacing {island_row_spacing}')
+        for dim in island_dims:
+            array = np.array(cell_order_in_island[dim[2]]['coords'])
+            x_loc += island_row_spacing
+            array[:, 0] += x_loc
+            array[:, 2] += x_loc
+            array[:, 1] += y_loc
+            array[:, 3] += y_loc
+            island_place.append([x_loc, y_loc])
+            x_loc += dim[0] 
+            cell_order_in_island[dim[2]]['coords'] = array.tolist()
 
     # gds write out
     for val, island in cell_order_in_island.items():
@@ -921,6 +1005,18 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
                 ret_string.append(f'DATATYPE: {layer_type[1]}\n')
                 ret_string.append(f'XY: {left}, {bottom}, {right}, {bottom}, {right}, {top}, {left}, {top}, {left}, {bottom}\n')
                 ret_string.append('ENDEL\n')
+            if item['type'] == 'matrix':
+                ret_string.append('AREF\n')
+                c_name = item['name']
+                ret_string.append(f'SNAME: "{c_name}"\n')
+                array = island['coords']
+                left, bottom, right, top = array[idx][0], array[idx][1], array[idx][2], array[idx][3]
+                # careful with dbu conversion
+                mat_col = int( int(right - left) / int(cell_info[c_name]['width']) )
+                mat_row = int( int(top - bottom) / int(cell_info[c_name]['height']) )
+                ret_string.append(f'COLROW: {mat_col}, {mat_row}\n')
+                ret_string.append(f'XY: {left}, {bottom}, {right}, {bottom}, {left}, {top}\n')
+                ret_string.append(f'ENDEL\n')
 
     return ''.join(ret_string)
 
@@ -1038,7 +1134,6 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
     if frame_module:
             comp_string.append(f'- {frame_module.instance_name} {frame_module.module_name} + PLACED ( 0 0 ) N ;\n')
             comp_cnt += 1
-    # TODO: handle vectorized items when placing components
     for val, island in cell_order_in_island.items():
         for idx, item in island['items'].items():
             if item['type'] == 'cell':
@@ -1048,6 +1143,21 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
                 y_loc = array[idx][1]
                 comp_string.append(f'- I_{val}_{idx} {c_name} + PLACED ( {x_loc} {y_loc} ) N ;\n')
                 comp_cnt += 1
+            elif item['type'] == 'matrix':
+                c_name = item['name']
+                array = island['coords']
+                mat_x_loc = array[idx][0]
+                mat_y_loc = array[idx][1]
+                mat_row = item['mat_info']['mat_row']
+                insts = item['insts']
+                for mat_loc, mat_nets in insts.items():
+                    mat_cell_id = f'I_{val}_{idx}_{mat_loc[0]}_{mat_loc[1]}'
+                    mat_cell_height = cell_info[c_name]['height']
+                    mat_cell_width = cell_info[c_name]['width']
+                    y_loc = (mat_row - 1 - mat_loc[0])*mat_cell_height + mat_y_loc 
+                    x_loc = mat_loc[1]*mat_cell_width + mat_x_loc
+                    comp_string.append(f'- {mat_cell_id} {c_name} + PLACED ( {x_loc} {y_loc} ) N ;\n')
+                    comp_cnt += 1
     def_file.write(f'\nCOMPONENTS {comp_cnt} ;\n')
     def_file.write(''.join(comp_string))
     def_file.write('END COMPONENTS\n\n')
@@ -1063,7 +1173,8 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
     block_ext_len = 1*dbu # this is how far the block should extend from the internal blockage
     for val, island in cell_order_in_island.items():
         for idx, item in island['items'].items():
-            if item['type'] == 'cell':
+            insts_list = []
+            if item['type'] == 'cell' or item['type'] == 'matrix':
                 array = island['coords']
                 loc = array[idx]
                 block_x1 = loc[0] + pin_const*dbu
@@ -1071,115 +1182,137 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
                 block_x2 = loc[2] - pin_const*dbu
                 block_y2 = loc[3] - pin_const*dbu
                 rect_string.append(f'    RECT ( {block_x1} {block_y1} ) ( {block_x2} {block_y2} )\n')
+                insts_list = ['placeholder']
+            if item['type'] == 'matrix':
+                insts_list = item['insts'].keys()
+                c_name = item['name']
+                mat_x_loc = array[idx][0]
+                mat_y_loc = array[idx][1]
+                mat_cell_height = cell_info[c_name]['height']
+                mat_cell_width = cell_info[c_name]['width']
+                mat_row = item['mat_info']['mat_row']
+
             # Insert blockages between pins around the edges
             if 'pin_blockage' in item and item['pin_blockage']:
-                # Split ports into sides
-                left_side, top_side, right_side, bot_side = [], [], [], []
-                cell_pins = cell_info[item['name']]['cell_pins']
-                for pin_item in cell_pins.values():
-                    pin_left, pin_bot, pin_right, pin_top = loc[0] + int(pin_item['RECT'][0]), loc[1] + int(pin_item['RECT'][1]), loc[0] + int(pin_item['RECT'][2]), loc[1] + int(pin_item['RECT'][3])
-                    extension_dirs = [abs(loc[0] - pin_left), abs(loc[1] - pin_bot), abs(loc[2] - pin_right), abs(loc[3] - pin_top)]
-                    index_min = min(range(len(extension_dirs)), key=extension_dirs.__getitem__)
-                    if index_min == 0:
-                        left_side.append([pin_left, pin_bot, pin_right,pin_top])
-                    elif index_min == 1:
-                        bot_side.append([pin_left, pin_bot, pin_right,pin_top])
-                    elif index_min == 2:
-                        right_side.append([pin_left, pin_bot, pin_right,pin_top])
-                    elif index_min == 3:
-                        top_side.append([pin_left, pin_bot, pin_right,pin_top])
-                # For each side, insert a new rect blockage if theres space around the pins
-                left_side.sort(key=lambda x:x[1])
-                prev_coord, pin_dist = None, None
-                temp_y = None
-                num_pins = len(left_side) - 1
-                for ind, pin_coord in enumerate(left_side):
-                    if prev_coord == None:
-                        pin_dist = abs(pin_coord[1] - block_y1)
-                        temp_y = block_y1
-                    else:
-                        pin_dist = abs(pin_coord[1] - prev_coord[3])
-                        temp_y = prev_coord[3] + pin_spacing
-                    prev_coord = pin_coord
-                    if pin_dist > pin_threshold:
-                        rect_string.append(f'    RECT ( {loc[0] - block_ext_len} {temp_y} ) ( {block_x1} {pin_coord[1] - pin_spacing} )\n')
-                    # check how much space there was from last pin to edge of the side
-                    if ind == num_pins:
-                        pin_dist = abs(pin_coord[3] - block_y2)
-                        if pin_dist > pin_threshold:
-                            rect_string.append(f'    RECT ( {loc[0] - block_ext_len} {pin_coord[3] + pin_spacing} ) ( {block_x1} {block_y2} )\n')
-                # check if there were no pins on left side
-                if prev_coord == None:
-                    rect_string.append(f'    RECT ( {loc[0] - block_ext_len} {block_y1} ) ( {block_x1} {block_y2} )\n')
-                
-                top_side.sort(key=lambda x:x[0])
-                prev_coord, pin_dist = None, None
-                temp_x = None
-                num_pins = len(top_side) - 1
-                for ind, pin_coord in enumerate(top_side):
-                    if prev_coord == None:
-                        pin_dist = abs(pin_coord[0] - block_x1)
-                        temp_x = block_x1
-                    else:
-                        pin_dist = abs(pin_coord[0] - prev_coord[2])
-                        temp_x = prev_coord[2] + pin_spacing
-                    prev_coord = pin_coord
-                    if pin_dist > pin_threshold:
-                        rect_string.append(f'    RECT ( {temp_x} {block_y2} ) ( {pin_coord[0] - pin_spacing} {loc[3] + block_ext_len} )\n')
-                    # check how much space there was from last pin to edge of the side
-                    if ind == num_pins:
-                        pin_dist = abs(pin_coord[2] - block_x2)
-                        if pin_dist > pin_threshold:
-                            rect_string.append(f'    RECT ( {pin_coord[2] + pin_spacing} {block_y2} ) ( {block_x2} {loc[3] + block_ext_len} )\n')
-                # check if there were no pins on top side
-                if prev_coord == None:
-                    rect_string.append( f'    RECT ( {block_x1} {block_y2} ) ( {block_x2} {loc[3] + block_ext_len} )\n')
-                
-                right_side.sort(key=lambda x:x[1], reverse=True)
-                prev_coord, pin_dist = None, None
-                temp_y = None
-                num_pins = len(right_side) - 1
-                for ind, pin_coord in enumerate(right_side):
-                    if prev_coord == None:
-                        pin_dist = abs(pin_coord[3] - block_y2)
-                        temp_y = block_y2
-                    else:
-                        pin_dist = abs(pin_coord[3] - prev_coord[1])
-                        temp_y = prev_coord[1] - pin_spacing
-                    prev_coord = pin_coord
-                    if pin_dist > pin_threshold:
-                        rect_string.append(f'    RECT ( {block_x2} {pin_coord[3] + pin_spacing} ) ( {loc[2] + block_ext_len} {temp_y} )\n')
-                    # check how much space there was from last pin to edge of the side
-                    if ind == num_pins:
-                        pin_dist = abs(pin_coord[1] - block_y1)
-                        if pin_dist > pin_threshold:
-                            rect_string.append(f'    RECT ( {block_x2} {block_y1} ) ( {loc[2] + block_ext_len} {pin_coord[1] - pin_spacing} )\n')
-                # check if there were no pins on right side
-                if prev_coord == None:
-                    rect_string.append(f'    RECT ( {block_x2} {block_y1} ) ( {loc[2] + block_ext_len} {block_y2} )\n')
+                # Added a number of times to loop for matrices
+                for inst_idx in insts_list:
+                    # For matrices, update the location for the cell being worked on
+                    if item['type'] == 'matrix':
+                        y_loc = (mat_row - 1 - inst_idx[0])*mat_cell_height + mat_y_loc 
+                        x_loc = inst_idx[1]*mat_cell_width + mat_x_loc
+                        loc = [x_loc, y_loc, x_loc + mat_cell_width, y_loc + mat_cell_height]
+                        block_x1 = loc[0] + pin_const*dbu
+                        block_y1 = loc[1] + pin_const*dbu
+                        block_x2 = loc[2] - pin_const*dbu
+                        block_y2 = loc[3] - pin_const*dbu
 
-                bot_side.sort(key=lambda x:x[0], reverse=True)
-                prev_coord, pin_dist = None, None
-                temp_x = None
-                num_pins = len(bot_side) - 1
-                for ind, pin_coord in enumerate(bot_side):
-                    if prev_coord == None:
-                        pin_dist = abs(pin_coord[2] - block_x2)
-                        temp_x = block_x2
-                    else:
-                        pin_dist = abs(pin_coord[2] - prev_coord[0])
-                        temp_x = prev_coord[0] - pin_spacing
-                    prev_coord = pin_coord
-                    if pin_dist > pin_threshold:
-                        rect_string.append(f'    RECT ( {pin_coord[2] + pin_spacing} {loc[1] - block_ext_len} ) ( {temp_x} {block_y1} )\n')
-                    # check how much space there was from last pin to edge of the side
-                    if ind == num_pins:
-                        pin_dist = abs(pin_coord[0] - block_x1)
+                    # Split ports into sides
+                    left_side, top_side, right_side, bot_side = [], [], [], []
+                    cell_pins = cell_info[item['name']]['cell_pins']
+                    for pin_item in cell_pins.values():
+                        pin_left, pin_bot, pin_right, pin_top = loc[0] + int(pin_item['RECT'][0]), loc[1] + int(pin_item['RECT'][1]), loc[0] + int(pin_item['RECT'][2]), loc[1] + int(pin_item['RECT'][3])
+                        extension_dirs = [abs(loc[0] - pin_left), abs(loc[1] - pin_bot), abs(loc[2] - pin_right), abs(loc[3] - pin_top)]
+                        index_min = min(range(len(extension_dirs)), key=extension_dirs.__getitem__)
+                        if index_min == 0:
+                            left_side.append([pin_left, pin_bot, pin_right,pin_top])
+                        elif index_min == 1:
+                            bot_side.append([pin_left, pin_bot, pin_right,pin_top])
+                        elif index_min == 2:
+                            right_side.append([pin_left, pin_bot, pin_right,pin_top])
+                        elif index_min == 3:
+                            top_side.append([pin_left, pin_bot, pin_right,pin_top])
+                    # For each side, insert a new rect blockage if theres space around the pins
+                    left_side.sort(key=lambda x:x[1])
+                    prev_coord, pin_dist = None, None
+                    temp_y = None
+                    num_pins = len(left_side) - 1
+                    for ind, pin_coord in enumerate(left_side):
+                        if prev_coord == None:
+                            pin_dist = abs(pin_coord[1] - block_y1)
+                            temp_y = block_y1
+                        else:
+                            pin_dist = abs(pin_coord[1] - prev_coord[3])
+                            temp_y = prev_coord[3] + pin_spacing
+                        prev_coord = pin_coord
                         if pin_dist > pin_threshold:
-                            rect_string.append(f'    RECT ( {block_x1} {loc[1] - block_ext_len} ) ( {pin_coord[0] - pin_spacing} {block_y1} )\n')
-                # check if there were no pins on bot side
-                if prev_coord == None:
-                    rect_string.append(f'    RECT ( {block_x1} {loc[1] - block_ext_len} ) ( {block_x2} {block_y1} )\n')
+                            rect_string.append(f'    RECT ( {loc[0] - block_ext_len} {temp_y} ) ( {block_x1} {pin_coord[1] - pin_spacing} )\n')
+                        # check how much space there was from last pin to edge of the side
+                        if ind == num_pins:
+                            pin_dist = abs(pin_coord[3] - block_y2)
+                            if pin_dist > pin_threshold:
+                                rect_string.append(f'    RECT ( {loc[0] - block_ext_len} {pin_coord[3] + pin_spacing} ) ( {block_x1} {block_y2} )\n')
+                    # check if there were no pins on left side
+                    if prev_coord == None:
+                        rect_string.append(f'    RECT ( {loc[0] - block_ext_len} {block_y1} ) ( {block_x1} {block_y2} )\n')
+                    
+                    top_side.sort(key=lambda x:x[0])
+                    prev_coord, pin_dist = None, None
+                    temp_x = None
+                    num_pins = len(top_side) - 1
+                    for ind, pin_coord in enumerate(top_side):
+                        if prev_coord == None:
+                            pin_dist = abs(pin_coord[0] - block_x1)
+                            temp_x = block_x1
+                        else:
+                            pin_dist = abs(pin_coord[0] - prev_coord[2])
+                            temp_x = prev_coord[2] + pin_spacing
+                        prev_coord = pin_coord
+                        if pin_dist > pin_threshold:
+                            rect_string.append(f'    RECT ( {temp_x} {block_y2} ) ( {pin_coord[0] - pin_spacing} {loc[3] + block_ext_len} )\n')
+                        # check how much space there was from last pin to edge of the side
+                        if ind == num_pins:
+                            pin_dist = abs(pin_coord[2] - block_x2)
+                            if pin_dist > pin_threshold:
+                                rect_string.append(f'    RECT ( {pin_coord[2] + pin_spacing} {block_y2} ) ( {block_x2} {loc[3] + block_ext_len} )\n')
+                    # check if there were no pins on top side
+                    if prev_coord == None:
+                        rect_string.append( f'    RECT ( {block_x1} {block_y2} ) ( {block_x2} {loc[3] + block_ext_len} )\n')
+                    
+                    right_side.sort(key=lambda x:x[1], reverse=True)
+                    prev_coord, pin_dist = None, None
+                    temp_y = None
+                    num_pins = len(right_side) - 1
+                    for ind, pin_coord in enumerate(right_side):
+                        if prev_coord == None:
+                            pin_dist = abs(pin_coord[3] - block_y2)
+                            temp_y = block_y2
+                        else:
+                            pin_dist = abs(pin_coord[3] - prev_coord[1])
+                            temp_y = prev_coord[1] - pin_spacing
+                        prev_coord = pin_coord
+                        if pin_dist > pin_threshold:
+                            rect_string.append(f'    RECT ( {block_x2} {pin_coord[3] + pin_spacing} ) ( {loc[2] + block_ext_len} {temp_y} )\n')
+                        # check how much space there was from last pin to edge of the side
+                        if ind == num_pins:
+                            pin_dist = abs(pin_coord[1] - block_y1)
+                            if pin_dist > pin_threshold:
+                                rect_string.append(f'    RECT ( {block_x2} {block_y1} ) ( {loc[2] + block_ext_len} {pin_coord[1] - pin_spacing} )\n')
+                    # check if there were no pins on right side
+                    if prev_coord == None:
+                        rect_string.append(f'    RECT ( {block_x2} {block_y1} ) ( {loc[2] + block_ext_len} {block_y2} )\n')
+
+                    bot_side.sort(key=lambda x:x[0], reverse=True)
+                    prev_coord, pin_dist = None, None
+                    temp_x = None
+                    num_pins = len(bot_side) - 1
+                    for ind, pin_coord in enumerate(bot_side):
+                        if prev_coord == None:
+                            pin_dist = abs(pin_coord[2] - block_x2)
+                            temp_x = block_x2
+                        else:
+                            pin_dist = abs(pin_coord[2] - prev_coord[0])
+                            temp_x = prev_coord[0] - pin_spacing
+                        prev_coord = pin_coord
+                        if pin_dist > pin_threshold:
+                            rect_string.append(f'    RECT ( {pin_coord[2] + pin_spacing} {loc[1] - block_ext_len} ) ( {temp_x} {block_y1} )\n')
+                        # check how much space there was from last pin to edge of the side
+                        if ind == num_pins:
+                            pin_dist = abs(pin_coord[0] - block_x1)
+                            if pin_dist > pin_threshold:
+                                rect_string.append(f'    RECT ( {block_x1} {loc[1] - block_ext_len} ) ( {pin_coord[0] - pin_spacing} {block_y1} )\n')
+                    # check if there were no pins on bot side
+                    if prev_coord == None:
+                        rect_string.append(f'    RECT ( {block_x1} {loc[1] - block_ext_len} ) ( {block_x2} {block_y1} )\n')
     
     # Change blockages syntax based on router. Qrouter accepts an older DEF syntax i believe.
     if router_tool != 'qrouter':
@@ -1236,33 +1369,12 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
     def_blocks += f'  - LAYER {metal_layers[0]}\n'
     if rect_string: rect_string[-1] = rect_string[-1][:-2] # These are for regenerating a def file with visible guide nets
     def_blocks += ''.join(rect_string)                
-
-    # old code for def file generation. remove once function transition is complete.
-    for island in island_info:
-        inst_list = island_info[island]['deq']
-        for inst in inst_list:
-            pass
-            #loc = inst.ports['placement']
-            # If module is a matrix, place all cells around the edges
-            #if 'matrix_row' in inst.ports:
-            #    total_row = int(inst.ports['matrix_row'])
-            #    total_col = int(inst.ports['matrix_col'])
-            #    cell_height = cell_info[inst.module_name]['height']
-            #    cell_width = cell_info[inst.module_name]['width']
-            #    for i in range(total_row):
-            #        for j in range(total_col):
-            #            if i == 0 or i == total_row - 1 or j == 0 or j == total_col - 1: 
-            #                comp_string.append(f'- {inst.instance_name}_{i*total_col + j} {inst.module_name} + PLACED ( {loc[0] + ((j)*cell_width) } {loc[1] + ((total_row - i - 1)*cell_height)} ) N ;\n')
-            #                comp_cnt += 1
-            #else:
-            #    comp_string.append(f'- {inst.instance_name} {inst.module_name} + PLACED ( {loc[0]} {loc[1]} ) N ;\n')
-            #    comp_cnt += 1
-            
-    # TODO: Handle vectorized cells for net connections
+        
     for val, island in cell_order_in_island.items():
         for idx, item in island['items'].items():
             if item['type'] == 'cell' and 'nets' in item:
                 for pin_name, pin_val in item['nets'].items():
+                    pin_val = str(pin_val)
                     # Remove brackets if present and append index to net name
                     net_name = pin_val if '[' not in pin_val else pin_val.split('[')[0] + '_' + pin_val.split('[')[1][:-1]
                     if net_name in nets_table:
@@ -1270,43 +1382,16 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
                     else:
                         nets_table.update({net_name: [(f'I_{val}_{idx}', pin_name)]})
                         nets_cnt += 1
-            '''
-            # Convert all port values to string for substring search,
-            vals = [str(i) for i in vals]
-            # Check if instance has a net in the port list
-            if next((s for s in vals if 'net' in s), None):
-                # if the net is in a matrix, handle bus routing
-                if 'matrix_row' in inst.ports:
-                    for pin_name, pin_val in inst.ports.items():
-                        pin_val = str(pin_val)
-                        if 'net' in pin_val:
-                            # To align instance number with net number for bus notation eg net[8:16], reset the instance number to zero because we assume groups of instances are always routed together. This should be a hard external requirement. 
-                            # That is, if you have a matrix/vectorized block, you can only route all of them together.  
-                            pattern = r'\[(\d+):(\d+)\]'
-                            matches = re.findall(pattern, pin_val)
-                            net_range_start = 0
-                            net_range_stop = int(matches[0][1]) - int(matches[0][0])
-                            for inst_num in range(net_range_start, net_range_stop):
-                                # net name should be based on raw net number
-                                net_number = int(matches[0][0]) + inst_num
-                                net_name = pin_val.split('[')[0] + f'_{net_number}'
-                                if net_name in nets_table:
-                                    nets_table[net_name].append((inst.instance_name + f'_{inst_num}', pin_name))
-                                else:
-                                    nets_table.update({net_name: [(inst.instance_name + f'_{inst_num}', pin_name)]})
-                                    nets_cnt += 1
-                else:
-                    for pin_name, pin_val in inst.ports.items():
-                        pin_val = str(pin_val)
-                        if 'net' in pin_val:
-                            # Remove brackets if present and append index to net name
-                            net_name = pin_val if '[' not in pin_val else pin_val.split('[')[0] + '_' + pin_val.split('[')[1][:-1]
-                            if net_name in nets_table:
-                                    nets_table[net_name].append((inst.instance_name, pin_name))
-                            else:
-                                nets_table.update({net_name: [(inst.instance_name, pin_name)]})
-                                nets_cnt += 1  
-            '''
+            elif item['type'] == 'matrix' and 'insts' in item:
+                for inst_loc, inst_nets in item['insts'].items():
+                    for temp_net in inst_nets:
+                        net_name = temp_net[1]
+                        pin_name = temp_net[0]
+                        if net_name in nets_table:
+                            nets_table[net_name].append((f'I_{val}_{idx}_{inst_loc[0]}_{inst_loc[1]}', pin_name))
+                        else:
+                            nets_table.update({net_name: [(f'I_{val}_{idx}_{inst_loc[0]}_{inst_loc[1]}', pin_name)]})
+                            nets_cnt += 1
     
     # Add frame pins to nets table
     if frame_module:

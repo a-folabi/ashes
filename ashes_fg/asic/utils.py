@@ -10,11 +10,21 @@ def update_output_layout(text, file_path):
         outfile.writelines(text)
 
 
-def calculate_offset(col_widths, curr_col):
+def calculate_offset(col_widths, curr_col, cell_padding):
     '''
     Calculate the width offset for a given column
     '''
-    return sum(list(col_widths.values())[:curr_col])
+    offset = 0
+    col_keys = list(col_widths.keys())
+    col_keys.sort()
+    for key in col_keys:
+        if key == curr_col: break
+        val = col_widths[key]
+        if val[1] == 'matrix':
+            offset += val[0]
+        elif val[1] == 'cell':
+            offset += val[0] + cell_padding
+    return offset
 
 def make_pin_list(layer_map, tech_process):
     ''' 
