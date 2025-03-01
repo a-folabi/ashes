@@ -4,50 +4,33 @@ def main():
 
 	#os.chdir(path)
 	#performs tunnel_revtun_ver00_gui.sce functionality
-	# subprocess.run(["/usr/local/bin/python", "-c", "print('This is a subprocess')"], shell=True, capture_output=True, text=True)
-	print("run subprocess 1:\n")
 	#os.system("sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/program.tcl -speed 115200 tunnel_revtun_SWC_CAB.elf")
-	#subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/program.tcl -speed 115200 tunnel_revtun_SWC_CAB.elf"], shell=True)
-	
-	#a1 = subprocess.run(["tclsh /home/ubuntu/Documents/temp.tcl"], shell=True)
-	
-	#print(f"stdout {a1.stdout}")
-	#a1=subprocess.Popen(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/program.tcl -speed 115200 tunnel_revtun_SWC_CAB.elf"], stdout = subprocess.PIPE, shell=True)
-	#output = a1.communicate()
-	#print(f"{output[0]}")
-	#cmd_path = "%s:%s" % ("/home/ubuntu/rasp30/prog_assembly/libs/tcl/", os.environ["PATH"], shell=True, capture_output=True, text=True)
-	#cmd_env = os.environ.copy().update(PATH=cmd_path)
 	returncode = -1
-	#returncode != 0
 	while True:
 		try:
-			#a1=subprocess.Popen(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/program.tcl -speed 115200 /home/ubuntu/ashes/ors_buffer/tunnel_revtun_SWC_CAB.elf"], stdout = subprocess.PIPE, text=True)
 			a1=subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/program.tcl -speed 115200 tunnel_revtun_SWC_CAB.elf"], shell=True, capture_output=True, text=True)
-			#returncode = a1.wait()
 			output = a1.stdout
 			print(output)
 			success_message = "Program completed."
 			failure_message = "failed"
 			if success_message in output and a1.returncode == 0:
-			#if returncode == 0:
-				print("Ran subprocess 1: success")
+				print("Ran subprocess: success")
 				break
 			else:
 				print(a1.stderr)
 				raise subprocess.CalledProcessError(returncode=a1.returncode, cmd=a1.args)
 		except subprocess.CalledProcessError:
-			print("failed tunnel: trying again")
+			print("failed: trying again")
 
 	#performs switch_program_ver05_gui.sce functionality
 	while True: 
 		try:
-			print("run subprocess 2:\n")
 			proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x5500 -input_file_name switch_info"], shell=True, capture_output=True, text=True)
 			output = proc.stdout
 			print(output)
 			success_message = "Writing file: "
 			if success_message in output and proc.returncode == 0:
-				print("Ran subprocess 2: success")
+				print("Ran subprocess: success")
 				break
 			else:
 				print(proc.stderr)
@@ -718,7 +701,7 @@ def main():
 				#print(proc.stderr)
 				#print("e.message: ", e.message)
 				print("e: ", e)
-				print("failed writing to target_info_highaboveVt_ota: trying again")
+				print("failed: trying again")
 		while True: 
 			try:
 				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/write_mem2_NoRelease.tcl -start_address 0x6800 -input_file_name pulse_width_table_highaboveVt_ota"], shell=True, capture_output=True, text=True)
@@ -733,7 +716,7 @@ def main():
 					raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 			except subprocess.CalledProcessError as e:
 				#print("e: ", e)
-				print("failed writing to pulse_width_table_highaboveVt_ota: trying again")
+				print("failed: trying again")
 		while True: 
 			try:
 				proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/program.tcl -speed 115200 recover_inject_highaboveVt_CAB_ota.elf"], shell=True, capture_output=True, text=True)
