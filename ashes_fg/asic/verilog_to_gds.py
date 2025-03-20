@@ -431,6 +431,9 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
         if not cells_only_module:
             # read through the instances in the island once and pull out relevant info to be used for cell ordering during core coagulation
             col_widths = {}
+            cab_dev_data = {}
+            cab_dev_table = []
+            cab_dev_height = 0
             for inst in island['deq']:
                 details = inst.ports
                 cell_width = int(cell_info[str(inst.module_name)]['width'])
@@ -455,6 +458,15 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
                     cell_width = matrix_col*cell_width
                     cell_height = matrix_row*cell_height
                     mat_or_cell = 'matrix'
+                cab_dev = False
+                cab_dev_id = None
+                if "cab_device" in inst.instance_name:
+                    cab_dev = True
+                    cab_dev_id = str(inst.instance_name)
+                    cab_dev_data[cab_dev_id] = {'row': curr_row, 'height': cell_height, 'cell_name': str(inst.module_name)}
+                    cab_dev_table.append([cab_dev_id, curr_row])
+                    cab_dev_height += cell_height
+                
                 temp_order = [str(inst.module_name), (curr_row, curr_col), (cell_width, cell_height), mat_or_cell, (0, 0)]
                 temp_nets = {}
                 if mat_or_cell == 'cell':
@@ -528,6 +540,9 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
                                             temp_nets[temp_key].append((pin_key, f'{pin_val}_{net_val}'))
                 temp_order.append(temp_nets)
                 if mat_or_cell == 'matrix': temp_order.append((matrix_row, matrix_col))
+                if cab_dev: 
+                    temp_order.append("cab_device")
+                    temp_order.append(cab_dev_id)
                 cell_order.append(temp_order)
             
             # sort rows from bottom to top but columns from left to right of the island so as to keep relative x,y accumulation consistent with GDS writeout
@@ -535,9 +550,26 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
             if cell_order[0][3] == 'cell':
                 max_row = cell_order[0][1][0]
             else:
-                single_cell_height = int(cell_info[cell_order[0][0]]['height'])
-                max_row = curr_row +  int(cell_order[0][2][1] / single_cell_height) -1
-            mat_to_cell_padding = int(9.9*dbu)
+                curr_row = cell_order[0][1][0]
+                num_mat_rows = cell_order[0][6][0]
+                max_row = curr_row + num_mat_rows - 1
+            if verbose: 
+                print(f"For island {val} max row is {max_row}")
+                print(f"Sorted cell order\n{cell_order}")
+            # If cab devices exist, sort them and calculate their relative placement
+            cab_dev_table.sort(key=lambda x: -x[1])
+            cab_dev_bottom, cab_dev_spacing = 0, 0
+            num_cab_spacing_rows = 2
+            if cab_dev_data:
+                cab_dev_bottom = int(cell_pitch*(max_row - cab_dev_data[cab_dev_table[0][0]]['row']))
+                cab_dev_spacing = ((len(cab_dev_table) + num_cab_spacing_rows)*cell_pitch) - cab_dev_height
+                cab_dev_spacing = cab_dev_spacing/len(cab_dev_table)
+                cab_dev_spacing = int(round(cab_dev_spacing, -2))
+            for cab_dev_idx in range(len(cab_dev_table)):
+                cab_dev_data[cab_dev_table[cab_dev_idx][0]]['rel_y'] = cab_dev_bottom
+                cab_dev_bottom = cab_dev_bottom + cab_dev_data[cab_dev_table[cab_dev_idx][0]]['height'] + cab_dev_spacing
+            
+            mat_to_cell_padding = int(10*dbu)
             for idx in range(len(cell_order)):
                 # implicit assumption that col_widths has outlined every column up to requested value. 
                 # Fine to assume so because a violation would be the fault of py-to-verilog
@@ -546,14 +578,17 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
                 if cell_order[idx][3] == 'cell':
                     rel_x += mat_to_cell_padding
                 rel_x += calculate_offset(col_widths, curr_col, mat_to_cell_padding)
-                if verbose: print(f'{cell_order[idx][0]} \ncol_widths: {col_widths}')
                 # For relative y, if its a cell I could use the accumulated height or calculate from pitch which should match
                 # if its a matrix, the relative y is the bottom of the matrix. so row+num_rows. Then its pitch*(max_row - summed_val)
                 curr_row = cell_order[idx][1][0]
                 if cell_order[idx][3] == 'matrix':
-                    single_cell_height = int(cell_info[cell_order[idx][0]]['height'])
-                    curr_row = curr_row +  int(cell_order[idx][2][1] / single_cell_height) -1
+                    num_mat_rows = cell_order[idx][6][0]
+                    curr_row = curr_row + num_mat_rows -1
                 rel_y = cell_pitch*(max_row - curr_row)
+                if "cab_device" in cell_order[idx]:
+                    dev_id = cell_order[idx].index("cab_device") + 1
+                    dev_id = cell_order[idx][dev_id]
+                    rel_y = cab_dev_data[dev_id]['rel_y']
                 cell_order[idx][4] = (rel_x, rel_y)
         else:
             for inst in island['deq']:
@@ -671,6 +706,7 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
                 if direction == 'horizontal':
                     temp_row = [{'name':swc_name, 'nets':{}, 'pin_blockage':True} for x in range(swc_cols)]
                     for pin_key, pin_val in details.items():
+                            pin_val =str(pin_val)
                             if pin_key not in key_except:
                                 match = re.search(r"switch_n(\d+)_(.+)", pin_key)
                                 swc_id, swc_pin_key = None, None
@@ -680,6 +716,11 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
                                 else:
                                     print(f'Error: Failed to match to correct switch instance in decoder synthesis for {pin_key}')
                                     exit()
+                                if "[" in pin_val:
+                                    match = re.search(r'\[(\d+)\]', pin_val)
+                                    net_idx = int(match.group(1))
+                                    lbrace_ind = pin_val.find('[')
+                                    pin_val = f"{pin_val[:lbrace_ind]}_{net_idx}"
                                 temp_row[swc_id]['nets'][swc_pin_key] = pin_val
                     horz_switch_array.append(temp_row)
                 elif direction == 'vertical':
@@ -934,7 +975,11 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
                 temp_coord = [cell[4][0], cell[4][1], cell[4][0] + cell_width, cell[4][1] + cell_height]
                 cell_order_in_island[val]['coords'].append(temp_coord)
                 # Forward along the nets
-                if len(cell) > 5: cell_order_in_island[val]['items'][coords_id]['nets'] = cell[5]
+                if cell[3] != 'matrix':
+                    if len(cell) > 5: cell_order_in_island[val]['items'][coords_id]['nets'] = cell[5]
+                else:
+                    cell_order_in_island[val]['items'][coords_id]['insts'] = cell[5]
+                    cell_order_in_island[val]['items'][coords_id]['mat_info'] = {'mat_row': cell[6][0], 'mat_col': cell[6][1]}
                 coords_id+=1
     if verbose: 
         print('Relative ordering within islands')
