@@ -1,21 +1,21 @@
 from ashes_fg.asic.asic_compile import *
 
-class std_cell:
+class std_cell(StandardCell):
 	def __init__(self, input, num_instances, cell_type):
 		self.input = input
 		self.num_instances = num_instances
 		self.cell_type = cell_type
 
-class inpad:
+class inpad(StandardCell):
 	def __init__(self,pad_number):
 		self.pad_number=pad_number
 
-class outpad:
+class outpad(StandardCell):
 	def __init__(self,input,pad_number):
 		self.input=input
 		self.pad_number=pad_number
 
-class outpada:
+class outpada(StandardCell):
 	def __init__(self,input,pad_number):
 		self.input=input
 		self.pad_number=pad_number
@@ -51,7 +51,7 @@ class TSMC350nm_4x2_Direct(StandardCell):
 		# Add cell to circuit
 		circuit.addInstance(self,self.island)
 
-class TSMC350nm_4x2_Indirect:
+class TSMC350nm_4x2_Indirect(StandardCell):
 	def __init__(self,circuit,island=None,dim=(1,1),Vd_P=None,Vd_R=None,Vs=None,VINJ=None,Vsel=None,Vg=None,GND=None,VTUN=None):
 
 		# Define variables
@@ -84,7 +84,7 @@ class TSMC350nm_4x2_Indirect:
 		# Add cell to circuit
 		circuit.addInstance(self,self.island)
 
-class TSMC350nm_4WTA:
+class TSMC350nm_4WTA(StandardCell):
 	def __init__(self,circuit,island=None,dim=(1,1),Iin=None,Vout=None,Vs=None,VINJ=None,Vg=None,VTUN=None,PROG=None,Vmid=None,GND=None,Vs_b=None,VINJ_b=None,Vg_b=None,VTUN_b=None,PROG_b=None,Vmid_b=None,GND_b=None):
 
 		# Define variables
@@ -125,7 +125,7 @@ class TSMC350nm_4WTA:
 		# Add cell to circuit
 		circuit.addInstance(self,self.island)
 
-class TSMC350nm_Ampdet_NoFG:
+class TSMC350nm_Ampdet_NoFG(StandardCell):
 	def __init__(self,circuit,island=None,dim=(1,1),VD_P=None,VIN=None,OUTPUT=None,VTUN=None,Vg=None,Vsel=None,VINJ=None,GND=None,VPWR=None,VTUN_b=None,Vg_b=None,Vsel_b=None,VINJ_b=None,GND_b=None,VPWR_b=None):
 
 		# Define variables
@@ -165,7 +165,7 @@ class TSMC350nm_Ampdet_NoFG:
 		# Add cell to circuit
 		circuit.addInstance(self,self.island)
 
-class TSMC350nm_Ampdet_Strong:
+class TSMC350nm_Ampdet_Strong(StandardCell):
 	def __init__(self,circuit,island=None,dim=(1,1),VD_P=None,VIN=None,OUTPUT=None,Vsel=None,RUN=None,Vg=None,PROG=None,VTUN=None,VINJ=None,GND=None,VPWR=None,Vsel_b=None,RUN_b=None,Vg_b=None,PROG_b=None,VTUN_b=None,VINJ_b=None,GND_b=None,VPWR_b=None):
 
 		# Define variables
@@ -209,7 +209,7 @@ class TSMC350nm_Ampdet_Strong:
 		# Add cell to circuit
 		circuit.addInstance(self,self.island)
 
-class TSMC350nm_C4:
+class TSMC350nm_C4(StandardCell):
 	def __init__(self,circuit,island=None,dim=(1,1),VD_P=None,VIN=None,VREF=None,OUTPUT=None,Vsel=None,RUN=None,Vg=None,PROG=None,VTUN=None,VINJ=None,GND=None,VPWR=None,Vsel_b=None,RUN_b=None,Vg_b=None,PROG_b=None,VTUN_b=None,VINJ_b=None,GND_b=None,VPWR_b=None):
 
 		# Define variables
@@ -254,7 +254,7 @@ class TSMC350nm_C4:
 		# Add cell to circuit
 		circuit.addInstance(self,self.island)
 
-class TSMC350nm_DelayBlock_3stage_new:
+class TSMC350nm_DelayBlock_3stage_new(StandardCell):
 	def __init__(self,circuit,island=None,dim=(1,1),VD_P=None,VIN=None,VOUT=None,Vsel=None,RUN=None,Vg=None,PROG=None,VTUN=None,INJ=None,GND=None,VPWR=None,Vsel_b=None,RUN_b=None,Vg_b=None,PROG_b=None,VTUN_b=None,INJ_b=None,GND_b=None,VPWR_b=None):
 
 		# Define variables
@@ -298,7 +298,7 @@ class TSMC350nm_DelayBlock_3stage_new:
 		# Add cell to circuit
 		circuit.addInstance(self,self.island)
 
-class TSMC350nm_TA2Cell_LongL_Cab:
+class TSMC350nm_TA2Cell_LongL_Cab(StandardCell):
 	def __init__(self,circuit,island=None,dim=(1,1),VD_P=None,VIN1_PLUS=None,VIN1_MINUS=None,VIN2_PLUS=None,VIN2_MINUS=None,OUTPUT=None,Vsel=None,RUN=None,Vg=None,PROG=None,VTUN=None,VINJ=None,GND=None,VPWR=None,Vsel_b=None,RUN_b=None,Vg_b=None,PROG_b=None,VTUN_b=None,VINJ_b=None,GND_b=None,VPWR_b=None):
 
 		# Define variables
@@ -345,7 +345,7 @@ class TSMC350nm_TA2Cell_LongL_Cab:
 		# Add cell to circuit
 		circuit.addInstance(self,self.island)
 
-class TSMC350nm_TA2Cell_NoFG:
+class TSMC350nm_TA2Cell_NoFG(StandardCell):
 	def __init__(self,circuit,island=None,dim=(1,1),VD_P=None,VIN1_PLUS=None,VIN1_MINUS=None,VIN2_PLUS=None,VIN2_MINUS=None,OUTPUT=None,VTUN=None,Vg=None,Vsel=None,VINJ=None,GND=None,VPWR=None,VTUN_b=None,Vg_b=None,Vsel_b=None,VINJ_b=None,GND_b=None,VPWR_b=None):
 
 		# Define variables
@@ -388,7 +388,7 @@ class TSMC350nm_TA2Cell_NoFG:
 		# Add cell to circuit
 		circuit.addInstance(self,self.island)
 
-class TSMC350nm_TA2Cell_Strong:
+class TSMC350nm_TA2Cell_Strong(StandardCell):
 	def __init__(self,circuit,island=None,dim=(1,1),VD_P=None,VIN1_PLUS=None,VIN1_MINUS=None,VIN2_PLUS=None,VIN2_MINUS=None,OUTPUT=None,Vsel=None,RUN=None,Vg=None,PROG=None,VTUN=None,VINJ=None,GND=None,VPWR=None,Vsel_b=None,RUN_b=None,Vg_b=None,PROG_b=None,VTUN_b=None,VINJ_b=None,GND_b=None,VPWR_b=None):
 
 		# Define variables
@@ -435,7 +435,7 @@ class TSMC350nm_TA2Cell_Strong:
 		# Add cell to circuit
 		circuit.addInstance(self,self.island)
 
-class TSMC350nm_TA2Cell_Weak:
+class TSMC350nm_TA2Cell_Weak(StandardCell):
 	def __init__(self,circuit,island=None,dim=(1,1),VD_P=None,VIN1_PLUS=None,VIN1_MINUS=None,VIN2_PLUS=None,VIN2_MINUS=None,OUTPUT=None,Vsel=None,RUN=None,Vg=None,PROG=None,VTUN=None,VINJ=None,GND=None,VPWR=None,Vsel_b=None,RUN_b=None,Vg_b=None,PROG_b=None,VTUN_b=None,VINJ_b=None,GND_b=None,VPWR_b=None):
 
 		# Define variables
@@ -482,7 +482,7 @@ class TSMC350nm_TA2Cell_Weak:
 		# Add cell to circuit
 		circuit.addInstance(self,self.island)
 
-class TSMC350nm_Cab_Nfets:
+class TSMC350nm_Cab_Nfets(StandardCell):
 	def __init__(self,circuit,island=None,dim=(1,1),SOURCE_MED=None,GATE_MED=None,SOURCE_LARGE=None,GATE_LARGE=None,DRAIN_MED=None,DRAIN_LARGE=None,GND=None,GND_b=None):
 
 		# Define variables
@@ -515,7 +515,7 @@ class TSMC350nm_Cab_Nfets:
 		# Add cell to circuit
 		circuit.addInstance(self,self.island)
 
-class TSMC350nm_Cab_Pfets:
+class TSMC350nm_Cab_Pfets(StandardCell):
 	def __init__(self,circuit,island=None,dim=(1,1),SOURCE_MED=None,GATE_MED=None,SOURCE_LARGE=None,GATE_LARGE=None,DRAIN_MED=None,DRAIN_LARGE=None,VPWR=None,VPWR_b=None):
 
 		# Define variables
@@ -548,8 +548,8 @@ class TSMC350nm_Cab_Pfets:
 		# Add cell to circuit
 		circuit.addInstance(self,self.island)
 
-class TSMC350nm_Nmirror:
-	def __init__(self,circuit,island=None,dim=(1,1),dummy1=None,dummy2=None,dummy3=None,dummy4=None):
+class TSMC350nm_TGate_2nMirror(StandardCell):
+	def __init__(self,circuit,island=None,dim=(1,1),IN_CM=None,SelN=None,IN_TG=None,OUT_CM=None,OUT_TG=None,VPWR=None,GND=None,VPWR_b=None,GND_b=None):
 
 		# Define variables
 		self.circuit = circuit
@@ -560,15 +560,20 @@ class TSMC350nm_Nmirror:
 
 
 		# Define cell information
-		self.name = 'TSMC350nm_Nmirror'
-		self.dummy1 = Port(circuit,self,'dummy1','W',1*self.dim[0])
-		self.dummy2 = Port(circuit,self,'dummy2','E',1*self.dim[0])
-		self.dummy3 = Port(circuit,self,'dummy3','N',1*self.dim[1])
-		self.dummy4 = Port(circuit,self,'dummy4','S',1*self.dim[1])
+		self.name = 'TSMC350nm_TGate_2nMirror'
+		self.IN_CM = Port(circuit,self,'IN_CM','W',2*self.dim[0])
+		self.SelN = Port(circuit,self,'SelN','W',1*self.dim[0])
+		self.IN_TG = Port(circuit,self,'IN_TG','W',1*self.dim[0])
+		self.OUT_CM = Port(circuit,self,'OUT_CM','E',2*self.dim[0])
+		self.OUT_TG = Port(circuit,self,'OUT_TG','E',1*self.dim[0])
+		self.VPWR = Port(circuit,self,'VPWR','N',1*self.dim[1])
+		self.GND = Port(circuit,self,'GND','N',1*self.dim[1])
+		self.VPWR_b = Port(circuit,self,'VPWR_b','S',1*self.dim[1])
+		self.GND_b = Port(circuit,self,'GND_b','S',1*self.dim[1])
 
 
 		# Initialize ports with given values
-		portsInit = [dummy1,dummy2,dummy3,dummy4]
+		portsInit = [IN_CM,SelN,IN_TG,OUT_CM,OUT_TG,VPWR,GND,VPWR_b,GND_b]
 		i=0
 		for p in self.ports:
 			self.assignPort(p,portsInit[i])
@@ -577,7 +582,7 @@ class TSMC350nm_Nmirror:
 		# Add cell to circuit
 		circuit.addInstance(self,self.island)
 
-class TSMC350nm_Cap_Bank:
+class TSMC350nm_Cap_Bank(StandardCell):
 	def __init__(self,circuit,island=None,dim=(1,1),VD_P=None,VIN=None,OUT=None,Vs=None,VINJ=None,Vsel=None,Vg=None,GND=None,VTUN=None,Vs_b=None,VINJ_b=None,Vsel_b=None,Vg_b=None,GND_b=None,VTUN_b=None):
 
 		# Define variables
@@ -617,36 +622,7 @@ class TSMC350nm_Cap_Bank:
 		# Add cell to circuit
 		circuit.addInstance(self,self.island)
 
-class TSMC350nm_Tgate:
-	def __init__(self,circuit,island=None,dim=(1,1),dummy1=None,dummy2=None,dummy3=None,dummy4=None):
-
-		# Define variables
-		self.circuit = circuit
-		self.pins = []
-		self.ports = []
-		self.island = island
-		self.dim = dim
-
-
-		# Define cell information
-		self.name = 'TSMC350nm_Tgate'
-		self.dummy1 = Port(circuit,self,'dummy1','W',1*self.dim[0])
-		self.dummy2 = Port(circuit,self,'dummy2','E',1*self.dim[0])
-		self.dummy3 = Port(circuit,self,'dummy3','N',1*self.dim[1])
-		self.dummy4 = Port(circuit,self,'dummy4','S',1*self.dim[1])
-
-
-		# Initialize ports with given values
-		portsInit = [dummy1,dummy2,dummy3,dummy4]
-		i=0
-		for p in self.ports:
-			self.assignPort(p,portsInit[i])
-			i+=1
-
-		# Add cell to circuit
-		circuit.addInstance(self,self.island)
-
-class TSMC350nm_HHNeuron:
+class TSMC350nm_HHNeuron(StandardCell):
 	def __init__(self,circuit,island=None,dim=(1,1),dummy1=None,dummy2=None,dummy3=None,dummy4=None):
 
 		# Define variables
@@ -675,7 +651,7 @@ class TSMC350nm_HHNeuron:
 		# Add cell to circuit
 		circuit.addInstance(self,self.island)
 
-class TSMC350nm_VMMWTA:
+class TSMC350nm_VMMWTA(StandardCell):
 	def __init__(self,circuit,island=None,dim=(1,1),Vd=None,Vout=None,VMM_Vs=None,VINJ=None,VMM_Vg=None,GND=None,VTUN=None,Ibias_Vs=None,Ibias_Vg=None,PROG=None,Vmid=None,VMM_Vs_b=None,VINJ_b=None,VMM_Vg_b=None,GND_b=None,VTUN_b=None,Ibias_Vs_b=None,Ibias_Vg_b=None,PROG_b=None,Vmid_b=None):
 
 		# Define variables
@@ -712,6 +688,41 @@ class TSMC350nm_VMMWTA:
 
 		# Initialize ports with given values
 		portsInit = [Vd,Vout,VMM_Vs,VINJ,VMM_Vg,GND,VTUN,Ibias_Vs,Ibias_Vg,PROG,Vmid,VMM_Vs_b,VINJ_b,VMM_Vg_b,GND_b,VTUN_b,Ibias_Vs_b,Ibias_Vg_b,PROG_b,Vmid_b]
+		i=0
+		for p in self.ports:
+			self.assignPort(p,portsInit[i])
+			i+=1
+
+		# Add cell to circuit
+		circuit.addInstance(self,self.island)
+
+class TSMC350nm_NandPfets(StandardCell):
+	def __init__(self,circuit,island=None,dim=(1,1),GATE_N=None,SOURCE_N=None,GATE_P=None,SOURCE_P=None,DRAIN_N=None,DRAIN_P=None,VPWR=None,GND=None,VPWR_b=None,GND_b=None):
+
+		# Define variables
+		self.circuit = circuit
+		self.pins = []
+		self.ports = []
+		self.island = island
+		self.dim = dim
+
+
+		# Define cell information
+		self.name = 'TSMC350nm_NandPfets'
+		self.GATE_N = Port(circuit,self,'GATE_N','W',1*self.dim[0])
+		self.SOURCE_N = Port(circuit,self,'SOURCE_N','W',1*self.dim[0])
+		self.GATE_P = Port(circuit,self,'GATE_P','W',1*self.dim[0])
+		self.SOURCE_P = Port(circuit,self,'SOURCE_P','W',1*self.dim[0])
+		self.DRAIN_N = Port(circuit,self,'DRAIN_N','E',1*self.dim[0])
+		self.DRAIN_P = Port(circuit,self,'DRAIN_P','E',1*self.dim[0])
+		self.VPWR = Port(circuit,self,'VPWR','N',1*self.dim[1])
+		self.GND = Port(circuit,self,'GND','N',1*self.dim[1])
+		self.VPWR_b = Port(circuit,self,'VPWR_b','S',1*self.dim[1])
+		self.GND_b = Port(circuit,self,'GND_b','S',1*self.dim[1])
+
+
+		# Initialize ports with given values
+		portsInit = [GATE_N,SOURCE_N,GATE_P,SOURCE_P,DRAIN_N,DRAIN_P,VPWR,GND,VPWR_b,GND_b]
 		i=0
 		for p in self.ports:
 			self.assignPort(p,portsInit[i])
