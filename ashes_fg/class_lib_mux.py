@@ -7,8 +7,9 @@ class STD_GateDecoder(StandardCell):
         self.pins = []
         self.ports = []
         self.island = island
+        self.num = 2**(bits-1)
         self.bits = bits
-        self.dim = (-1,-1)
+        self.dim = (self.num,1)
 
         self.name = "VinjDecode2to4_htile"
 
@@ -41,7 +42,7 @@ class STD_IndirectGateSwitch(StandardCell):
         self.ports = []
         self.island = island
         self.num = 2**(bits-1)
-        self.dim = (-1,-1)
+        self.dim = (self.num,1)
 
         self.name = "GateMuxSwcTile"
 
@@ -74,7 +75,8 @@ class STD_DrainDecoder(StandardCell):
         self.ports = []
         self.island = island
         self.bits = bits
-        self.dim = (-1,-1)
+        self.num = 2**(bits-2)
+        self.dim = (1,self.num)
 
         self.name = "VinjDecode2to4_vtile"
 
@@ -106,7 +108,7 @@ class STD_DrainSelect(StandardCell):
         self.ports = []
         self.island = island
         self.num = 2**(bits-2)
-        self.dim = (-1,-1)
+        self.dim = (1,self.num)
 
         self.name = "drainSelect01d3"
 
@@ -139,7 +141,7 @@ class STD_DrainSwitch(StandardCell):
         self.ports = []
         self.island = island
         self.num = 2**(bits-2)
-        self.dim = (-1,-1)
+        self.dim = (1,self.num)
  
         self.name = "FourTgate_ThickOx_FG_MEM"
         self.VINJ = Port(circuit,self,"VINJ","N",2*self.dim[1])

@@ -4,6 +4,7 @@ import os
 import shutil
 import numpy as np
 from ashes_fg.asic import compile
+#from ashes_fg.class_lib_mux import *
 
 
 # Functions
@@ -49,7 +50,14 @@ def Bus(circuit,size):
     """
     Helper function to easily create vectors of nets
     """
-    return Port(circuit,None,None,None,size)
+    return Port(circuit,None,"Bus",None,size)
+
+def Wire(circuit):
+    """
+    Helper function to easily create single net
+    """
+    wirePort = Port(circuit,None,"Bus",None,1)
+    return wirePort.pins[0]
 
 
 # Classes
@@ -127,9 +135,33 @@ class Circuit:
         """
         Names nets 
         - Isolated nets get a unique number
+        - Nets that are part of a vector find the dominant net and name the entire vector
         """
         for net in self.Nets:
-            net.number = self.Nets.index(net)
+            # If net has not been assigned
+            if net.number == -1:
+
+                if net.containsVector() == True:
+                    largestDim = 0
+                    largestPin = None
+                    # Find the dominant pin
+                    for pin in net.pins:
+                        if pin.getVectorSize() > largestDim:
+                            largestDim = pin.getVectorSize()
+                            largestPin = pin
+                            
+                    # Name all nets attached to that pin
+                    port = largestPin.port
+                    idxNum = self.Nets.index(net)
+                    idx = 0
+                    for p in port:
+                        p.net.number = idxNum
+                        p.net.index = idx
+                        idx += 1
+
+                elif net.containsVector() == False:
+                    net.number = self.Nets.index(net)
+
  
     def print(self,processPrefix):
         """
@@ -220,6 +252,18 @@ class Island:
         else:
             return np.zeros([2,2])
         
+    # TODO This is probably a terrible way to do this
+    def isDecoder(self,instance):
+        """
+        Identifies special decoder cells
+        """
+        decoderList = ["VinjDecode2to4_htile","GateMuxSwcTile","VinjDecode2to4_vtile","drainSelect01d3","FourTgate_ThickOx_FG_MEM"]
+
+        for i in decoderList:
+            if instance.name == i:
+                return True
+        return False
+        
     def print(self,islandNum,processPrefix):
         """
         Create Verilog netlist for island 
@@ -231,19 +275,18 @@ class Island:
         # Create Verilog for each instance
         for instance in self.instances:
 
-            # Get row and column number
-            instanceLocation = self.getLocation(instance)
-            placedRow = instanceLocation[0][0]
-            placedCol = instanceLocation[1][0]
-
             # Check if instance is a decoder (has negative dimension as indicator)
-            if instance.dim[0] > 0:
+            if self.isDecoder(instance) == False:
+                # Get row and column number
+                instanceLocation = self.getLocation(instance)
+                placedRow = instanceLocation[0][0]
+                placedCol = instanceLocation[1][0]
                 text += "\t"
                 text += instance.print(i,islandNum,placedRow,placedCol,processPrefix)
                 text += ("\n")
-            else:
+            elif self.isDecoder(instance) == True:
                 decoderText += "\t"
-                decoderText += instance.print(i,islandNum,placedRow,placedCol,processPrefix)
+                decoderText += instance.print(i,islandNum,0,0,processPrefix)
                 decoderText += ("\n")
             i += 1
 
@@ -324,6 +367,13 @@ class Net:
     def __len__(self):
         return len(self.pins)
     
+    def containsVector(self):
+        for p in self.pins:
+            if p.isVector:
+                return True
+            
+        return False
+    
     def getPins(self):
         return self.pins
     
@@ -336,14 +386,6 @@ class Net:
         else:
             return False
 
-        #numInstance = 0
-        #for p in self.pins:
-        #    if p.cell != None:
-        #        numInstance += 1
-        #        if numInstance > 1:
-        #            return True
-        #return False
-    
     def connect(self,net):
         """
         Connects two nets together
@@ -391,11 +433,28 @@ class Pin:
             self.net = Net(self.circuit,pins=self)
         
     def isConnected(self):
-        # Check if connected net is empty
+        """
+        Checks if connected net is empty
+        """
         if self.net.isEmpty() == False:
             return False
         else:
             return True 
+        
+    def isVector(self):
+        """
+        Checks if pin is part of a vectorized port
+        """
+        if self.port.getVectorSize() > 1:
+            return True
+        else:
+            return False
+        
+    def getVectorSize(self):
+        """
+        Returns size of pin vector
+        """
+        return self.port.getVectorSize()
 
     def getNet(self):
         return self.net
@@ -421,10 +480,9 @@ class Pin:
 
     def move(self,net):
         """
-        Moves pin to a new net WITHOUT merge operation
-        Used when you don't want whole net to move with pin
+        Points pin to new net
         """
-        self.net.removePin(self)
+        #self.net.removePin(self)
         net.addPins(self)
         self.net = net
 
@@ -465,6 +523,50 @@ class Port:
     def assignPin(self,num,connection):
         self.pins[num].connect(connection)
 
+    def shortPins(self,net):
+        pinnets = [net]
+        for p in self.pins:
+            pinnets.append(p.net)
+
+        self.circuit.mergeNets(pinnets)
+
+
+    def connectPort(self,connection):
+        """
+        Connects port nets
+        - Port  <-> Port 
+        - List of nets <-> Port
+        - List of pins <-> Port
+        - Single net <-> Port net (short)
+        """
+
+        # Port <-> Port
+        if isinstance(connection,Port):
+            # Make sure sizes match
+            if len(connection) == len(self.pins):
+                for i in range(0,len(connection)):
+                    self.assignPin(i,connection[i])
+            else:
+                raise Exception("Mismatched net sizes assigned together")
+        # Short Pin <-> Port
+        elif isinstance(connection,Pin):
+            self.shortPins(connection.net)
+        # List
+        elif isinstance(connection,list):
+            # List of nets <-> Port or List of pins <-> Port
+            if isinstance(connection[0],Net) or isinstance(connection[0],Pin):
+                # Make sure sizes match
+                if len(connection) == len(self.pins):
+                    for i in range(0,len(connection)):
+                        self.assignPin(i,connection[i])
+                else:
+                    raise Exception("Mismatched net sizes assigned together")
+            else:
+                raise Exception("Invalid Assignment")
+        else:
+                raise Exception("Invalid Assignment")
+
+
     def isEmpty(self):
         for p in self.pins:
             if p.isConnected():
@@ -482,19 +584,62 @@ class Port:
     
     def __call__(self):
         return self.pins
+    
+    def numPins(self):
+        """
+        Returns number of physical pins per instance
+        Keeps matrix routing in mind
+
+        len(pins) = pinNum * dimension
+        """
+        pinNum = 0
+        if self.location == "E" or self.location == "W":
+            pinNum = len(self.pins)/self.cell.dim[0]
+        elif self.location == "N" or self.location == "S":
+            pinNum = len(self.pins)/self.cell.dim[1]
+        else:
+            pinNum = len(self.pins)
+
+        return pinNum
+    
+    def getVectorSize(self):
+        """
+        Returns size of pin vector for matrix routing
+
+        dimension = len(pins) / pinNum
+        """
+        return len(self.pins)/self.numPins()
 
     def print(self):
         """
         Returns Verilog text for each pin in port
+        Collapses vectors into original pin dimensions
         """
-        i=0
+       
         line = ""
-        for pin in self.pins:
+        for i in range(int(self.numPins())):
+            pin = self.pins[i]
             if pin.isConnected():
+
                 if i != 0:
                     line+= ","
-                line += "." + self.name + "_" + str(i) + "_(" + pin.print() + ")"
-            i+=1
+
+                line += "." + self.name + "_" + str(i) + "_("
+                
+                if pin.isVector() == True:
+                    pinVector = self.pins[i::int(self.numPins())]
+                    idxStart = pinVector[0].net.index
+                    idxEnd = pinVector[-1].net.index
+                    idxJump = pinVector[1].net.index - idxStart
+
+                    pinVectorText = "[" + str(idxStart) + ":" + str(idxEnd) + ":" + str(idxJump) + "]"
+                    line += "net" + str(pin.net.number) + pinVectorText
+
+                elif pin.isVector() == False:
+                    line += pin.print()
+
+                line += ")"
+            
 
         return line
         
@@ -543,22 +688,18 @@ class StandardCell:
     def __call__(self):
         return self.outputs
     
-    def assignPort(self,port,nets):
+    def assignPort(self,port,connection):
         """
-        Adds list of nets to a port
+        Assigns port to nets
+        - Port nets <-> Port nets
+        - List of nets <-> Port
+        - Single net <-> Port net (short)
         """
-        assignment = nets
-        if assignment != None:
-            # If port passed in, take nets
-            if isinstance(nets,Port):
-                assignment = nets.getPins()
+        if connection != None:
+            port.connectPort(connection)
 
-            # Make sure sizes match
-            if len(assignment) == len(port.pins):
-                for i in range(0,len(assignment)):
-                    port.assignPin(i,assignment[i])
-            else:
-                raise Exception("Mismatched net sizes assigned together")
+
+
     
     def print(self,instanceNum,islandNum,row,col,processPrefix):
         """
