@@ -15,8 +15,8 @@
     "31,0": {"layer": "metal4", "purpose": "drawing", "pdk_name": "METAL4"},
     "8,0": {"layer": "np_select" ,"purpose": "drawing", "pdk_name": "NIMP" },
     "7,0": {"layer": "pp_select", "purpose": "drawing", "pdk_name": "PIMP"},
-    "40,0": {"layer": "M1", "purpose": "pin", "pdk_name": "METAL1"},
-    "41,0": {"layer": "M2", "purpose": "pin", "pdk_name": "METAL2"},
-    "42,0": {"layer": "M3", "purpose": "pin", "pdk_name": "METAL3"},
-    "43,0": {"layer": "M4", "purpose": "pin", "pdk_name": "METAL4"}
+    "40,0": {"layer": "metal1", "purpose": "pin", "pdk_name": "METAL1"},
+    "41,0": {"layer": "metal2", "purpose": "pin", "pdk_name": "METAL2"},
+    "42,0": {"layer": "metal3", "purpose": "pin", "pdk_name": "METAL3"},
+    "43,0": {"layer": "metal4", "purpose": "pin", "pdk_name": "METAL4"}
 }
