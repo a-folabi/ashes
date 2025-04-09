@@ -1,5 +1,9 @@
 import ashes_fg.class_lib_ext as fg
 
+from ashes_fg.asic.asic_compile import *
+from ashes_fg.class_lib_new import *
+from ashes_fg.class_lib_mux import *
+
 def test_cells():
     # Frame should generate iopad objects with numbers 0 - (num_pads - 1) who all keep track of their frame name
     frame = fg.pads_smallframe(num_pads=93, cell_type='ASIC')
@@ -19,3 +23,33 @@ def test_cells():
     vmm_indir = fg.sky130_hilas_swc4x4_indirect([], select=[iopads[35], iopads[57], iopads[37], iopads[55]], gate=[iopads[58], iopads[36], iopads[56], iopads[38]], run_drain=[iopads[54], iopads[53], iopads[40], iopads[39]])
     
     return (scanner, nfets, pfets, amp_det, ta_1fg, ta_0fg, ta_strong_fg, bpf, vmmwta, fg_char, vmm, vmm_indir, frame)
+
+
+
+# Inputs = gatelines
+# Outputs = drainlines
+def DirectVMM(circuit,rows,columns,inputs = None):
+    if (rows % 4) != 0:
+            raise Exception("Error: VMM rows must be divisible by 4")
+    if (columns % 2) != 0:
+            raise Exception("Error: VMM columns must be divisible by 2")
+
+    numRows = int(rows/4)
+    numCols = int(columns/2)
+
+    # Create VMM and place in an island
+    VMMIsland = Island(circuit)
+    VMM = TSMC350nm_4x2_Direct(circuit,dim=(numRows,numCols),island=VMMIsland,Vg=inputs)
+    circuit.placeInstance(VMM,[0,0])
+
+    # Add decoders
+    gateBits = int(np.ceil(np.log2(columns)))
+    GateDecoder = STD_GateDecoder(circuit,VMMIsland,gateBits)
+    GateSwitches = STD_IndirectGateSwitch(circuit,VMMIsland,gateBits)
+
+    drainBits = int(np.ceil(np.log2(rows)))
+    DrainDecoder = STD_DrainDecoder(circuit,VMMIsland,drainBits)
+    DrainSel = STD_DrainSelect(circuit,VMMIsland,drainBits)
+    DrainSwitches = STD_DrainSwitch(circuit,VMMIsland,drainBits)
+
+    return VMM.Vd
