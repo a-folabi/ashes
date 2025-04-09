@@ -624,7 +624,23 @@ class Port:
                 if i != 0:
                     line+= ","
 
-                line += "." + self.name + "_" + str(i) + "_("
+                line += "." + self.name
+
+                # Add vector notation for a vectorized port
+                if self.numPins() > 1:
+                    line +=  "_" + str(i) + "_"
+
+                if pin.isVector() ==  True:
+                    if self.location == "E":
+                        line += "col_" + str(self.cell.dim[1])
+                    elif self.location == "W":
+                        line += "col_0"
+                    elif self.location == "N":
+                        line += "row_0"
+                    elif self.location == "S":
+                        line += "row_" + str(self.cell.dim[0])
+
+                line += "("
                 
                 if pin.isVector() == True:
                     pinVector = self.pins[i::int(self.numPins())]

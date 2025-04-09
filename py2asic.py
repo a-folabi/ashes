@@ -11,6 +11,7 @@ Top = Circuit()
 
 Vd0 = DirectVMM(Top,16,16)
 Vd1 = DirectVMM(Top,16,16,inputs=Vd0)
+#Vd1 = DirectVMM(Top,16,16)
 
 
 compile_asic(Top,process="TSMC350nm",fileName="py2asic_test",p_and_r = True)

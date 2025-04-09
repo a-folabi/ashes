@@ -2,7 +2,7 @@ module TOP(port1);
 
 
 	/* Island 0 */
-	TSMC350nm_4x2_Direct I__0 (.island_num(0), .row(0), .col(0), .matrix_row(4), .matrix_col(8), .Vd_0_(net232[0:12:4]),.Vd_1_(net232[1:13:4]),.Vd_2_(net232[2:14:4]),.Vd_3_(net232[3:15:4]));
+	TSMC350nm_4x2_Direct I__0 (.island_num(0), .row(0), .col(0), .matrix_row(4), .matrix_col(8), .Vd_0_col_8(net232[0:12:4]),.Vd_1_col_8(net232[1:13:4]),.Vd_2_col_8(net232[2:14:4]),.Vd_3_col_8(net232[3:15:4]));
 
  	/*Programming Mux */ 
 	TSMC350nm_VinjDecode2to4_htile decoder(.island_num(0), .direction(horizontal), .bits(4));
@@ -13,7 +13,7 @@ module TOP(port1);
 
 
 	/* Island 1 */
-	TSMC350nm_4x2_Direct I__0 (.island_num(1), .row(0), .col(0), .matrix_row(4), .matrix_col(8), .Vg_0_(net232[0:14:2]),.Vg_1_(net232[1:15:2]));
+	TSMC350nm_4x2_Direct I__0 (.island_num(1), .row(0), .col(0), .matrix_row(4), .matrix_col(8), .Vg_0_row_0(net232[0:14:2]),.Vg_1_row_0(net232[1:15:2]));
 
  	/*Programming Mux */ 
 	TSMC350nm_VinjDecode2to4_htile decoder(.island_num(1), .direction(horizontal), .bits(4));
