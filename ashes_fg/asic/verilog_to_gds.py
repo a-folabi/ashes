@@ -442,6 +442,7 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
     for val, island in island_info.items():
         # Determine relative cell orderings within the island
         cell_order = []
+        max_row = None
         if not cells_only_module:
             # read through the instances in the island once and pull out relevant info to be used for cell ordering during core coagulation
             col_widths = {}
