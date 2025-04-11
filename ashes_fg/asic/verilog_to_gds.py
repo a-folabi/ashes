@@ -518,7 +518,18 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
                             vector_dim = None
                             if not shorted_pin:
                                 matches = re.findall(r'\[(.*?)\]', pin_val)
-                                vector_dim = tuple(map(int, matches[0].split(':'))) if ':' in matches[0] else int(matches[0])
+                                if not matches:
+                                    raise ValueError("No indices found.")
+                                value = matches[0]
+                                if ':' in value:
+                                    parts = value.split(':')
+                                    if len(parts) not in (2, 3):
+                                        raise ValueError("Expected 2 or 3 indices separated by ':'")
+                                    vector_dim = tuple(map(int, parts))
+                                else:
+                                    vector_dim = int(value)
+                                #matches = re.findall(r'\[(.*?)\]', pin_val)
+                                #vector_dim = tuple(map(int, matches[0].split(':'))) if ':' in matches[0] else int(matches[0])
                                 lbrace_ind = pin_val.find('[')
                                 pin_val = pin_val[:lbrace_ind]
                             # given the fixed dimension group (offset loc, pin name, net name) on the matrix  
@@ -546,8 +557,9 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
                                 # handle the net range
                                 else:
                                     start_idx, stop_idx = vector_dim[0], vector_dim[1]
-                                    for net_val in range(start_idx, stop_idx):
-                                        temp_key = (net_val, fixed_col) if fixed_col else (fixed_row, net_val)
+                                    step_idx = vector_dim[2] if len(vector_dim) > 2 else 1
+                                    for net_val in range(start_idx, stop_idx, step_idx):
+                                        temp_key = (net_val, fixed_col) if fixed_col is not None else (fixed_row, net_val)
                                         if temp_key not in temp_nets:
                                             temp_entry = [(pin_key, f'{pin_val}_{net_val}')]
                                             temp_nets.update({temp_key: temp_entry})
@@ -851,7 +863,7 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
                 prog_switch_width = cell_info[str(vert_switch_array[0][1]['name'])]['width']
             drainmux_spacing = 0*dbu #7.5 is okay
             x_drainmux_offset += drain_select_width + prog_switch_width + drainmux_spacing
-            x_drainmux_offset = round(x_drainmux_offset/track_spacing)*track_spacing
+            #x_drainmux_offset = round(x_drainmux_offset/track_spacing)*track_spacing
             # Deal with the column widths calculated for matrix islands, append offset to only first column
             col_w_keys = list(col_widths.keys())
             col_w_keys.sort()
@@ -930,6 +942,15 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
                     coords_id += 1
             if horz_decoder_array:
                 # deal with horizontal decoders and place polygons
+                # Calculate number of switches that are not none, use that to size usable decoder cells
+                if horz_switch_array:
+                    horz_switch_names = [doc['name'] for doc in horz_switch_array[0]]
+                    num_none_swcs = horz_switch_names.count(None)
+                    #print(f'num none {num_none_swcs}')
+                    #print(f'horz switch names {horz_switch_names}')
+                    num_decoder_cols_needed = len(horz_switch_array[0]) - num_none_swcs
+                    num_decoder_cols_needed = int(np.ceil(num_decoder_cols_needed/2))
+                    horz_decoder_array = [row[:num_decoder_cols_needed] for row in horz_decoder_array]
                 gate_decoder_spacing = int(7*dbu) #previous value 15
                 height_accum += cell_height + gate_decoder_spacing
                 for row_idx, row in enumerate(reversed(horz_decoder_array)):
@@ -937,12 +958,12 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
                         if row_idx == 0:
                             #Semi-Hardcode connecting net from switch to decoder
                             temp_net_num = idx*8
-                            col['nets']['OUT<0>'] = f'isle{val}_swc_net{temp_net_num + 0}'
-                            col['nets']['RUN_OUT<0>'] = f'isle{val}_swc_net{temp_net_num + 1}'
-                            col['nets']['OUT<1>'] = f'isle{val}_swc_net{temp_net_num + 2}'
-                            col['nets']['RUN_OUT<1>'] = f'isle{val}_swc_net{temp_net_num + 3}'
-                            col['nets']['OUT<2>'] = f'isle{val}_swc_net{temp_net_num + 4}'
-                            col['nets']['RUN_OUT<2>'] = f'isle{val}_swc_net{temp_net_num + 5}'
+                            col['nets']['OUT<0>'] = f'isle{val}_swc_net{temp_net_num + 0}' if 'OUT<0>' not in col['nets'] else col['nets']['OUT<0>']
+                            col['nets']['RUN_OUT<0>'] = f'isle{val}_swc_net{temp_net_num + 1}' if 'RUN_OUT<0>' not in col['nets'] else col['nets']['RUN_OUT<0>']
+                            col['nets']['OUT<1>'] = f'isle{val}_swc_net{temp_net_num + 2}' if 'OUT<1>' not in col['nets'] else col['nets']['OUT<1>']
+                            col['nets']['RUN_OUT<1>'] = f'isle{val}_swc_net{temp_net_num + 3}' if 'RUN_OUT<1>' not in col['nets'] else col['nets']['RUN_OUT<1>']
+                            col['nets']['OUT<2>'] = f'isle{val}_swc_net{temp_net_num + 4}' if 'OUT<2>' not in col['nets'] else col['nets']['OUT<2>']
+                            col['nets']['RUN_OUT<2>'] = f'isle{val}_swc_net{temp_net_num + 5}' if 'RUN_OUT<2>' not in col['nets'] else col['nets']['RUN_OUT<2>']
                             col['nets']['OUT<3>'] = f'isle{val}_swc_net{temp_net_num + 6}' if 'OUT<3>' not in col['nets'] else col['nets']['OUT<3>']
                             col['nets']['RUN_OUT<3>'] = f'isle{val}_swc_net{temp_net_num + 7}' if 'RUN_OUT<3>' not in col['nets'] else col['nets']['RUN_OUT<3>']
                         if cells_only_module and (idx*2) < len(cell_order):
@@ -961,10 +982,14 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
                             cell_order_in_island[val]['coords'].append(temp_coord)
                             coords_id += 1
                         elif not cells_only_module and (idx*2) < len(col_widths):
+                            cell_width = cell_info[col['name']]['width']
                             x_loc = calculate_offset(col_widths, idx*2, mat_to_cell_padding)
+                            # Logic to take the maximum of the offset between column width and calculated based on decoder widths only
+                            decoder_only_offset = cell_width*idx
+                            if idx > 0: decoder_only_offset += x_drainmux_offset
+                            x_loc = max(x_loc, decoder_only_offset)
                             if idx == 0: x_loc += x_drainmux_offset
                             y_loc = height_accum
-                            cell_width = cell_info[col['name']]['width']
                             cell_height = cell_info[col['name']]['height']
                             cell_order_in_island[val]['items'][coords_id] = {}
                             cell_order_in_island[val]['items'][coords_id]['type'] = 'cell'
@@ -1598,16 +1623,16 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
                     def_file.write(f'    RECT ( {block_x1} {block_y1} ) ( {block_x2} {block_y2} ) ;\n')
                     def_file.write(f'  END\n\n')
         # Write blockages for any manually specified cells or islands
-        m3_except = ['TSMC350nm_drainSelect_progrundrains']
+        m3_except = ['TSMC350nm_drainSelect_progrundrains', 'S_BLOCK_SEC1_PINS', 'S_BLOCK_BUFFER', 'S_BLOCK_SPACE_UP_PINS', 'S_BLOCK_CONN_PINS', 'S_BLOCK_SPACE_DOWN_PINS', 'S_BLOCK_SEC2_PINS', 'S_BLOCK_23CONN', 'S_BLOCK_SEC3_PINS']
         for val, island in cell_order_in_island.items():
             for idx, item in island['items'].items():
-                if item['type'] == 'cell' and item['name'] in m3_except:
+                if item['name'] in m3_except:
                     array = island['coords']
                     loc = array[idx]
                     block_x1 = loc[0]
-                    block_y1 = loc[1] + int(1*dbu)
-                    block_x2 = loc[2] - int(1*dbu)
-                    block_y2 = loc[3] - int(1*dbu)
+                    block_y1 = loc[1] 
+                    block_x2 = loc[2] 
+                    block_y2 = loc[3] 
                     poly_mlayer = metal_layers[stop_layer]
                     def_file.write(f'  - {poly_mlayer}\n')
                     def_file.write(f'    LAYER {poly_mlayer} ;\n')
@@ -1618,7 +1643,7 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
             frame_name = frame_module.module_name
             frame_origin = cell_info[frame_name]['origin']
             frame_w, frame_h = cell_info[frame_name]['width'], cell_info[frame_name]['height']
-            frame_blockage_size = int(0.5*dbu) # specify in micron, convert to database units (nm)
+            frame_blockage_size = int(1*dbu) # specify in micron, convert to database units (nm)
             num_metals = len(metal_layers)
             for num in range(num_metals):
                 # West blockage
