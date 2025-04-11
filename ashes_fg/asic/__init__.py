@@ -5,18 +5,10 @@ import subprocess
 import re
 import time
 
-def compile(system, project_name=None, tech_process='privA_65', dbu=1000, track_spacing=250, x_offset=None, y_offset=None, design_area=(0,0,1,1)):
-	# All units in nanometers
-	tech_process = 'vis350'
-	cell_pitch = 22000
-	dbu = 1000
-	track_spacing = 700
-	# placement offset to make space for pin routing
-	x_offset, y_offset = 400*track_spacing, 2000*track_spacing 
-	design_area = (198e3, 177e3, 3033e3, 859e3, x_offset, y_offset) #<- default synthesized cell island values
+def compile(system, project_name=None, tech_process='privA_65', dbu=1000, track_spacing=250, cell_pitch=22000, x_offset=None, y_offset=None, design_area=(0,0,1,1), location_islands=None):
 	process_params = (tech_process, dbu, track_spacing, x_offset, y_offset, cell_pitch)
 	pl_start = time.time()
-	gds_synthesis(process_params, design_area, project_name)
+	gds_synthesis(process_params, design_area, project_name, isle_loc=location_islands)
 	pl_end = time.time()
 	
 	# Pick the detailed router and default to qrouter. If not available, check for Triton.
