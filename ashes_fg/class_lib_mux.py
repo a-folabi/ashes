@@ -1,6 +1,44 @@
 from ashes_fg.asic.asic_compile import *
 
 
+
+class TSMC350nm_VinjDecode2to4_htile(StandardCell):
+    def __init__(self,circuit,island=None,bits=0):
+        self.circuit = circuit
+        self.pins = []
+        self.ports = []
+        self.island = island
+        self.num = 2**(bits)/4
+        self.bits = bits
+        self.dim = (1,self.num)
+
+        self.name = "TSMC350nm_VinjDecode2to4_htile"
+
+        self.VGRUN = Port(circuit,self,"VGRUN","N",4*self.dim[1])
+        self.Run_Out = Port(circuit,self,"RUN_OUT","S",4*self.dim[1])
+        self.Out = Port(circuit,self,"OUT","S",4*self.dim[1])
+        self.Enable = Port(circuit,self,"ENABLE","N",1,static=True)
+        #self.VINJ = Port(circuit,self,"VINJ","N",2*self.dim[1])
+        #self.GND = Port(circuit,self,"GND","N",2*self.dim[1])
+        
+        # Add cell to circuit
+        circuit.addInstance(self,self.island)
+
+    def print(self,instanceNum,islandNum,row,col,processPrefix):
+        text = self.name + " decoder("
+        text += ".island_num(" + str(islandNum) + "), "
+        text += ".direction(horizontal), "
+        text += ".bits(" + str(self.bits) + ")"
+
+        i = 0
+        for port in self.ports:
+            if port.isEmpty() == False:
+                text += ", "
+                text += port.printDecoder()
+                i+=1
+        text += ");"
+        return text
+
 class STD_GateDecoder(StandardCell):
     def __init__(self,circuit,island=None,bits=0):
         self.circuit = circuit

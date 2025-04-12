@@ -28,7 +28,7 @@ def test_cells():
 
 # Inputs = gatelines
 # Outputs = drainlines
-def DirectVMM(circuit,rows,columns,inputs = None):
+def DirectVMM(circuit,rows,columns,inputs=None):
     if (rows % 4) != 0:
             raise Exception("Error: VMM rows must be divisible by 4")
     if (columns % 2) != 0:
@@ -39,17 +39,22 @@ def DirectVMM(circuit,rows,columns,inputs = None):
 
     # Create VMM and place in an island
     VMMIsland = Island(circuit)
-    VMM = TSMC350nm_4x2_Direct(circuit,dim=(numRows,numCols),island=VMMIsland,Vg=inputs)
+    VMM = TSMC350nm_4x2_Indirect(circuit,dim=(numRows,numCols),island=VMMIsland)
     circuit.placeInstance(VMM,[0,0])
 
     # Add decoders
     gateBits = int(np.ceil(np.log2(columns)))
-    GateDecoder = STD_GateDecoder(circuit,VMMIsland,gateBits)
+    GateDecoder = TSMC350nm_VinjDecode2to4_htile(circuit,VMMIsland,gateBits)
     GateSwitches = STD_IndirectGateSwitch(circuit,VMMIsland,gateBits)
+
+    # Add input
+    if inputs != None:
+        GateDecoder.VGRUN.connectPort(inputs)
+    
 
     drainBits = int(np.ceil(np.log2(rows)))
     DrainDecoder = STD_DrainDecoder(circuit,VMMIsland,drainBits)
     DrainSel = STD_DrainSelect(circuit,VMMIsland,drainBits)
     DrainSwitches = STD_DrainSwitch(circuit,VMMIsland,drainBits)
 
-    return VMM.Vd
+    return VMM.Vd_R
