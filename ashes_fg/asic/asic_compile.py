@@ -40,7 +40,7 @@ def compile_asic(circuit,process="Process",fileName = "compiled",path = "./examp
     x_offset, y_offset = 400*track_spacing, 2000*track_spacing 
     location_islands = None
 
-    design_area = (0, 0, 1e6, 6.1e5, x_offset, y_offset)
+    design_area = (0, 0, 8e5, 5e5, x_offset, y_offset)
     #location_islands = ((20600, 363500), (20600, 20000)) #<-location for tile v1
 
     # Run P&R if desired
@@ -703,13 +703,13 @@ class Port:
 
                 if pin.isVector() ==  True:
                     if self.location == "E":
-                        line += "col_" + str(self.cell.dim[1])
+                        line += "col_" + str(self.cell.dim[1]-1)
                     elif self.location == "W":
                         line += "col_0"
                     elif self.location == "N":
                         line += "row_0"
                     elif self.location == "S":
-                        line += "row_" + str(self.cell.dim[0])
+                        line += "row_" + str(self.cell.dim[0]-1)
 
                 line += "("
                 
