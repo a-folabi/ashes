@@ -9,7 +9,7 @@ from ashes_fg.asic import compile
 
 # Functions
 # ---------------------------------------------------------------------------------------------------------------------------
-def compile_asic(circuit,process="Process",fileName = "compiled",path = "./example_verilog", p_and_r = True):
+def compile_asic(circuit,process="Process",fileName = "compiled",path = "./example_verilog", p_and_r = True, location_islands=None, design_limits = [1e6, 6.1e5]):
     """
     Main ASIC compilation function
     - Makes Verilog netlist for a given Circuit
@@ -38,10 +38,9 @@ def compile_asic(circuit,process="Process",fileName = "compiled",path = "./examp
     track_spacing = 1400
     # placement offset to make space for pin routing
     x_offset, y_offset = 400*track_spacing, 2000*track_spacing 
-    location_islands = None
 
-    design_area = (0, 0, 8e5, 5e5, x_offset, y_offset)
-    #location_islands = ((20600, 363500), (20600, 20000)) #<-location for tile v1
+    design_area = (0, 0, design_limits[0], design_limits[1], x_offset, y_offset)
+    location_islands = ((20600, 363500), (20600, 20000)) #<-location for tile v1
 
     # Run P&R if desired
     if p_and_r == True:
@@ -282,7 +281,7 @@ class Island:
         """
         Identifies special decoder cells
         """
-        decoderList = ["TSMC350nm_VinjDecode2to4_htile","GateMuxSwcTile","VinjDecode2to4_vtile","drainSelect01d3","FourTgate_ThickOx_FG_MEM"]
+        decoderList = ["TSMC350nm_VinjDecode2to4_htile","GateMuxSwcTile","VinjDecode2to4_vtile","drainSelect01d3","FourTgate_ThickOx_FG_MEM","TSMC350nm_IndirectSwitches","TSMC350nm_GorS_IndrctSwcs"]
 
         for i in decoderList:
             if instance.name == i:
@@ -307,7 +306,7 @@ class Island:
                 placedRow = instanceLocation[0][0]
                 placedCol = instanceLocation[1][0]
                 text += "\t"
-                text += instance.print(i,islandNum,placedRow,placedCol,processPrefix)
+                text += instance.print(i,islandNum,placedRow,placedCol)
                 text += ("\n")
             elif self.isDecoder(instance) == True:
                 decoderText += "\t"
@@ -764,6 +763,19 @@ class StandardCell:
         # Dimensions
         self.dim = (1,1)
 
+    def place(self,loc):
+        self.circuit.placeInstance(self,loc)
+
+    def markCABDevice(self):
+        self.cabDevice = True
+
+    def isCABDevice(self):
+        try:
+            if self.cabDevice == True:
+                return True
+        except:
+            return False
+    
     def addPins(self,pins):
         self.pins += pins
 
@@ -796,7 +808,7 @@ class StandardCell:
 
 
     
-    def print(self,instanceNum,islandNum,row,col,processPrefix):
+    def print(self,instanceNum,islandNum,row,col,instancePrefix = "I_"):
         """
         Returns Verilog text for instance
         """
@@ -804,8 +816,11 @@ class StandardCell:
         # Prefixes and placement
         #text = processPrefix + "_" + self.name + " I__" + str(instanceNum) + " ("
 
+        if self.isCABDevice() == True:
+            instancePrefix = "cab_device"
+
         #TODO Remove process prefix from auto-generated class library
-        text = self.name + " I__" + str(instanceNum) + " ("
+        text = self.name + " " + instancePrefix +"_" + str(instanceNum) + " ("
         text += ".island_num(" + str(islandNum) + "), "
         text += ".row(" + str(row) + "), "
         text += ".col(" + str(col) + ")"

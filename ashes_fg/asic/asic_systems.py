@@ -25,36 +25,32 @@ def test_cells():
     return (scanner, nfets, pfets, amp_det, ta_1fg, ta_0fg, ta_strong_fg, bpf, vmmwta, fg_char, vmm, vmm_indir, frame)
 
 
-
-# Inputs = gatelines
-# Outputs = drainlines
-def DirectVMM(circuit,rows,columns,inputs=None):
-    if (rows % 4) != 0:
+def IndirectVMM(circuit,dim=[4,2], island=None,decoderPlace=True,loc=[0,0]):
+    if (dim[0] % 4) != 0:
             raise Exception("Error: VMM rows must be divisible by 4")
-    if (columns % 2) != 0:
+    if (dim[1] % 2) != 0:
             raise Exception("Error: VMM columns must be divisible by 2")
 
-    numRows = int(rows/4)
-    numCols = int(columns/2)
+    numRows = int(dim[0]/4)
+    numCols = int(dim[1]/2)
+
+    VMMIsland = island
+    if island == None:
+          VMMIsland = Island(circuit)
 
     # Create VMM and place in an island
-    VMMIsland = Island(circuit)
     VMM = TSMC350nm_4x2_Indirect(circuit,dim=(numRows,numCols),island=VMMIsland)
-    circuit.placeInstance(VMM,[0,0])
+    circuit.placeInstance(VMM,loc)
 
-    # Add decoders
-    gateBits = int(np.ceil(np.log2(columns)))
-    GateDecoder = TSMC350nm_VinjDecode2to4_htile(circuit,VMMIsland,gateBits)
-    GateSwitches = STD_IndirectGateSwitch(circuit,VMMIsland,gateBits)
+    if decoderPlace == True:
+        # Add decoders
+        gateBits = int(np.ceil(np.log2(dim[1])))
+        GateDecoder = STD_IndirectGateDecoder(circuit,VMMIsland,gateBits)
+        GateSwitches = STD_IndirectGateSwitch(circuit,VMMIsland,2**gateBits/2)
 
-    # Add input
-    if inputs != None:
-        GateDecoder.VGRUN.connectPort(inputs)
-    
+        drainBits = int(np.ceil(np.log2(dim[0])))
+        DrainDecoder = STD_DrainDecoder(circuit,VMMIsland,drainBits)
+        DrainSel = STD_DrainSelect(circuit,VMMIsland,2**drainBits)
+        DrainSwitches = STD_DrainSwitch(circuit,VMMIsland,2**drainBits)
 
-    drainBits = int(np.ceil(np.log2(rows)))
-    DrainDecoder = STD_DrainDecoder(circuit,VMMIsland,drainBits)
-    DrainSel = STD_DrainSelect(circuit,VMMIsland,drainBits)
-    DrainSwitches = STD_DrainSwitch(circuit,VMMIsland,drainBits)
-
-    return VMM.Vd_R
+    return VMM
