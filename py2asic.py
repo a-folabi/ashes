@@ -7,4 +7,6 @@ from ashes_fg.class_lib_mux import *
 from ashes_fg.asic.asic_systems import *
 
 
-exec(open("./example_python/small_fg_island.py").read())
+Top = Circuit()
+
+exec(open("./example_python/full_cab_example.py").read())

@@ -300,7 +300,10 @@ class Island:
             if instance.isDecoder() == False:
                 # Get row and column number
                 instanceLocation = self.getLocation(instance)
-                placedRow = instanceLocation[0][0]
+                try:
+                    placedRow = instanceLocation[0][0]
+                except:
+                    raise Exception("Error: Instance " + instance.name + " not placed")
                 placedCol = instanceLocation[1][0]
                 text += "\t"
                 text += instance.print(i,islandNum,placedRow,placedCol)
@@ -322,6 +325,7 @@ class Island:
         Rows/Cols start at 1
         Translates 0,0 from top left of array to bottom left
         """
+
         rowDim = instance.dim[0]
         colDim = instance.dim[1]
 
@@ -336,6 +340,12 @@ class Island:
            self.placementGrid = self.addRows(self.placementGrid,rowNum=numRows,numNewRows=(row+1-numRows)+rowDim-1)
         if numCols < col+1 + colDim-1:
             self.placementGrid = self.addCols(self.placementGrid,colNum=numCols,numNewCols=(col+1-numCols)+colDim-1)
+
+        # Check for placement errors
+        for i in range(rowDim):
+            for j in range(colDim):
+                if self.placementGrid[row+i][col+j] != 0:
+                    raise Exception("Placement collision when attempting to place  " + instance.name)   
 
         # Fill in for matrix elements
         self.placementGrid[row:row+rowDim][col:col+colDim] = -1
@@ -771,6 +781,17 @@ class StandardCell:
     def markCABDevice(self):
         self.cabDevice = True
 
+    def markAbut(self):
+        self.Abut = True
+
+
+    def isAbutted(self):
+        try:
+            if self.Abut == True:
+                return True
+        except:
+            return False
+
     def isDecoder(self):
         """
         Identifies special decoder cells
@@ -839,6 +860,10 @@ class StandardCell:
 
         # Matrix definition
         if self.dim[0] > 1 or self.dim[1] > 1:
+            text += ", .matrix_row(" + str(self.dim[0]) + "), "
+            text += ".matrix_col(" + str(self.dim[1]) + ")"
+
+        if self.isAbutted() == True:
             text += ", .matrix_row(" + str(self.dim[0]) + "), "
             text += ".matrix_col(" + str(self.dim[1]) + ")"
 
