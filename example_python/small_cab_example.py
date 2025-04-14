@@ -78,7 +78,22 @@ CAB_GateIndirect = STD_IndirectGateSwitch(Top,CABIsland,col=17)
 cabFrame = frame(Top)
 cabFrame.createPort("N")
 
+
+# Connections
+#-------------------------------------------------------------------------------
+TA_Strong.VIN1_PLUS += B.Vd_R[0]
+TA_Strong.VIN1_MINUS += B.Vd_R[1]
+TA_Strong.VIN2_PLUS += B.Vd_R[2]
+TA_Strong.VIN2_MINUS += B.Vd_R[3]
+TA_Strong.VD_P += B.Vd_P[0:2]
+
+TA_Strong.OUTPUT[0] += CAB_GateSwitches.In[0]
+TA_Strong.OUTPUT[1] += CAB_GateSwitches.In[1]
+
+
+# Compilation
+#-------------------------------------------------------------------------------
 design_limits = [1e6, 6.1e5]
 location_islands = ((20600, 363500), (20600, 20000)) #<-location for tile v1
 
-compile_asic(Top,process="TSMC350nm",fileName="small_cab_example_placement",p_and_r = True,design_limits = design_limits, location_islands = location_islands)
+compile_asic(Top,process="TSMC350nm",fileName="small_cab_example",p_and_r = True,design_limits = design_limits, location_islands = location_islands)

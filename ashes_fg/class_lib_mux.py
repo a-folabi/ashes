@@ -47,6 +47,7 @@ class STD_GorS_IndirectSwitches(StandardCell):
         self.island = island
         self.num = num
         self.dim = (1,self.num)
+        self.decoder = True
 
         self.name = "TSMC350nm_GorS_IndrctSwcs"
 
@@ -65,7 +66,7 @@ class STD_GorS_IndirectSwitches(StandardCell):
         for port in self.ports:
             if port.isEmpty() == False:
                 text += ", "
-                text += port.printDecoder()
+                text += port.printFlat(type = "switch")
                 i+=1
         text += ");"
         return text
@@ -80,6 +81,7 @@ class STD_IndirectGateDecoder(StandardCell):
         self.num = 2**(bits)/4
         self.bits = bits
         self.dim = (1,self.num)
+        self.decoder = True
 
         self.name = "TSMC350nm_VinjDecode2to4_htile"
 
@@ -103,10 +105,48 @@ class STD_IndirectGateDecoder(StandardCell):
         for port in self.ports:
             if port.isEmpty() == False:
                 text += ", "
-                text += port.printDecoder()
+                text += port.printFlat()
                 i+=1
         text += ");"
         return text
+    
+class STD_GateMuxSWC(StandardCell):
+    def __init__(self,circuit,island=None,num=0):
+        self.circuit = circuit
+        self.pins = []
+        self.ports = []
+        self.island = island
+        self.num = num
+        self.dim = (1,self.num)
+        self.decoder = True
+
+        self.name = "TSMC350nm_GateMuxSwcTile"
+
+        self.VINJ = Port(circuit,self,"VINJ","N",2*self.dim[1])
+        self.GND = Port(circuit,self,"GND","N",2*self.dim[1])
+
+        # Add cell to circuit
+        circuit.addInstance(self,self.island)
+
+    def print(self,instanceNum,islandNum,row,col,processPrefix):
+        text = self.name
+
+        text += " switch("
+ 
+        text += ".island_num(" + str(islandNum) + "), "
+        text += ".direction(horizontal), "
+
+        text += ".num(" + str(self.num) + ")"
+
+        i = 0
+        for port in self.ports:
+            if port.isEmpty() == False:
+                text += ", "
+                text += port.print()
+                i+=1
+        text += ");"
+        return text
+
     
 class STD_IndirectGateSwitch(StandardCell):
     def __init__(self,circuit,island=None,num=0,col=-1):
@@ -117,6 +157,7 @@ class STD_IndirectGateSwitch(StandardCell):
         self.num = num
         self.dim = (1,self.num)
         self.col = col
+        self.decoder = True
 
         self.name = "TSMC350nm_IndirectSwitches"
 
@@ -160,6 +201,7 @@ class STD_DrainDecoder(StandardCell):
         self.bits = bits
         self.num = 2**(bits-2)
         self.dim = (1,self.num)
+        self.decoder = True
 
         self.name = "VinjDecode2to4_vtile"
 
@@ -192,6 +234,7 @@ class STD_DrainSelect(StandardCell):
         self.island = island
         self.num = num
         self.dim = (1,self.num)
+        self.decoder = True
 
         self.name = "drainSelect01d3"
 
@@ -225,6 +268,7 @@ class STD_DrainSwitch(StandardCell):
         self.island = island
         self.num = num
         self.dim = (1,self.num)
+        self.decoder = True
  
         self.name = "FourTgate_ThickOx_FG_MEM"
         self.VINJ = Port(circuit,self,"VINJ","N",2*self.dim[1])

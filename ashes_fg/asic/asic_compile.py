@@ -40,7 +40,7 @@ def compile_asic(circuit,process="Process",fileName = "compiled",path = "./examp
     x_offset, y_offset = 400*track_spacing, 2000*track_spacing 
 
     design_area = (0, 0, design_limits[0], design_limits[1], x_offset, y_offset)
-    location_islands = ((20600, 363500), (20600, 20000)) #<-location for tile v1
+    #location_islands = ((20600, 363500), (20600, 20000)) #<-location for tile v1
 
     # Run P&R if desired
     if p_and_r == True:
@@ -67,11 +67,14 @@ def printPlacement(island,fileName = "island_placement",path = "./"):
     f = open(filePathandName, "w")
     f.write(island.printPlacement())
 
-def Bus(circuit,size):
+def Bus(circuit,size,busElements = None):
     """
     Helper function to easily create vectors of nets
     """
-    return Port(circuit,None,"Bus",None,size)
+    if busElements == None:
+        return Port(circuit,None,"Bus",None,size)
+
+
 
 def Wire(circuit):
     """
@@ -175,7 +178,8 @@ class Circuit:
                     port = largestPin.port
                     idxNum = self.Nets.index(net)
                     idx = 0
-                    physicalPinIdx = pin.getPhysicalPin()
+                    physicalPinIdx = largestPin.getPhysicalPin()
+
         
                     for i in range(port.getVectorSize()):
                         p = port.pins[physicalPinIdx + i*port.numPins()]
@@ -185,6 +189,11 @@ class Circuit:
 
                 elif net.containsVector() == False:
                     net.number = self.Nets.index(net)
+
+        for net in self.Nets:
+            if net.number == -1:
+                wrongPort = net.pins[0].port.name
+                raise Exception("Error: Not all nets named (" + wrongPort + ")")
 
  
     def print(self,processPrefix):
@@ -276,18 +285,6 @@ class Island:
         else:
             return np.zeros([2,2])
         
-    # TODO This is probably a terrible way to do this
-    def isDecoder(self,instance):
-        """
-        Identifies special decoder cells
-        """
-        decoderList = ["TSMC350nm_VinjDecode2to4_htile","GateMuxSwcTile","VinjDecode2to4_vtile","drainSelect01d3","FourTgate_ThickOx_FG_MEM","TSMC350nm_IndirectSwitches","TSMC350nm_GorS_IndrctSwcs"]
-
-        for i in decoderList:
-            if instance.name == i:
-                return True
-        return False
-        
     def print(self,islandNum,processPrefix):
         """
         Create Verilog netlist for island 
@@ -300,7 +297,7 @@ class Island:
         for instance in self.instances:
 
             # Check if instance is a decoder (has negative dimension as indicator)
-            if self.isDecoder(instance) == False:
+            if instance.isDecoder() == False:
                 # Get row and column number
                 instanceLocation = self.getLocation(instance)
                 placedRow = instanceLocation[0][0]
@@ -308,7 +305,7 @@ class Island:
                 text += "\t"
                 text += instance.print(i,islandNum,placedRow,placedCol)
                 text += ("\n")
-            elif self.isDecoder(instance) == True:
+            elif instance.isDecoder() == True:
                 decoderText += "\t"
                 decoderText += instance.print(i,islandNum,0,0,processPrefix)
                 decoderText += ("\n")
@@ -482,7 +479,7 @@ class Pin:
     
     def getPhysicalPin(self):
         """
-        Returns physical pin number for given port
+        Returns physical pin index for given port
         Needed because of Vectors
         """
         idx = self.port.pins.index(self)
@@ -490,7 +487,7 @@ class Pin:
         num = idx
         numPins = self.port.numPins()
 
-        while num > 0:
+        while num > -1:
             numPrev = num
             num -= numPins
         
@@ -499,6 +496,10 @@ class Pin:
 
     def getNet(self):
         return self.net
+    
+    def __iadd__(self,operand):
+        self.connect(operand)
+        return self
     
     def connect(self,connection):
         """
@@ -572,6 +573,8 @@ class Port:
 
         self.circuit.mergeNets(pinnets)
 
+    def __iadd__(self,operand):
+        self.connectPort(operand)
 
     def connectPort(self,connection):
         """
@@ -621,8 +624,11 @@ class Port:
     def __getitem__(self,key):
         return self.pins[key]
     
-    def __setitem__(self,key,net):
-        self.pins[key] = net
+    # Should never call directly
+    # Uses equality operator
+    def __setitem__(self,key,connection):
+        #self.pins[key] += connection
+        return None
     
     def __call__(self):
         return self.pins
@@ -654,7 +660,7 @@ class Port:
         """
         return int(len(self.pins)/self.numPins())
     
-    def printDecoder(self):
+    def printFlat(self,type = "decode"):
         """
         Returns Verilog text for a decoder port
         Decoders are a special case
@@ -673,7 +679,7 @@ class Port:
                     if not(i == 0 and j == 0):
                         line += ","
 
-                    line += ".decode_n" + str(i) + "_" + self.name + "_" + str(j) + "_("
+                    line += "." + type + "_n" + str(i) + "_" + self.name + "_" + str(j) + "_("
                     line += pin.print()
                     line += ")"
                     p+=1
@@ -685,14 +691,19 @@ class Port:
         Returns Verilog text for each pin in port
         Collapses vectors into original pin dimensions
         """
+
+        firstPrintCheck = False
        
         line = ""
         for i in range(int(self.numPins())):
             pin = self.pins[i]
             if pin.isConnected():
-
-                if i != 0:
-                    line+= ","
+                
+                # Check for first printed pin to add column
+                if firstPrintCheck == True:
+                    line += ", "
+                elif firstPrintCheck == False:
+                    firstPrintCheck = True
 
                 line += "." + self.name
 
@@ -713,15 +724,6 @@ class Port:
                 line += "("
                 
                 if pin.isVector() == True:
-                    """
-                    pinVector = self.pins[i::int(self.numPins())]
-                    idxStart = pinVector[0].net.index
-                    idxEnd = pinVector[-1].net.index
-                    idxJump = pinVector[1].net.index - idxStart
-
-                    pinVectorText = "[" + str(idxStart) + ":" + str(idxEnd) + ":" + str(idxJump) + "]"
-                    line += "net" + str(pin.net.number) + pinVectorText
-                    """
                     # TODO add check for pin short
                     idxStart = 0
                     idxEnd = self.getVectorSize()
@@ -768,6 +770,16 @@ class StandardCell:
 
     def markCABDevice(self):
         self.cabDevice = True
+
+    def isDecoder(self):
+        """
+        Identifies special decoder cells
+        """
+        try:
+            if self.decoder == True:
+                return True
+        except:
+            return False
 
     def isCABDevice(self):
         try:
