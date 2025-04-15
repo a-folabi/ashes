@@ -24,4 +24,11 @@ module TOP(port1);
 	TSMC350nm_4x2_Indirect I__19 (.island_num(0), .row(0), .col(17), .matrix_row(5), .matrix_col(9));
 
  	/*Programming Mux */ 
+
+
+	/* Island 1 */
+	TSMC350nm_4x2_Indirect I__0 (.island_num(1), .row(1), .col(0), .matrix_row(7), .matrix_col(8));
+	TSMC350nm_4x2_Indirect I__1 (.island_num(1), .row(1), .col(8), .matrix_row(6), .matrix_col(9));
+
+ 	/*Programming Mux */ 
 endmodule

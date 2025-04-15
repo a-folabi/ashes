@@ -308,6 +308,7 @@ class Island:
                 text += "\t"
                 text += instance.print(i,islandNum,placedRow,placedCol)
                 text += ("\n")
+            # Decoder doesn't have placement information
             elif instance.isDecoder() == True:
                 decoderText += "\t"
                 decoderText += instance.print(i,islandNum,0,0,processPrefix)

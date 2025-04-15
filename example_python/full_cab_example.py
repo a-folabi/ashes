@@ -3,6 +3,7 @@ import ashes_fg as af
 from ashes_fg.asic.asic_compile import *
 from ashes_fg.class_lib_new import *
 from ashes_fg.class_lib_mux import *
+from ashes_fg.class_lib_cab import *
 
 from ashes_fg.asic.asic_systems import *
 
@@ -82,12 +83,17 @@ SEC3.place([0,16])
 
 C_NS = IndirectVMM(Top,[20,18],island=BlockIsland,decoderPlace=False,loc = [0,17])
 
+# CAB
+# -------------------------------------------------------------------------------\
+CABIsland = Island(Top)
+Amatrix = IndirectVMM(Top,[28,16],island=CABIsland,decoderPlace=False,loc=[1,0])
+Bmatrix = IndirectVMM(Top,[24,18],island=CABIsland,decoderPlace=False,loc=[1,8])
 
 # Compilation
 #-------------------------------------------------------------------------------
 design_limits = [1e6, 6.1e5]
-#location_islands = ((20600, 363500), (20600, 20000)) #<-location for tile v1
-location_islands=None
+location_islands = ((20600, 363500), (20600, 20000)) #<-location for tile v1
+#location_islands=None
 
 
 compile_asic(Top,process="TSMC350nm",fileName="full_cab_python",p_and_r = True,design_limits = design_limits, location_islands = location_islands)
