@@ -83,6 +83,7 @@ Conn_5.place([0,15])
 SEC3 = S_SEC3(Top,BlockIsland,[5,1])
 SEC3.place([0,16])
 
+
 # Decoders
 Block_GateDecode = STD_IndirectGateDecoder(Top,island=BlockIsland,bits=6)
 Block_GateSwitch = STD_IndirectGateSwitch(Top,island=BlockIsland,num=26)
@@ -95,7 +96,7 @@ for i in range(8,16):
     ERASE_IndirectGateSwitch(Top,island=BlockIsland,col=i)
 
 # CAB
-# -------------------------------------------------------------------------------\
+# -------------------------------------------------------------------------------
 CABIsland = Island(Top)
 
 # A matrix
@@ -159,6 +160,51 @@ CAB_GateSwitch = STD_GorS_IndirectSwitches(Top,CABIsland,num=19)
 ERASE_IndirectGateSwitch(Top,CABIsland,col=17)
 CABElements_GateSwitch = STD_IndirectGateSwitch(Top,CABIsland,col=18)
 
+# Bmatrix <--> CAB Elements Connections
+# -------------------------------------------------------------------------------
+
+TA_Weak0.VD_P += Bswitch.P[0:2]
+TA_Weak0.VIN1_MINUS += Bswitch.A[0]
+TA_Weak0.VIN1_PLUS += Bswitch.A[1]
+TA_Weak0.VIN2_PLUS += Bswitch.A[2]
+TA_Weak0.VIN2_MINUS += Bswitch.A[3]
+
+TA_Weak1.VD_P += Bswitch.P[4:6]
+TA_Weak1.VIN1_MINUS += Bswitch.A[4]
+TA_Weak1.VIN1_PLUS += Bswitch.A[5]
+TA_Weak1.VIN2_PLUS += Bswitch.A[6]
+TA_Weak1.VIN2_MINUS += Bswitch.A[7]
+
+# Need new WTA Indirect block
+WTA.Iin  += Bswitch.A[8:12]
+
+CapBank.VD_P += Bswitch.P[12:16]
+CapBank.VIN += Bswitch.A[12:14]
+
+FETs.GATE_N += Bswitch.A[14]
+FETs.SOURCE_N += Bswitch.A[15]
+FETs.GATE_P += Bswitch.A[16]
+FETs.SOURCE_P += Bswitch.A[17]
+
+Nmirror.IN_CM += Bswitch.A[18:20]
+Nmirror.SelN += Bswitch.A[20]
+Nmirror.IN_TG += Bswitch.A[21]
+
+
+# Feedback Connections
+# -------------------------------------------------------------------------------
+TA_Weak0.OUTPUT += CAB_GateSwitch.In[17:19]
+TA_Weak1.OUTPUT += CAB_GateSwitch.In[19:21]
+TA_Strong.OUTPUT += CAB_GateSwitch.In[21:23]
+WTA.Vout += CAB_GateSwitch.In[23:27]
+CapBank.OUT += CAB_GateSwitch.In[27:29]
+FETs.DRAIN_P += CAB_GateSwitch.In[29]
+FETs.DRAIN_N += CAB_GateSwitch.In[30]
+Nmirror.OUT_CM += CAB_GateSwitch.In[31:33]
+Nmirror.OUT_TG += CAB_GateSwitch.In[33]
+
+# Power Connections
+
 
 # Compilation
 #-------------------------------------------------------------------------------
@@ -168,3 +214,4 @@ location_islands = ((20600, 363500), (20600, 20000)) #<-location for tile v1
 
 
 compile_asic(Top,process="TSMC350nm",fileName="full_cab_python",p_and_r = True,design_limits = design_limits, location_islands = location_islands)
+

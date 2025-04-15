@@ -148,7 +148,9 @@ class ST_BMatrix(StandardCell):
 
         self.name = "TSMC350nm_4TGate_ST_BMatrix"
 
-        self.In = Port(circuit,self,"Input","N",2*self.dim[1])
+        self.In = Port(circuit,self,"Input","W",4*self.dim[0])
+        self.P = Port(circuit,self,"P","E",4*self.dim[0])
+        self.A = Port(circuit,self,"A","E",4*self.dim[0])
 
         # Add cell to circuit
         circuit.addInstance(self,self.island)
@@ -171,22 +173,6 @@ class DrainCutoff(MUX):
         # Add cell to circuit
         circuit.addInstance(self,self.island)
 
-class RunDrainSwitch(MUX):
-    def __init__(self,circuit,island=None,num=0):
-        self.circuit = circuit
-        self.pins = []
-        self.ports = []
-        self.island = island
-        self.num = num
-        self.dim = (1,self.num)
-        self.decoder = True
-        self.type = "switch"
-        self.switchType = "drain_select"
- 
-        self.name = "TSMC350nm_drainSelect_progrundrains"
-
-        # Add cell to circuit
-        circuit.addInstance(self,self.island)
 
 # Special FG Selects
 #---------------------------------------------------------------------------------------------------

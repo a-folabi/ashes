@@ -199,3 +199,20 @@ class frame(StandardCell):
         text += ");"
         
         return text
+
+class RunDrainSwitch(MUX):
+    def __init__(self,circuit,island=None,num=0):
+        self.circuit = circuit
+        self.pins = []
+        self.ports = []
+        self.island = island
+        self.num = num
+        self.dim = (1,self.num)
+        self.decoder = True
+        self.type = "switch"
+        self.switchType = "drain_select"
+ 
+        self.name = "TSMC350nm_drainSelect_progrundrains"
+
+        # Add cell to circuit
+        circuit.addInstance(self,self.island)

@@ -345,11 +345,11 @@ class Island:
         # Check for placement errors
         for i in range(rowDim):
             for j in range(colDim):
-                if self.placementGrid[row+i][col+j] != 0:
+                if self.placementGrid[row+i,col+j] != 0:
                     raise Exception("Placement collision when attempting to place  " + instance.name)   
 
         # Fill in for matrix elements
-        self.placementGrid[row:row+rowDim][col:col+colDim] = -1
+        self.placementGrid[row:row+rowDim,col:col+colDim] = instance.name
         # Place instance at bottom left corner of matrix
         self.placementGrid[row][col] = instance
 
@@ -361,13 +361,12 @@ class Island:
         numRows = np.shape(self.placementGrid)[0]
         numCols = np.shape(self.placementGrid)[1]
 
-        i = numRows-1
         for row in range(numRows):
             for col in range(numCols):
-                if isinstance(self.placementGrid[i-row,col],StandardCell):
-                    text+= self.placementGrid[i-row,col].name
+                if isinstance(self.placementGrid[row,col],StandardCell):
+                    text+= self.placementGrid[row,col].name
                 else:
-                    text+= str(self.placementGrid[i-row,col])
+                    text+= str(self.placementGrid[row,col])
                 text += ","
             text += "\n"
         
@@ -401,7 +400,7 @@ class Net:
     
     def containsVector(self):
         for p in self.pins:
-            if p.isVector:
+            if p.isVector():
                 return True
             
         return False
@@ -414,9 +413,9 @@ class Net:
         Checks if net has more than one pin
         """
         if len(self.pins) > 1:
-            return True
-        else:
             return False
+        else:
+            return True
 
     def connect(self,net):
         """
@@ -468,9 +467,9 @@ class Pin:
         """
         Checks if connected net is empty
         """
-        if self.net.isEmpty() == False:
+        if self.net.isEmpty() == True:
             return False
-        else:
+        elif self.net.isEmpty() == False:
             return True 
         
     def isVector(self):
@@ -679,6 +678,8 @@ class Port:
         - Indices in pin name
         """
 
+        firstPrintCheck = False
+
         line = ""
         # For each instance 
         p = 0
@@ -687,13 +688,17 @@ class Port:
             for j in range(self.numPins()):
                 pin = self.pins[p]
                 if pin.isConnected(): 
-                    if not(i == 0 and j == 0):
-                        line += ","
 
+                    # Check for first printed pin to add column
+                    if firstPrintCheck == True:
+                        line += ", "
+                    elif firstPrintCheck == False:
+                        firstPrintCheck = True
+        
                     line += "." + type + "_n" + str(i) + "_" + self.name + "_" + str(j) + "_("
                     line += pin.print()
                     line += ")"
-                    p+=1
+                p+=1
 
         return line 
 

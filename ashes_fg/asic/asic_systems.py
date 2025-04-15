@@ -3,6 +3,7 @@ import ashes_fg.class_lib_ext as fg
 from ashes_fg.asic.asic_compile import *
 from ashes_fg.class_lib_new import *
 from ashes_fg.class_lib_mux import *
+from ashes_fg.class_lib_cab import *
 
 def test_cells():
     # Frame should generate iopad objects with numbers 0 - (num_pads - 1) who all keep track of their frame name
@@ -46,11 +47,46 @@ def IndirectVMM(circuit,dim=[4,2], island=None,decoderPlace=True,loc=[0,0]):
         # Add decoders
         gateBits = int(np.ceil(np.log2(dim[1])))
         GateDecoder = STD_IndirectGateDecoder(circuit,VMMIsland,gateBits)
-        GateSwitches = STD_IndirectGateSwitch(circuit,VMMIsland,2**gateBits/2)
+        GateSwitches = STD_IndirectGateSwitch(circuit,VMMIsland,numCols)
 
         drainBits = int(np.ceil(np.log2(dim[0])))
         DrainDecoder = STD_DrainDecoder(circuit,VMMIsland,drainBits)
-        DrainSel = STD_DrainSelect(circuit,VMMIsland,2**drainBits)
-        DrainSwitches = STD_DrainSwitch(circuit,VMMIsland,2**drainBits)
+        DrainSel = STD_DrainSelect(circuit,VMMIsland,numRows)
+        DrainSwitches = STD_DrainSwitch(circuit,VMMIsland,numRows)
 
     return VMM
+
+def VMMWTA(circuit,dim=[4,2],island=None,decoderPlace=True,loc=[0,0],inputs=None):
+    if (dim[0] % 4) != 0:
+        raise Exception("Error: VMM rows must be divisible by 4")
+    if (dim[1] % 2) != 0:
+        raise Exception("Error: VMM columns must be divisible by 2")
+    
+    numRows = int(dim[0]/4)
+    numCols = int(dim[1]/2)
+
+    VMMWTAIsland = island
+    if island == None:
+          VMMWTAIsland = Island(circuit)
+
+    VMMWTA = TSMC350nm_VMMWTA(circuit,island=VMMWTAIsland,dim=[numRows,1])
+    VMMWTA.place([loc[0],loc[1]+numCols-1])
+    
+    VMM = None
+    if numCols > 1:
+         VMM = IndirectVMM(circuit,island=VMMWTAIsland,dim=[dim[0],dim[1]-2],decoderPlace=False)
+         VMMWTA.markAbut
+
+         
+    if decoderPlace == True:
+        # Add decoders
+        gateBits = int(np.ceil(np.log2(dim[1])))
+        GateDecoder = STD_IndirectGateDecoder(circuit,VMMWTAIsland,gateBits)
+        GateSwitches = STD_IndirectGateSwitch(circuit,VMMWTAIsland,numCols)
+
+        drainBits = int(np.ceil(np.log2(dim[0])))
+        DrainDecoder = STD_DrainDecoder(circuit,VMMWTAIsland,drainBits)
+        DrainSel = STD_DrainSelect(circuit,VMMWTAIsland,numRows)
+        DrainSwitches = STD_DrainSwitch(circuit,VMMWTAIsland,numRows)
+
+    return VMMWTA.Vout
