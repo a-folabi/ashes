@@ -15,8 +15,11 @@ Top = Circuit()
 BlockIsland = Island(Top)
 
 #VMM's
-
 C_EW = IndirectVMM(Top,[20,14],island=BlockIsland,decoderPlace=False)
+C_NS = IndirectVMM(Top,[20,18],island=BlockIsland,decoderPlace=False,loc = [0,17])
+
+Block_Switch = ST_BMatrix(Top,BlockIsland,[5,1])
+Block_Switch.place([0,26])
 
 #SBLOCK
 SEC1 = S_SEC1(Top,BlockIsland,[5,1])
@@ -80,14 +83,82 @@ Conn_5.place([0,15])
 SEC3 = S_SEC3(Top,BlockIsland,[5,1])
 SEC3.place([0,16])
 
+# Decoders
+Block_GateDecode = STD_IndirectGateDecoder(Top,island=BlockIsland,bits=6)
+Block_GateSwitch = STD_IndirectGateSwitch(Top,island=BlockIsland,num=26)
 
-C_NS = IndirectVMM(Top,[20,18],island=BlockIsland,decoderPlace=False,loc = [0,17])
+Block_DrainDecode = STD_DrainDecoder(Top,island=BlockIsland,bits=5)
+Block_DrainSelect = STD_DrainSelect(Top,island=BlockIsland,num=5)
+Block_DrainCutoff = DrainCutoff(Top,BlockIsland,num=5)
+
+for i in range(8,16):
+    ERASE_IndirectGateSwitch(Top,island=BlockIsland,col=i)
 
 # CAB
 # -------------------------------------------------------------------------------\
 CABIsland = Island(Top)
+
+# A matrix
+Atop = BlockTop(Top,CABIsland,[1,8])
+Atop.place([0,0])
 Amatrix = IndirectVMM(Top,[28,16],island=CABIsland,decoderPlace=False,loc=[1,0])
+
+# B matrix
+Btop = BlockTop(Top,CABIsland,[1,9])
+Btop.place([0,8])
 Bmatrix = IndirectVMM(Top,[24,18],island=CABIsland,decoderPlace=False,loc=[1,8])
+Bbot = B_bot(Top,CABIsland,[1,9])
+Bbot.place([7,8])
+
+Bswitch = ST_BMatrix(Top,CABIsland,[8,1])
+Bswitch.place([0,17])
+
+BtoOut = OutSwitch(Top,CABIsland,[1,9])
+BtoOut.place([9,8])
+
+# Output Matrix
+Outmatrix = IndirectVMM(Top,[8,18],island=CABIsland,decoderPlace=False,loc=[10,8])
+Oswitch = ST_BMatrix(Top,CABIsland,[2,1])
+Oswitch.place([10,17])
+
+# CAB Elements
+TA_Weak0 = TSMC350nm_TA2Cell_Weak(Top,CABIsland)
+TA_Weak0.place([2,18])
+TA_Weak0.markCABDevice()
+
+TA_Weak1 = TSMC350nm_TA2Cell_Weak(Top,CABIsland)
+TA_Weak1.place([3,18])
+TA_Weak1.markCABDevice()
+
+TA_Strong = TSMC350nm_TA2Cell_Strong(Top,CABIsland)
+TA_Strong.place([4,18])
+TA_Strong.markCABDevice()
+
+WTA = TSMC350nm_4WTA(Top,CABIsland)
+WTA.place([5,18])
+WTA.markCABDevice()
+
+CapBank = TSMC350nm_Cap_Bank(Top,CABIsland)
+CapBank.place([6,18])
+CapBank.markCABDevice()
+
+FETs = TSMC350nm_NandPfets(Top,CABIsland)
+FETs.place([7,18])
+FETs.markCABDevice()
+
+Nmirror = TSMC350nm_TGate_2nMirror(Top,CABIsland)
+Nmirror.place([8,18])
+Nmirror.markCABDevice()
+
+# Decoders
+CAB_DrainDecoder = STD_DrainDecoder(Top,CABIsland,bits=6)
+CAB_DrainSelect = RunDrainSwitch(Top,CABIsland,num=12)
+CAB_DrainSwitch = DrainCutoff(Top,CABIsland,num=12)
+
+CAB_GateSwitch = STD_GorS_IndirectSwitches(Top,CABIsland,num=19)
+ERASE_IndirectGateSwitch(Top,CABIsland,col=17)
+CABElements_GateSwitch = STD_IndirectGateSwitch(Top,CABIsland,col=18)
+
 
 # Compilation
 #-------------------------------------------------------------------------------

@@ -797,10 +797,9 @@ class StandardCell:
         """
         Identifies special decoder cells
         """
-        try:
-            if self.decoder == True:
-                return True
-        except:
+        if isinstance(self,MUX):
+            return True
+        else:
             return False
 
     def isCABDevice(self):
@@ -839,9 +838,6 @@ class StandardCell:
         if connection != None:
             port.connectPort(connection)
 
-
-
-    
     def print(self,instanceNum,islandNum,row,col,instancePrefix = "I_"):
         """
         Returns Verilog text for instance
@@ -878,3 +874,60 @@ class StandardCell:
         text += ");"
         return text
     
+class MUX(StandardCell):
+    def __init__(self,circuit,island,num):
+        self.circuit = circuit
+        self.pins = []
+        self.ports = []
+        self.island = island
+        self.num = num
+        self.dim = (0,self.num)
+        self.decoder = True
+        self.type = "MUX"
+        self.switchType = "MUX"
+        self.name = "MUX"
+
+        # Add cell to circuit
+        circuit.addInstance(self,self.island)
+
+    def hasSwitchType(self):
+        try:
+            test = self.switchType
+            return True
+        except:
+            return False
+
+    def print(self,instanceNum,islandNum,row,col,processPrefix):
+
+        text = self.name + " " + self.type + "("
+        text += ".island_num(" + str(islandNum) + "), "
+        text += ".direction(" + self.getDirection() + "), "
+
+        if self.type == "decoder":
+            text += ".bits(" + str(self.bits) + ")"
+        elif self.type == "switch":
+            text += ".num(" + str(self.num) + ")"
+        elif self.type == "switch_ind":
+            text += ".col(" + str(self.col) + ")"
+
+        if self.hasSwitchType() == True:
+            text += ", .type(" + self.switchType + ")"
+
+        i = 0
+        for port in self.ports:
+            if port.isEmpty() == False:
+                text += ", "
+                if self.type == "switch_ind":
+                    text += port.print()
+                else:
+                    text += port.printFlat(type = self.type)
+                i+=1
+        text += ");"
+        return text
+    
+    def getDirection(self):
+        if self.dim[0] < 1:
+            return "horizontal"
+        else:
+            return "vertical"
+        

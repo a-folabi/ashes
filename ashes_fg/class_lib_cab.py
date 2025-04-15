@@ -152,3 +152,82 @@ class ST_BMatrix(StandardCell):
 
         # Add cell to circuit
         circuit.addInstance(self,self.island)
+
+
+class DrainCutoff(MUX):
+    def __init__(self,circuit,island=None,num=0):
+        self.circuit = circuit
+        self.pins = []
+        self.ports = []
+        self.island = island
+        self.num = num
+        self.dim = (1,self.num)
+        self.decoder = True
+        self.type = "switch"
+        self.switchType = "prog_switch"
+ 
+        self.name = "TSMC350nm_4TGate_ST_draincutoff"
+
+        # Add cell to circuit
+        circuit.addInstance(self,self.island)
+
+class RunDrainSwitch(MUX):
+    def __init__(self,circuit,island=None,num=0):
+        self.circuit = circuit
+        self.pins = []
+        self.ports = []
+        self.island = island
+        self.num = num
+        self.dim = (1,self.num)
+        self.decoder = True
+        self.type = "switch"
+        self.switchType = "drain_select"
+ 
+        self.name = "TSMC350nm_drainSelect_progrundrains"
+
+        # Add cell to circuit
+        circuit.addInstance(self,self.island)
+
+# Special FG Selects
+#---------------------------------------------------------------------------------------------------
+class BlockTop(StandardCell):
+    def __init__(self,circuit,island=None,dim = (1,1)):
+        # Define variables
+        self.circuit = circuit
+        self.pins = []
+        self.ports = []
+        self.island = island
+        self.dim = dim
+
+        self.name = "TSMC350nm_4x2_Indirect_top_AorB_matrx"
+
+        # Add cell to circuit
+        circuit.addInstance(self,self.island)
+
+class B_bot(StandardCell):
+    def __init__(self,circuit,island=None,dim = (1,1)):
+        # Define variables
+        self.circuit = circuit
+        self.pins = []
+        self.ports = []
+        self.island = island
+        self.dim = dim
+
+        self.name = "TSMC350nm_4x2_Indirect_bot_B_matrx"
+
+        # Add cell to circuit
+        circuit.addInstance(self,self.island)
+
+class OutSwitch(StandardCell):
+    def __init__(self,circuit,island=None,dim = (1,1)):
+        # Define variables
+        self.circuit = circuit
+        self.pins = []
+        self.ports = []
+        self.island = island
+        self.dim = dim
+
+        self.name = "TSMC350nm_OutMtrx_IndrctSwcs"
+
+        # Add cell to circuit
+        circuit.addInstance(self,self.island)

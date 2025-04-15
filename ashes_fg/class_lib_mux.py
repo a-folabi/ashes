@@ -1,62 +1,5 @@
 from ashes_fg.asic.asic_compile import *
 
-class MUX(StandardCell):
-    def __init__(self,circuit,island,num):
-        self.circuit = circuit
-        self.pins = []
-        self.ports = []
-        self.island = island
-        self.num = num
-        self.dim = (0,self.num)
-        self.decoder = True
-        self.type = "MUX"
-        self.switchType = "MUX"
-        self.name = "MUX"
-
-        # Add cell to circuit
-        circuit.addInstance(self,self.island)
-
-    def hasSwitchType(self):
-        try:
-            test = self.switchType
-            return True
-        except:
-            return False
-
-    def print(self,instanceNum,islandNum,row,col,processPrefix):
-
-        text = self.name + " " + self.type + "("
-        text += ".island_num(" + str(islandNum) + "), "
-        text += ".direction(" + self.getDirection() + "), "
-
-        if self.type == "decoder":
-            text += ".bits(" + str(self.bits) + ")"
-        elif self.type == "switch":
-            text += ".num(" + str(self.num) + ")"
-        elif self.type == "switch_ind":
-            text += ".col(" + str(self.col) + ")"
-
-        if self.hasSwitchType() == True:
-            text += ", .type(" + self.switchType + ")"
-
-        i = 0
-        for port in self.ports:
-            if port.isEmpty() == False:
-                text += ", "
-                if self.type == "switch_ind":
-                    text += port.print()
-                else:
-                    text += port.printFlat(type = self.type)
-                i+=1
-        text += ");"
-        return text
-    
-    def getDirection(self):
-        if self.dim[0] < 1:
-            return "horizontal"
-        else:
-            return "vertical"
-        
 
 class STD_GorS_IndirectSwitches(MUX):
     def __init__(self,circuit,island=None,num=0):
@@ -66,7 +9,6 @@ class STD_GorS_IndirectSwitches(MUX):
         self.island = island
         self.num = num
         self.dim = (0,self.num)
-        self.decoder = True
         self.type = "switch"
 
         self.name = "TSMC350nm_GorS_IndrctSwcs"
@@ -85,7 +27,6 @@ class STD_IndirectGateDecoder(MUX):
         self.num = 2**(bits)/4
         self.bits = bits
         self.dim = (0,self.num)
-        self.decoder = True
         self.type = "decoder"
 
         self.name = "TSMC350nm_VinjDecode2to4_htile"
@@ -108,7 +49,6 @@ class STD_GateMuxSWC(MUX):
         self.island = island
         self.num = num
         self.dim = (0,self.num)
-        self.decoder = True
         self.type = "switch"
 
         self.name = "TSMC350nm_GateMuxSwcTile"
@@ -128,7 +68,6 @@ class STD_IndirectGateSwitch(MUX):
         self.num = num
         self.dim = (0,self.num)
         self.col = col
-        self.decoder = True
         self.type = "switch_ind"
         if col < 0:
             self.type = "switch"
@@ -137,6 +76,24 @@ class STD_IndirectGateSwitch(MUX):
 
         self.VINJ = Port(circuit,self,"VINJ","N",2*self.dim[1])
         self.GND = Port(circuit,self,"GND","N",2*self.dim[1])
+
+        # Add cell to circuit
+        circuit.addInstance(self,self.island)
+
+class ERASE_IndirectGateSwitch(MUX):
+    def __init__(self,circuit,island=None,num=0,col=-1):
+        self.circuit = circuit
+        self.pins = []
+        self.ports = []
+        self.island = island
+        self.num = num
+        self.dim = (0,self.num)
+        self.col = col
+        self.type = "switch_ind"
+        if col < 0:
+            raise Exception("Specify column to erase gate switch")
+
+        self.name = "none"
 
         # Add cell to circuit
         circuit.addInstance(self,self.island)
@@ -151,7 +108,6 @@ class STD_DrainDecoder(MUX):
         self.bits = bits
         self.num = 2**(bits-2)
         self.dim = (self.num,0)
-        self.decoder = True
         self.type = "decoder"
 
         self.name = "TSMC350nm_VinjDecode2to4_vtile"
@@ -170,7 +126,6 @@ class STD_DrainSelect(MUX):
         self.island = island
         self.num = num
         self.dim = (self.num,0)
-        self.decoder = True
         self.type = "switch"
         self.switchType = "drain_select"
 
@@ -191,7 +146,6 @@ class STD_DrainSwitch(MUX):
         self.island = island
         self.num = num
         self.dim = (1,self.num)
-        self.decoder = True
         self.type = "switch"
         self.switchType = "prog_switch"
  
