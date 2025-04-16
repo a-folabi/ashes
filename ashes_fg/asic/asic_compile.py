@@ -820,15 +820,15 @@ class StandardCell:
     def addPort(self,port):
         self.ports.append(port)
         
-    def __setitem__(self,key,net):
-        for i in self:
+    def __setitem__(self,key,connection):
+        for i in self.ports:
             if i.name == key:
-                i.net = net
+                i += connection
         
     def __getitem__(self,key):
-        for i in self:
+        for i in self.ports:
             if i.name == key:
-                return i.net
+                return i
 
     def __call__(self):
         return self.outputs

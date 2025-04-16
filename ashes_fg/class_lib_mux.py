@@ -166,7 +166,7 @@ class STD_DrainSwitch(MUX):
     
 
 class frame(StandardCell):
-    def __init__(self,circuit):
+    def __init__(self,circuit,dim_N=0,dim_S=0,dim_E=0,dim_W=0):
         self.circuit = circuit
         self.pins = []
         self.ports = []

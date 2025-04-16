@@ -75,7 +75,7 @@ def VMMWTA(circuit,dim=[4,2],island=None,decoderPlace=True,loc=[0,0],inputs=None
     VMM = None
     if numCols > 1:
          VMM = IndirectVMM(circuit,island=VMMWTAIsland,dim=[dim[0],dim[1]-2],decoderPlace=False)
-         VMMWTA.markAbut
+         VMMWTA.markAbut()
 
          
     if decoderPlace == True:

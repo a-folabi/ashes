@@ -10,8 +10,8 @@ from ashes_fg.asic.asic_systems import *
 
 Top = Circuit()
 
-#exec(open("./example_python/full_cab_example.py").read())
+exec(open("./example_python/full_cab_example.py").read())
 
 #exec(open("./example_python/small_cab_example.py").read())
 
-exec(open("./example_python/VMMWTA.py").read())
+#exec(open("./example_python/VMMWTA.py").read())
