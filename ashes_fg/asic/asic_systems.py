@@ -86,7 +86,7 @@ def VMMWTA(circuit,dim=[4,2],island=None,decoderPlace=True,loc=[0,0],inputs=None
 
 
         if inputs != None:
-            GateDecoder.VGRUN[0:numCols*2] += inputs
+            inputs += GateDecoder.VGRUN[0:numCols*2]
 
         drainBits = int(np.ceil(np.log2(dim[0])))
         DrainDecoder = STD_DrainDecoder(circuit,VMMWTAIsland,drainBits)

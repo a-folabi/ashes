@@ -904,11 +904,14 @@ class MUX(StandardCell):
 
     def print(self,instanceNum,islandNum,row,col,processPrefix):
 
-        text = self.name + " " + self.type + "("
+        if self.type == "decode":
+            text = self.name + " " + "decoder" + "("
+        else:
+            text = self.name + " " + self.type + "("
         text += ".island_num(" + str(islandNum) + "), "
         text += ".direction(" + self.getDirection() + "), "
 
-        if self.type == "decoder":
+        if self.type == "decode":
             text += ".bits(" + str(self.bits) + ")"
         elif self.type == "switch":
             text += ".num(" + str(self.num) + ")"

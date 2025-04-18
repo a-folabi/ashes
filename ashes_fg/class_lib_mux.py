@@ -27,7 +27,7 @@ class STD_IndirectGateDecoder(MUX):
         self.num = 2**(bits)/4
         self.bits = bits
         self.dim = (0,self.num)
-        self.type = "decoder"
+        self.type = "decode"
 
         self.name = "TSMC350nm_VinjDecode2to4_htile"
 
@@ -108,7 +108,7 @@ class STD_DrainDecoder(MUX):
         self.bits = bits
         self.num = 2**(bits-2)
         self.dim = (self.num,0)
-        self.type = "decoder"
+        self.type = "decode"
 
         self.name = "TSMC350nm_VinjDecode2to4_vtile"
 
