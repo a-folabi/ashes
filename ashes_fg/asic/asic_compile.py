@@ -739,8 +739,10 @@ class Port:
                 if self.numPins() > 1:
                     line +=  "_" + str(i) + "_"
 
-                if pin.isVector() ==  True:
-                    if self.location == "E":
+                if pin.isVector() ==  True or self.cell.isAbutted() == True:
+                    if self.cell.isAbutted():
+                        line += "row_0"
+                    elif self.location == "E":
                         line += "col_" + str(self.cell.dim[1]-1)
                     elif self.location == "W":
                         line += "col_0"
