@@ -165,41 +165,6 @@ class STD_DrainSwitch(MUX):
         circuit.addInstance(self,self.island)
     
 
-class frame(StandardCell):
-    def __init__(self,circuit,dim_N=0,dim_S=0,dim_E=0,dim_W=0):
-        self.circuit = circuit
-        self.pins = []
-        self.ports = []
-        self.pinLayer = "METAL3"
-
-        self.name = "tile_analog_frame"
-
-    def createPort(self,direction,name = None,metal = None,connection=None):
-        newPort = Port(self.circuit,self,name,direction,1,static=True)
-
-        if connection != None:
-            newPort.connect(connection)
-       
-    def print(self,instanceNum,islandNum,row,col,processPrefix):
-        text = self.name + " " + "cab_frame("
-        text += ".pin_layer()" + self.pinLayer + ")"
-        pNum = 0
-        for port in self.ports:
-            if port.isEmpty() == False:
-                text += ","
-                text += "." + port.direction + "_" 
-                if port.name == None:
-                    text += "p" + str(pNum)
-                    pNum += 1
-                else:
-                    text += port.name
-                text += "("
-                text += port.pin[0].print()
-                text += ")"
-        text += ");"
-        
-        return text
-
 class RunDrainSwitch(MUX):
     def __init__(self,circuit,island=None,num=0):
         self.circuit = circuit
@@ -216,3 +181,63 @@ class RunDrainSwitch(MUX):
 
         # Add cell to circuit
         circuit.addInstance(self,self.island)
+
+
+class frame(StandardCell):
+    def __init__(self,circuit):
+        self.circuit = circuit
+        self.pins = []
+        self.ports = []
+        self.defaultPinLayer = "METAL3"
+        self.dim = (1,1)
+
+        self.name = "tile_analog_frame"
+
+        circuit.frame = self
+
+    def createPort(self,direction,name=None,dimension = 1,metal = None,connection=None):
+        newPort = Port(self.circuit,self,name,direction,dimension)
+        # Add metal parameter to port
+        newPort.assignMetal(metal)
+
+        if connection != None:
+            newPort.connectPort(connection)
+       
+    def print(self):
+        text = "\t"
+        text += self.name + " " + "cab_frame("
+        text += ".pin_layer(" + self.defaultPinLayer + ")"
+        pNum = 0
+
+        for port in self.ports:
+            if port.isEmpty() == False:
+
+                for i in range(port.numPins()):
+                    pin = port.pins[i]
+                    if pin.isConnected():
+                        text += ", ." + port.location + "_" 
+
+                        # Add port metal
+                        if port.metal == None:
+                            text += port.location.lower() + "_"
+                        else:
+                            text += port.metal + "_"
+
+                        # Add port name
+                        if port.name == None:
+                            text += "p" + str(pNum)
+                            pNum += 1
+                        else:
+                            text += port.name
+
+                        # Add vector if necessary
+                        if port.numPins() > 1:
+                            text += "_" + str(i) + "_"
+
+                        text += "("
+                        text += pin.print()
+                        text += ")"
+
+        text += ");"
+        
+        return text

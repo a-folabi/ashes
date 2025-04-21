@@ -99,15 +99,15 @@ class Circuit:
         # Instances (vertices in hypergraph)
         self.Instances = []
 
+        # Circuit frame (defines new outer pins)
+        self.frame = None
+
         # Nets (hyper edges)
         self.Nets = []
 
         # Islands (grouping of instances for placement)
         self.Islands = []
         self.DefaultIsle = Island(self)
-
-        if topCircuit != None:
-            topCircuit.add(self)
 
     def createIsland(self,instances):
         newIsland = Island(self,instances=instances)
@@ -216,7 +216,13 @@ class Circuit:
             islandNum = self.Islands.index(isle)
             text += isle.print(islandNum,processPrefix)
 
-        text += "endmodule"
+        # Print frame, if applicable
+        if self.frame != None:
+            text += "\n\n"
+            text += "\t/* Frame */ \n"
+            text += self.frame.print()
+
+        text += "\n endmodule"
         return text
 
 
@@ -503,6 +509,21 @@ class Pin:
         
         return numPrev
 
+    def isShorted(self):
+        """
+        Checks if the pin is shorted
+        """
+        if self.isVector() == False:
+            return True
+        
+        idx = self.getPhysicalPin()
+
+        pinArr = self.port.pins[idx:len(self.port)+1:self.port.numPins()]
+
+        if len(set(pinArr)) == 1:
+            return True
+        else:
+            return False
 
     def getNet(self):
         return self.net
@@ -583,6 +604,12 @@ class Port:
 
         self.circuit.mergeNets(pinnets)
 
+    def isShorted(self):
+        if len(set(self.pins)) == 1:
+            return True
+        else:
+            return False
+
     def __iadd__(self,operand):
         self.connectPort(operand)
 
@@ -627,6 +654,9 @@ class Port:
             if p.isConnected():
                 return False
         return True
+    
+    def assignMetal(self,metal):
+        self.metal = metal
     
     def __len__(self):
         return len(self.pins)
@@ -678,8 +708,6 @@ class Port:
         - Indices in pin name
         """
 
-        firstPrintCheck = False
-
         line = ""
         # For each instance 
         p = 0
@@ -688,14 +716,7 @@ class Port:
             for j in range(self.numPins()):
                 pin = self.pins[p]
                 if pin.isConnected(): 
-
-                    # Check for first printed pin to add column
-                    if firstPrintCheck == True:
-                        line += ", "
-                    elif firstPrintCheck == False:
-                        firstPrintCheck = True
-        
-                    line += "." + type + "_n" + str(i) + "_" + self.name + "_" + str(j) + "_("
+                    line += ", ." + type + "_n" + str(i) + "_" + self.name + "_" + str(j) + "_("
                     line += pin.print()
                     line += ")"
                 p+=1
@@ -707,22 +728,13 @@ class Port:
         Returns Verilog text for each pin in port
         Collapses vectors into original pin dimensions
         """
-
-        firstPrintCheck = False
        
         line = ""
         for i in range(int(self.numPins())):
             pin = self.pins[i]
             if pin.isConnected():
                 
-                # Check for first printed pin to add column
-                if firstPrintCheck == True:
-                    line += ", "
-                elif firstPrintCheck == False:
-                    firstPrintCheck = True
-
-                line += "." + self.name
-
+                line += ", ." + self.name
                 # Add vector notation for a vectorized port
                 if self.numPins() > 1:
                     line +=  "_" + str(i) + "_"
@@ -740,11 +752,13 @@ class Port:
                 line += "("
                 
                 if pin.isVector() == True:
-                    # TODO add check for pin short
-                    idxStart = 0
-                    idxEnd = self.getVectorSize()
-                    pinVectorText = "[" + str(idxStart) + ":" + str(idxEnd) + "]"
-                    line += "net" + str(pin.net.number) + pinVectorText
+                    if pin.isShorted() == True:
+                        line += pin.print()
+                    else:
+                        idxStart = 0
+                        idxEnd = self.getVectorSize()
+                        pinVectorText = "[" + str(idxStart) + ":" + str(idxEnd) + "]"
+                        line += "net" + str(pin.net.number) + pinVectorText
                    
 
                 elif pin.isVector() == False:
@@ -873,7 +887,6 @@ class StandardCell:
         i = 0
         for port in self.ports:
             if port.isEmpty() == False:
-                text += ", "
                 text += port.print()
                 i+=1
         text += ");"
@@ -924,7 +937,6 @@ class MUX(StandardCell):
         i = 0
         for port in self.ports:
             if port.isEmpty() == False:
-                text += ", "
                 if self.type == "switch_ind":
                     text += port.print()
                 else:

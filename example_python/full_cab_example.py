@@ -205,6 +205,10 @@ Nmirror.OUT_TG += CAB_GateSwitch.In[33]
 
 # Power Connections
 
+# Frame
+# -------------------------------------------------------------------------------
+outerFrame = frame(Top)
+outerFrame.createPort("N","testPin",connection = CAB_GateSwitch.In[16])
 
 # Compilation
 #-------------------------------------------------------------------------------

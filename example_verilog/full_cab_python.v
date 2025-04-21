@@ -62,7 +62,11 @@ module TOP(port1);
 	TSMC350nm_VinjDecode2to4_vtile decoder(.island_num(1), .direction(vertical), .bits(6));
 	TSMC350nm_drainSelect_progrundrains switch(.island_num(1), .direction(vertical), .num(12), .type(drain_select));
 	TSMC350nm_4TGate_ST_draincutoff switch(.island_num(1), .direction(vertical), .num(12), .type(prog_switch));
-	TSMC350nm_GorS_IndrctSwcs switch(.island_num(1), .direction(horizontal), .num(19), .switch_n8_Input_1_(net1252[8]), .switch_n9_Input_0_(net1251[9]), .switch_n9_Input_1_(net1252[9]), .switch_n10_Input_0_(net1251[10]), .switch_n10_Input_1_(net1252[10]), .switch_n11_Input_0_(net1251[11]), .switch_n11_Input_1_(net1252[11]), .switch_n12_Input_0_(net1251[12]), .switch_n12_Input_1_(net1252[12]), .switch_n13_Input_0_(net1251[13]), .switch_n13_Input_1_(net1252[13]), .switch_n14_Input_0_(net1251[14]), .switch_n14_Input_1_(net1252[14]), .switch_n15_Input_0_(net1251[15]), .switch_n15_Input_1_(net1252[15]), .switch_n16_Input_0_(net1251[16]), .switch_n16_Input_1_(net1252[16]));
+	TSMC350nm_GorS_IndrctSwcs switch(.island_num(1), .direction(horizontal), .num(19), .switch_n8_Input_0_(net1251[8]), .switch_n8_Input_1_(net1252[8]), .switch_n9_Input_0_(net1251[9]), .switch_n9_Input_1_(net1252[9]), .switch_n10_Input_0_(net1251[10]), .switch_n10_Input_1_(net1252[10]), .switch_n11_Input_0_(net1251[11]), .switch_n11_Input_1_(net1252[11]), .switch_n12_Input_0_(net1251[12]), .switch_n12_Input_1_(net1252[12]), .switch_n13_Input_0_(net1251[13]), .switch_n13_Input_1_(net1252[13]), .switch_n14_Input_0_(net1251[14]), .switch_n14_Input_1_(net1252[14]), .switch_n15_Input_0_(net1251[15]), .switch_n15_Input_1_(net1252[15]), .switch_n16_Input_0_(net1251[16]), .switch_n16_Input_1_(net1252[16]));
 	none switch_ind(.island_num(1), .direction(horizontal), .col(17));
 	TSMC350nm_IndirectSwitches switch_ind(.island_num(1), .direction(horizontal), .col(18));
-endmodule
+
+
+	/* Frame */ 
+	tile_analog_frame cab_frame(.pin_layer(METAL3), .N_n_testPin(net1251[8]));
+ endmodule
