@@ -4,10 +4,12 @@ from ashes_fg.asic.asic_compile import *
 from ashes_fg.class_lib_new import *
 from ashes_fg.class_lib_mux import *
 from ashes_fg.class_lib_cab import *
-
 from ashes_fg.asic.asic_systems import *
 
+
+
 def MeadSOS(circuit,island=None,loc=[0,0],Vin=None):
+
     Top = circuit
     # Placement
     if island == None:
@@ -21,9 +23,8 @@ def MeadSOS(circuit,island=None,loc=[0,0],Vin=None):
 
     TAWeak0.place([loc[0],loc[1]])
     TAWeak1.place([loc[0]+1,loc[1]])
-
     # Connections
-    # V1 = TA Weak
+	# V1 = TA Weak
     # -------------------------------------------------------------------------------
     if Vin != None:
         TAWeak0.VIN1_PLUS += Vin
@@ -46,7 +47,6 @@ def MeadSOS(circuit,island=None,loc=[0,0],Vin=None):
     TAWeak0.VIN2_MINUS += Vout
     #Buffer
     TAWeak1.VIN2_PLUS += Vout
-
     # Buffer Feedback
     Vout_Buf = Wire(Top)
     TAWeak1.VIN2_MINUS += Vout_Buf
@@ -57,17 +57,48 @@ def MeadSOS(circuit,island=None,loc=[0,0],Vin=None):
 
 Top = Circuit()
 
+
+numStages = 5
+
 LPFIsland = Island(Top)
 
-Vout0,Vout_Buf0,instances0 = MeadSOS(Top,LPFIsland)
-Vout1,Vout_Buf1,instances1 = MeadSOS(Top,LPFIsland,[2,0],Vout0)
+Vin = Wire(Top)
+Vouts = [0]*5
+Vout_Bufs = [0]*5
+instances = [0]*5
 
-# Decoders
+for i in range(numStages):  
+	MeadVin = None
+	if i == 0:
+		MeadVin = Vin
+	else:
+		MeadVin = Vouts[i-1]
+		
+	Vouts[i],Vout_Bufs[i],instances[i] = MeadSOS(Top,LPFIsland,Vin=MeadVin,loc=[2*(i),0])
+
+Vout = Vouts[numStages-1]
+
+# FG Programming
 # -------------------------------------------------------------------------------
+drainBits = int(np.ceil(np.log2(2*numStages*4)))
+CAB_DrainDecoder = STD_DrainDecoder(Top,LPFIsland,bits=drainBits)
+CAB_DrainSelect = RunDrainSwitch(Top,LPFIsland,num=2*numStages)
+CAB_DrainSwitch = DrainCutoff(Top,LPFIsland,num=2*numStages)
 
-design_limits = [1e6, 1e6]
-#location_islands = ((20600, 363500), (20600, 20000)) #<-location for tile v1
-location_islands=None
+#GateDecoder = STD_IndirectGateDecoder(Top,LPFIsland,1)
+GateSwitches0 = STD_IndirectGateSwitch(Top,LPFIsland,1)
+GateSwitches = STD_IndirectGateSwitch(Top,LPFIsland,1,col=0)
+
+# Pins
+# -------------------------------------------------------------------------------
+outerPins = frame(Top)
+outerPins.createPort("W","Vin",connection = Vin)
+outerPins.createPort("E","Vout",connection = Vout)
+
+
+design_limits = [5e5, 5e5]
+location_islands = ((20000,1000),(0,2000))#<-location for tile v1
+#location_islands=None
 
 
 compile_asic(Top,process="TSMC350nm",fileName="LPF_MeadSOS",p_and_r = True,design_limits = design_limits, location_islands = location_islands)

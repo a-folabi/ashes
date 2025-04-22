@@ -4,7 +4,7 @@ from ashes_fg.examples import the_small_asic_v2
 import os
 import shutil
 
-test_project = 'small_cab_example'
+test_project = 'cell2cell_350nm'
 test_path = os.path.join('.', test_project, 'verilog_files')
 # create a working directory for project. 
 if not os.path.exists(test_path):
@@ -23,7 +23,7 @@ x_offset, y_offset = 400*track_spacing, 2000*track_spacing
 location_islands = None
 
 design_area = (0, 0, 1e6, 6.1e5, x_offset, y_offset)
-location_islands = ((20600, 363500), (20600, 20000)) #<-location for tile v1
+#location_islands = ((20600, 363500), (20600, 20000)) #<-location for tile v1
 
 af.asic.compile(the_small_asic_v2, 
 project_name=test_project, 

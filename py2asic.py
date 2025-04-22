@@ -17,5 +17,6 @@ from ashes_fg.asic.asic_systems import *
 
 #exec(open("./example_python/ALICE_Example.py").read())
 
+#exec(open("./example_python/small_fg_island.py").read())
 
 exec(open("./example_python/LPF_MeadSOS.py").read())
