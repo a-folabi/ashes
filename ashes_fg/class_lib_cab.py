@@ -154,10 +154,28 @@ class ST_BMatrix(StandardCell):
 
         # Add cell to circuit
         circuit.addInstance(self,self.island)
+       
+class ST_BMatrix_NoSwitch(StandardCell):
+    def __init__(self,circuit,island=None,dim = (1,1)):
+        # Define variables
+        self.circuit = circuit
+        self.pins = []
+        self.ports = []
+        self.island = island
+        self.dim = dim
+
+        self.name = "TSMC350nm_4TGate_ST_BMatrix_NoSwitch"
+
+        self.In = Port(circuit,self,"Input","W",4*self.dim[0])
+        self.P = Port(circuit,self,"P","E",4*self.dim[0])
+        self.A = Port(circuit,self,"A","E",4*self.dim[0])
+
+        # Add cell to circuit
+        circuit.addInstance(self,self.island)
 
 
 class DrainCutoff(MUX):
-    def __init__(self,circuit,island=None,num=0):
+    def __init__(self,circuit,island=None,num=1):
         self.circuit = circuit
         self.pins = []
         self.ports = []

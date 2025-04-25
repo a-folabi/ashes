@@ -680,6 +680,7 @@ class Port:
 
         len(pins) = pinNum * dimension
         """
+        
         pinNum = 0
         if self.isStatic == True:
             return len(self.pins)

@@ -1,0 +1,10 @@
+.model MSOS02_test01
+.inputs net2_1
+.outputs net5_1
+# 1 pad_in
+# 13 pad_out
+
+#MSOS02
+.subckt MSOS02 in[0]=net2_1 out[0]=net5_1 #MSOS02_ls =0&MSOS02_Ibias2 =2e-07&MSOS02_Wbp =1e-06&MSOS02_Wbn =1e-06&MSOS02_Ibias1 =2e-07&MSOS02_Wap =1e-06&MSOS02_Wan =1e-06&MSOS02_Feedback =4.000e-09&MSOS02_Buffer =3e-06
+
+.end

@@ -1,0 +1,11 @@
+Netlist file: /home/ubuntu/ashes/test3/test3.net   Architecture file: /home/ubuntu/rasp30/vpr2swcs/arch/rasp3a_arch.xml
+Array size: 7 x 14 logic blocks
+
+#block name	x	y	subblk	block number
+#----------	--	--	------	------------
+net2_1		1	7	0	#0
+net1_1		5	6	0	#1
+out:net2_1	1	15	0	#2
+out:net1_1	2	15	0	#3
+net4_1		8	2	5	#4
+net3_1		8	1	5	#5

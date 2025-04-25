@@ -1,0 +1,191 @@
+{
+  "4x2_Direct":
+    {"type": "ASIC","foundry": "TSMC", "process_node": "350nm", "W":[], "E": ["Vd[0:3]"], "N":["Vs[0:1]","VINJ[0:1]","Vg[0:1]","GND[0:1]","VTUN"], "S":["Vs_b[0:1]","VINJ_b[0:1]","Vg_b[0:1]","GND_b[0:1]","VTUN_b"]},
+  "4x2_Indirect":
+    {"type": "ASIC","foundry": "TSMC", "process_node": "350nm", "W":[], "E": ["Vd_P[0:3]","Vd_R[0:3]"], "N":["Vs[0:1]","VINJ[0:1]","Vsel[0:1]","Vg[0:1]","GND[0:1]","VTUN"], "S":["Vs_b[0:1]","VINJ_b[0:1]","Vsel_b[0:1]","Vg_b[0:1]","GND_b[0:1]","VTUN_b"]},
+  "4WTA_IndirectProg":
+    {"type": "ASIC","foundry": "TSMC", "process_node": "350nm", "W":["VD_P[0:3]","Iin[0:3]"], "E": ["Vout[0:3]","Vmid","Vbias"], "N":["Vsel","Vs","VINJ","Vg","VTUN","GND","PROG"], "S":["Vsel_b","Vs_b","VINJ_b","Vg_b","VTUN_b","GND_b","PROG_b"]},
+  "Ampdet_NoFG":
+    {"type": "ASIC","foundry": "TSMC", "process_node": "350nm", "W":["VD_P[0:1]","VIN"], "E": ["OUTPUT"], "N":["VTUN","Vg","Vsel","VINJ","GND","VPWR"], "S":["VTUN_b","Vg_b","Vsel_b","VINJ_b","GND_b","VPWR_b"]},
+  "Ampdet_Strong":
+    {"type": "ASIC","foundry": "TSMC", "process_node": "350nm", "W":["VD_P[0:1]","VIN"], "E": ["OUTPUT"], "N":["Vsel[0:1]","RUN","Vg[0:1]","PROG","VTUN","VINJ","GND","VPWR"], "S":["Vsel_b[0:1]","RUN_b","Vg_b[0:1]","PROG_b","VTUN_b","VINJ_b","GND_b","VPWR_b"]},
+  "C4":
+    {"type": "ASIC","foundry": "TSMC", "process_node": "350nm", "W":["VD_P[0:1]","VIN","VREF"], "E": ["OUTPUT"], "N":["Vsel[0:1]","RUN","Vg[0:1]","PROG","VTUN","VINJ","GND","VPWR"], "S":["Vsel_b[0:1]","RUN_b","Vg_b[0:1]","PROG_b","VTUN_b","VINJ_b","GND_b","VPWR_b"]},
+  "TA2Cell_LongL_Cab":
+    {"type": "ASIC","foundry": "TSMC", "process_node": "350nm", "W":["VD_P[0:1]","VIN1_PLUS","VIN1_MINUS","VIN2_PLUS","VIN2_MINUS"], "E": ["OUTPUT[0:1]"], "N":["Vsel[0:1]","RUN","Vg[0:1]","PROG","VTUN","VINJ","GND","VPWR"], "S":["Vsel_b[0:1]","RUN_b","Vg_b[0:1]","PROG_b","VTUN_b","VINJ_b","GND_b","VPWR_b"]},
+  "TA2Cell_NoFG":
+    {"type": "ASIC","foundry": "TSMC", "process_node": "350nm", "W":["VD_P[0:1]","VIN1_PLUS","VIN1_MINUS","VIN2_PLUS","VIN2_MINUS"], "E": ["OUTPUT[0:1]"], "N":["VTUN","Vg","Vsel","VINJ","GND","VPWR"], "S":["VTUN_b","Vg_b","Vsel_b","VINJ_b","GND_b","VPWR_b"]},
+  "TA2Cell_Strong":
+    {"type": "ASIC","foundry": "TSMC", "process_node": "350nm", "W":["VD_P[0:1]","VIN1_PLUS","VIN1_MINUS","VIN2_PLUS","VIN2_MINUS"], "E": ["OUTPUT[0:1]"], "N":["Vsel[0:1]","RUN","Vg[0:1]","PROG","VTUN","VINJ","GND","VPWR"], "S":["Vsel_b[0:1]","RUN_b","Vg_b[0:1]","PROG_b","VTUN_b","VINJ_b","GND_b","VPWR_b"]},
+  "TA2Cell_Weak":
+    {"type": "ASIC","foundry": "TSMC", "process_node": "350nm", "W":["VD_P[0:1]","VIN1_PLUS","VIN1_MINUS","VIN2_PLUS","VIN2_MINUS"], "E": ["OUTPUT[0:1]"], "N":["Vsel[0:1]","RUN","Vg[0:1]","PROG","VTUN","VINJ","GND","VPWR"], "S":["Vsel_b[0:1]","RUN_b","Vg_b[0:1]","PROG_b","VTUN_b","VINJ_b","GND_b","VPWR_b"]},
+  "TGate_2nMirror":
+    {"type": "ASIC","foundry":"TSMC","process_node":"350nm","W":["IN_CM[0:1]","SelN","IN_TG"],"E":["OUT_CM[0:1]","OUT_TG"],"N":["VPWR","GND"],"S":["VPWR_b","GND_b"]},
+  "Cap_Bank":
+    {"type": "ASIC","foundry":"TSMC","process_node":"350nm","W":["VD_P[0:3]","VIN[0:1]"],"E":["OUT[0:1]"],"N":["VINJ","Vsel[0:1]","Vg[0:1]","GND","VTUN"],"S":["Vs_b[0:1]","VINJ_b","Vsel_b[0:1]","Vg_b[0:1]","GND_b","VTUN_b"]},
+  "NandPfets":
+    {"type": "ASIC","foundry":"TSMC","process_node":"350nm","W":["GATE_N","SOURCE_N","GATE_P","SOURCE_P"],"E":["DRAIN_N","DRAIN_P"],"N":["VPWR","GND"],"S":["VPWR_b","GND_b"]},
+  "TA2Cell_Direct":
+    {"type": "ASIC","foundry":"TSMC","process_node":"350nm","W":["VD_P[0:1]","VIN1_PLUS","VIN1_MINUS","VIN2_PLUS","VIN2_MINUS"],"E":["OUTPUT[0:1]"],"N":["VTUN","VG","Vsel","VINJ","RUN","PROG","GND","VPWR"],"S":["VTUN_b","VG_b","Vsel_b","VINJ_b","RUN_b","PROG_b","GND_b","VPWR_b"]},
+
+
+
+
+  "VMMWTA":
+    {"type": "ASIC","foundry": "TSMC", "process_node": "350nm", "W":["Vd[0:3]"], "E":["Vout[0:3]"], "N": ["VMM_Vs[0:1]","VINJ","VMM_Vg[0:1]","GND","VTUN[0:1]","Ibias_Vs","Ibias_Vg","PROG","Vmid"],"S":["VMM_Vs_b[0:1]","VINJ_b","VMM_Vg_b[0:1]","GND_b","VTUN_b[0:1]","Ibias_Vs_b","Ibias_Vg_b","PROG_b","Vmid_b"]},
+  "DelayBlock_3stage_new":
+    {"type": "ASIC","foundry": "TSMC", "process_node": "350nm", "W":["VD_P[0:1]","VIN"], "E": ["VOUT[0:2]"], "N":["Vsel[0:11]","RUN[0:5]","Vg[0:11]","PROG[0:5]","VTUN[0:5]","INJ[0:2]","GND","VPWR[0:5]"], "S":["Vsel_b[0:11]","RUN_b[0:5]","Vg_b[0:11]","PROG_b[0:5]","VTUN_b[0:5]","INJ_b[0:2]","GND_b","VPWR_b[0:5]"]},
+  "Cab_Nfets":
+    {"type": "ASIC","foundry":"TSMC","process_node":"350nm", "W":["SOURCE_MED","GATE_MED","SOURCE_LARGE","GATE_LARGE"],"E":["DRAIN_MED","DRAIN_LARGE"],"N":["GND"],"S":["GND_b"]},
+  "Cab_Pfets":
+    {"type": "ASIC","foundry":"TSMC","process_node":"350nm", "W":["SOURCE_MED","GATE_MED","SOURCE_LARGE","GATE_LARGE"],"E":["DRAIN_MED","DRAIN_LARGE"],"N":["VPWR"],"S":["VPWR_b"]},
+  "HHNeuron":
+    {"type": "ASIC","foundry":"TSMC","process_node":"350nm","W":["dummy1"],"E":["dummy2"],"N":["dummy3"],"S":["dummy4"]},
+  
+
+
+
+
+
+
+  "SHblock1":
+    {"type": "FPAA", "board": ["3.0", "3.0a"], "SHblock1_ls": 0, "SHblock1_Ibias": 0.000003, "SHblock1_cap0_1x_cs": 1},
+  "switchint1":
+    {"type": "FPAA", "board": ["3.0", "3.0a"], "switchint1_ls": 0, "switchint1_Ibias1": 0.000003, "switchint1_cap0_1x_cs":1},
+  "lpfota":
+    {"type": "FPAA", "board": ["3.0", "3.0a"], "cut_off_freq": 21.7},
+  "?Matmul":
+    {"type": "FPAA", "board": ["3.0", "3.0a"]},
+  "hhn_debug":
+    {"type": "FPAA", "board": ["3.0", "3.0a"], "hhn_debug_ls":0,"hhn_debug_fgswc_ibias":"5.000D-08", "hhn_debug_fgota1_ibias":0.000002, "hhn_debug_fgota1_pbias":0.000002,"hhn_debug_fgota1_nbias":0.000002,"hhn_debug_fgota0_ibias":0.000002,"hhn_debug_fgota0_pbias":0.000002,"hhn_debug_fgota0_nbias":0.000002,"hhn_debug_ota0_ibias":0.000002,"hhn_debug_ota1_ibias":0.000002,"hhn_debug_cap0_1x_cs":1},
+  "HH_RG_2s":
+    {"type": "FPAA", "board": ["3.0", "3.0a"], "HH_RG_2s_ls":0,"HH_RG_2s_Nafb_ibias":"5.000D-08","HH_RG_2s_syn0_ibias":"5.000D-08","HH_RG_2s_syn1_ibias":"5.000D-08","HH_RG_2s_pfet_ibias":"5.000D-08","HH_RG_2s_nmr_ibias":"5.000D-08","HH_RG_2s_Na_ibias":0.000002,"HH_RG_2s_Na_pbias":0.000002,"HH_RG_2s_Na_nbias":0.000002,"HH_RG_2s_K_ibias":0.000002,"HH_RG_2s_K_pbias":0.000002,"HH_RG_2s_K_nbias":0.000002,"HH_RG_2s_buf_ibias":0.000002,"HH_RG_2s_comp_ibias":0.000002,"HH_RG_2s_cap0_1x_cs":1},
+  "subbandArray":
+    {"type": "FPAA", "board": ["3.0", "3.0a"], "SubbandArray_ls":0,"SubbandArray_FBbias":"5.000D-10","SubbandArray_FBpbias":"5.000D-08","SubbandArray_FBnbias":"5.000D-08","SubbandArray_FFbias":"5.000D-08","SubbandArray_FFpbias":"5.000D-08","SubbandArray_FFnbias":"5.000D-08","SubbandArray_Maxota":"5.000D-08","SubbandArray_LPF":"3.000D-09","SubbandArray_FFcap_1x_cs":1,"SubbandArray_FBcap_1x_cs":1},
+  "common_drain":
+    {"type": "FPAA", "board": ["3.0", "3.0a"],"common_drain_ls":0,"common_drain_fgswc_ibias":"5.000D-08"},
+  "Senseamp1":
+    {"type": "FPAA", "board": ["3.0", "3.0a"],"Senseamp1_ls":0,"Senseamp1_fgota0_ibias":0.0000005,"Senseamp1_fgota0_pbias":0.0000002,"Senseamp1_fgota0_nbias":0.0000002,"Senseamp1_ota0_ibias":0.000003},
+  "Hyst_diff":
+    {"type": "FPAA", "board": ["3.0", "3.0a"],"Hyst_diff_ls":0,"Hyst_diff_ota1_ibias":0.000002},
+  "common_drain_nfet":
+    {"type": "FPAA", "board": ["3.0", "3.0a"],"common_drain_nfet_ls":0,"common_drain_nfet_ibias":"5.000D-08"},
+  "ota_buf":
+    {"type": "FPAA", "board": ["3.0", "3.0a"],"ota_buf_bias":0.00001},
+  "hhn":
+    {"type": "FPAA", "board": ["3.0", "3.0a"],"hhn_ls":0,"hhn_fgswc_ibias":"5.000D-08","hhn_fgota1_ibias":0.000002,"hhn_fgota1_pbias":0.000002,"hhn_fgota1_nbias":0.000002,"hhn_fgota0_ibias":0.000002,"hhn_fgota0_pbias":0.000002,"hhn_fgota0_nbias":0.000002,"hhn_ota0_ibias":0.000002,"hhn_ota1_ibias":0.000002,"hhn_cap0_1x_cs":1},
+  "Min_detect":
+    {"type": "FPAA", "board": ["3.0", "3.0a"],"Min_detect_ls":0,"Min_detect_fgswc_ibias":"5.000D-08","Min_detect_ota0_ibias":0.000002},
+  "signalmult":
+    {"type": "FPAA", "board": ["3.0", "3.0a"],"signalmult_fg":0.000001,"signalmult_v1p":50e-9,"signalmult_v1n":50e-9},
+  "common_source":
+    {"type": "FPAA", "board": ["3.0", "3.0a"],"common_source_ls":0,"common_source_ibias":"5.000D-08"},
+  "VolDivide1":
+    {"type": "FPAA", "board": ["3.0", "3.0a"],"VolDivide1_ls":0,"VolDivide1_fgota0_ibias":0.000002,"VolDivide1_fgota0_pbias":0.000002,"VolDivide1_fgota0_nbias":0.000002,"VolDivide1_ota0_ibias":0.000002},
+  "HH_RG_3s":
+    {"type": "FPAA", "board": ["3.0", "3.0a"],"HH_RG_3s_ls":0,"HH_RG_3s_Nafb_ibias":"5.000D-08","HH_RG_3s_syn0_ibias":"5.000D-08","HH_RG_3s_syn1_ibias":"5.000D-08","HH_RG_3s_syn2_ibias":"5.000D-08","HH_RG_3s_pfet_ibias":"5.000D-08","HH_RG_3s_nmr_ibias":"5.000D-08","HH_RG_3s_Na_ibias":0.000002,"HH_RG_3s_Na_pbias":0.000002,"HH_RG_3s_Na_nbias":0.000002,"HH_RG_3s_K_ibias":0.000002,"HH_RG_3s_K_pbias":0.000002,"HH_RG_3s_K_nbias":0.000002,"HH_RG_3s_buf_ibias":0.000002,"HH_RG_3s_comp_ibias":0.000002,"HH_RG_3s_cap0_1x_cs":1},
+  "switchcapint1":
+    {"type": "FPAA", "board": ["3.0", "3.0a"],"switchcapint1_Bias":0.000003,"switchcapint1_cap0_1x_cs":1},
+  "switchAmplifier1":
+    {"type": "FPAA", "board": ["3.0", "3.0a"],"switchAmplifier1_ls":0,"switchAmplifier1_ota0_ibias":0.000003,"switchAmplifier1_cap0_1x_cs":1,"switchAmplifier1_cap1_1x_cs":1},
+  "SOSLPF":
+    {"type": "FPAA", "board": ["3.0", "3.0a"],"SOSLPF_ls":0,"SOSLPF_Ibias2":0.0000002,"SOSLPF_FG2p":0.000001,"SOSLPF_FG2n":0.000001,"SOSLPF_Ibias1":0.0000002,"SOSLPF_FG1p":0.000001,"SOSLPF_FG1n":0.000001,"SOSLPF_Feedback":"4.000D-09","SOSLPF_Buffer":0.000001},
+  "Max_detect":
+    {"type": "FPAA", "board": ["3.0", "3.0a"],"Max_detect_ls":0,"Max_detect_fgswc_ibias":"5.000D-08","Max_detect_ota0_ibias":0.000002},
+  "MSOS02":
+    {"type": "FPAA", "board": ["3.0", "3.0a"],"MSOS02_ls":0,"MSOS02_Ibias2":0.0000002,"MSOS02_Wbp":0.000001,"MSOS02_Wbn":0.000001,"MSOS02_Ibias1":0.0000002,"MSOS02_Wap":0.000001,"MSOS02_Wan":0.000001,"MSOS02_Feedback":"4.000D-09","MSOS02_Buffer":0.000003},
+  "?vmmwta":
+    {"type": "FPAA", "board": ["3.0", "3.0a"]},
+  "c4_sp":
+    {"type": "FPAA", "board": ["3.0", "3.0a"],"Gain_Bias":0.000003,"Gain_Bias_n":0.000001,"Gain_Bias_p":0.000001,"Feedback_bias":"3.000D-09","Feedback_bias_n":"1.000D-09","Feedback_bias_p":"1.000D-09","num_caps":"6"},
+  "HH_RG":
+    {"type": "FPAA", "board": ["3.0", "3.0a"],"HH_RG_ls":0,"HH_RG_Nafb_ibias":"5.000D-08","HH_RG_in0_ibias":"5.000D-08","HH_RG_pfet_ibias":"5.000D-08","HH_RG_nmr_ibias":"5.000D-08","HH_RG_Na_ibias":0.000002,"HH_RG_Na_pbias":0.000002,"HH_RG_Na_nbias":0.000002,"HH_RG_K_ibias":0.000002,"HH_RG_K_pbias":0.000002,"HH_RG_K_nbias":0.000002,"HH_RG_buf_ibias":0.000002,"HH_RG_comp_ibias":0.000002,"HH_RG_cap0_1x_cs":1},
+  "gpio_in":
+    {"type": "FPAA", "board": ["3.0", "3.0a"]},
+  "?dac":
+    {"type": "FPAA", "board": ["3.0", "3.0a"]},
+  "dc_in":
+    {"type": "FPAA", "board": ["3.0", "3.0a"],"DC_value":1.5},
+  "GENARB_f":
+    {"type": "FPAA", "board": ["3.0", "3.0a"]},
+  "?Ramp_ADC":
+    {"type": "FPAA", "board": ["3.0", "3.0a"]},
+  "meas_volt":
+    {"type": "FPAA", "board": ["3.0", "3.0a"]},
+  "?adc_ip":
+    {"type": "FPAA", "board": ["3.0", "3.0a"]},
+  "cap":
+    {"type": "FPAA", "board": ["3.0", "3.0a"],"cap_1x_cs":1},
+  "I_SenseAmp":
+    {"type": "FPAA", "board": ["3.0", "3.0a"],"I_SenseAmp_ls":0,"I_SenseAmp_fgota0_ibias":0.000002,"I_SenseAmp_fgota0_pbias":0.000002,"I_SenseAmp_fgota0_nbias":0.000002,"I_SenseAmp_ota0_ibias":0.000002,"I_SenseAmp_cap0_1x_cs":1,"I_SenseAmp_cap1_1x_cs":1},
+  "ota":
+    {"type": "FPAA", "board": ["3.0", "3.0a"],"ota_bias":0.000001},
+  "tgate2":
+    {"type": "FPAA", "board": ["3.0", "3.0a"]},
+  "pfet":
+    {"type": "FPAA", "board": ["3.0", "3.0a"]},
+  "nfet":
+    {"type": "FPAA", "board": ["3.0", "3.0a"]},
+  "?TIA":
+    {"type": "FPAA", "board": ["3.0", "3.0a"]},
+  "mite_FG":
+    {"type": "FPAA", "board": ["3.0", "3.0a"],"mite_fg0":"1.000D-07"},
+  "wta_new":
+    {"type": "FPAA", "board": ["3.0", "3.0a"],"wta_new_ls":0,"wta_new_wta_bias":"1.000D-08","wta_new_buf_bias":0.000002},
+  "vmm12x1_wowta":
+    {"type": "FPAA", "board": ["3.0", "3.0a"],"vmm12x1_wowta_fg":0,"vmm12x1_target":["1.000D-09","1.000D-09","1.000D-09","1.000D-09","1.000D-09","1.000D-09","1.000D-09","1.000D-09","1.000D-09","1.000D-09","1.000D-09","1.000D-09"],"vmm12x1_offsetbias":"5.000D-09"},
+  "fgswitch":
+    {"type": "FPAA", "board": ["3.0", "3.0a"],"fgswitch_ls":0,"fgswitch_fgswc_ibias":"5.000D-08"},
+  "fgota":
+    {"type": "FPAA", "board": ["3.0", "3.0a"],"fgota_bias":"1.000D-08","fgota_p_bias":1.9,"fgota_n_bias":1.9,"fgota_small_cap":1},
+  "tgate":
+    {"type": "FPAA", "board": ["3.0", "3.0a"]},
+  "nmirror_w_bias":
+    {"type": "FPAA", "board": ["3.0", "3.0a"],"nmirror_w_bias_ls":0,"nmirror_w_bias_ibias":"5.000D-08"},
+  "ota2":
+    {"type": "FPAA", "board": ["3.0", "3.0a"],"ota2_bias":0.000001},
+  "nmirror":
+    {"type": "FPAA", "board": ["3.0", "3.0a"]},
+  "?gpio_in_fixloc":
+    {"type": "FPAA", "board": ["3.0", "3.0a"]},
+  "vdd":
+    {"type": "FPAA", "board": ["3.0", "3.0a"]},
+  "?gnd_dig":
+    {"type": "FPAA", "board": ["3.0", "3.0a"]},
+  "output_f":
+    {"type": "FPAA", "board": ["3.0", "3.0a"]},
+  "gnd":
+    {"type": "FPAA", "board": ["3.0", "3.0a"]},
+  "?vdd_dig":
+    {"type": "FPAA", "board": ["3.0", "3.0a"]},
+  "?vdd_out":
+    {"type": "FPAA", "board": ["3.0", "3.0a"]},
+  "?gnd_out":
+    {"type": "FPAA", "board": ["3.0", "3.0a"]},
+  "?sr_ni_1o":
+    {"type": "FPAA", "board": ["3.0", "3.0a"]},
+  "?sr_1i_16o_nodeset":
+    {"type": "FPAA", "board": ["3.0", "3.0a"]},
+  "?sr_4i_1o":
+    {"type": "FPAA", "board": ["3.0", "3.0a"]},
+  "?sr_1i_16o_nv":
+    {"type": "FPAA", "board": ["3.0", "3.0a"]},
+  "?sr_16i_1o":
+    {"type": "FPAA", "board": ["3.0", "3.0a"]},
+  "?sr_16i_1o_nv":
+    {"type": "FPAA", "board": ["3.0", "3.0a"]},
+  "sr_1i_16o":
+    {"type": "FPAA", "board": ["3.0", "3.0a"],"output_num":16},
+  "?in2in_x6":
+    {"type": "FPAA", "board": ["3.0", "3.0a"]},
+  "?sft_reg":
+    {"type": "FPAA", "board": ["3.0", "3.0a"]},
+  "?in2in_x1":
+    {"type": "FPAA", "board": ["3.0", "3.0a"]},
+  "?sr_1i_no":
+    {"type": "FPAA", "board": ["3.0", "3.0a"]},
+  "delay_block":
+    {"type":"FPAA","board": ["3.0", "3.0a"], "delay_block_ls":0,"delay_block_ota0_ibias":0.000002,"delay_block_ota1_ibias":0.000002},
+  "vmm_12x4":
+    {"type":"FPAA","board": ["3.0", "3.0a"], "vmm_12x4_ls":0,"vmm_12x4_in1":[0.00000005,0.00000005,0.00000005,0.00000005,0.00000005,0.00000005,0.00000005,0.00000005,0.00000005,0.00000005,0.00000005,0.00000005],"vmm_12x4_in2":[0.00000005,0.00000005,0.00000005,0.00000005,0.00000005,0.00000005,0.00000005,0.00000005,0.00000005,0.00000005,0.00000005,0.00000005],"vmm_12x4_in3":[0.00000005,0.00000005,0.00000005,0.00000005,0.00000005,0.00000005,0.00000005,0.00000005,0.00000005,0.00000005,0.00000005,0.00000005],"vmm_12x4_in4":[0.00000005,0.00000005,0.00000005,0.00000005,0.00000005,0.00000005,0.00000005,0.00000005,0.00000005,0.00000005,0.00000005,0.00000005]}
+}

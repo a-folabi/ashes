@@ -1,0 +1,512 @@
+
+VPR FPGA Placement and Routing.
+Version: Version 6.0 Full Release
+Compiled: Apr 17 2013.
+Original VPR by V. Betz.
+Timing-driven placement enhancements by A. Marquardt.
+Single-drivers enhancements by Andy Ye with additions by.
+Mark Fang, Jason Luu, Ted Campbell
+Heterogeneous stucture support by Jason Luu and Ted Campbell.
+T-VPack clustering integration by Jason Luu.
+Area-driven AAPack added by Jason Luu.
+This is free open source code under MIT license.
+
+Building complex block graph 
+Begin packing of ./ors_buffer/ors_buffer.blif 
+Swept away 0 nets with no fanout
+Removed 0 LUT buffers 
+
+After removing unused inputs:
+Total Blocks: 3.  Total Nets: 2.  Total inputs 1 ouptuts 1
+Not enough resources expand FPGA size to x = 4 y = 2
+Complex Block 0: cb.net1_1 type cab
+
+
+0 LUTs of size 0
+0 LUTs in input netlist
+0 FFs in input netlist
+0 FFs in input netlist not absorbable
+	<EMPTY>: # blocks 0, avg # input + clock pins used 0, avg # output pins used 0
+	io: # blocks 2, avg # input + clock pins used 0.5, avg # output pins used 0.5
+	clb: # blocks 0, avg # input + clock pins used 0, avg # output pins used 0
+	cab: # blocks 1, avg # input + clock pins used 1, avg # output pins used 1
+	cab2: # blocks 0, avg # input + clock pins used 0, avg # output pins used 0
+Absorbed logical nets 0 out of 2 nets, 2 nets not absorbed
+
+Netlist conversion complete.
+
+Packing took 0.00091 seconds
+Begin parsing packed FPGA netlist file
+Finished parsing packed FPGA netlist file
+Netlist generated from file ./ors_buffer/ors_buffer.net
+Timing analysis: OFF
+
+Circuit netlist file: ./ors_buffer/ors_buffer.net
+Circuit placement file: ./ors_buffer/ors_buffer.place
+Circuit routing file: ./ors_buffer/ors_buffer.route
+Operation:  RUN_FLOW
+
+Placer: ENABLED
+Router: ENABLED
+PlacerOpts.place_freq:  PLACE_ONCE
+PlacerOpts.place_algorithm:  BOUNDING_BOX_PLACE
+PlacerOpts.place_cost_type:  LINEAR_CONG
+PlacerOpts.pad_loc_type:  USER './ors_buffer/ors_buffer.pads'
+PlacerOpts.place_cost_exp:  1.000000
+PlacerOpts.place_chan_width:  100
+PlaceOpts.seed:  1
+AnnealSched.type:  AUTO_SCHED
+AnnealSched.inner_num:  10.000000
+
+RouterOpts.route_type:  DETAILED
+RouterOpts.router_algorithm:  DIRECTED_SEARCH
+RouterOpts.base_cost_type:  DEMAND_ONLY
+RouterOpts.fixed_channel_width:  17
+RouterOpts.acc_fac:  1.000000
+RouterOpts.bb_factor:  3
+RouterOpts.bend_cost:  0.000000
+RouterOpts.first_iter_pres_fac:  10000.000000
+RouterOpts.initial_pres_fac:  10000.000000
+RouterOpts.pres_fac_mult:  1.300000
+RouterOpts.max_router_iterations:  50
+
+RoutingArch.directionality:  BI_DIRECTIONAL
+RoutingArch.switch_block_type:  SUBSET
+RoutingArch.Fs:  3
+
+
+Netlist num_nets:  2
+Netlist num_blocks:  3
+Netlist <EMPTY> blocks:  0
+Netlist clb blocks:  0
+Netlist cab blocks:  1
+Netlist cab2 blocks:  0
+Netlist inputs pins:  1
+Netlist output pins:  1
+
+The circuit will be mapped into a 7 x 14 array of clbs.
+
+Resource Usage:
+Netlist      0	blocks of type <EMPTY>
+Architecture 4	blocks of type <EMPTY>
+Netlist      2	blocks of type io
+Architecture 252	blocks of type io
+Netlist      0	blocks of type clb
+Architecture 42	blocks of type clb
+Netlist      1	blocks of type cab
+Architecture 42	blocks of type cab
+Netlist      0	blocks of type cab2
+Architecture 14	blocks of type cab2
+
+
+Reading locations of IO pads from ./ors_buffer/ors_buffer.pads.
+Successfully read ./ors_buffer/ors_buffer.pads.
+
+Initial Placement Cost: 0.23 bb_cost: 0.23 td_cost: 0 delay_cost: 0
+
+          T        Cost Av. BB Cost  Av. TD Cost   Av Tot Del  P to P Del        d_max   Ac Rate  Std Dev  R limit      Exp  Tot. Moves    Alpha
+   --------  ---------- -----------  -----------    ---------  ----------        -----   -------  -------  -------  -------  ----------    -----
+    0.23094    0.191081    0.191081            0            0           0           0    0.8605   0.0634       14        0          43      0.9
+    0.20785    0.201892    0.201892            0            0           0           0    0.8605   0.0608       14        0          86      0.9
+    0.18706    0.167647    0.167647            0            0           0           0    0.7907   0.0594       14        0         129     0.95
+    0.17771    0.186364    0.186364            0            0           0           0    0.7674   0.0649       14        0         172     0.95
+    0.16882    0.187419    0.187419            0            0           0           0    0.7209   0.0481       14        0         215     0.95
+    0.16038        0.19        0.19            0            0           0           0    0.7907   0.0492       14        0         258     0.95
+    0.15236    0.193429    0.193429            0            0           0           0     0.814   0.0565       14        0         301      0.9
+    0.13713    0.178387    0.178387            0            0           0           0    0.7209   0.0669       14        0         344     0.95
+    0.13027    0.183103    0.183103            0            0           0           0    0.6744   0.0541       14        0         387     0.95
+    0.12376    0.187241    0.187241            0            0           0           0    0.6744   0.0539       14        0         430     0.95
+    0.11757    0.172424    0.172424            0            0           0           0    0.7674   0.0509       14        0         473     0.95
+    0.11169       0.194       0.194            0            0           0           0     0.814   0.0515       14        0         516      0.9
+    0.10052    0.176667    0.176667            0            0           0           0    0.6279   0.0555       14        0         559     0.95
+   0.095495    0.163333    0.163333            0            0           0           0    0.7674   0.0492       14        0         602     0.95
+    0.09072      0.1524      0.1524            0            0           0           0    0.5814   0.0367       14        0         645     0.95
+   0.086184    0.156207    0.156207            0            0           0           0    0.6744   0.0371       14        0         688     0.95
+   0.081875    0.183684    0.183684            0            0           0           0    0.4419   0.0693       14        0         731     0.95
+   0.077781    0.184706    0.184706            0            0           0           0    0.7907   0.0496       14        0         774     0.95
+   0.073892    0.170741    0.170741            0            0           0           0    0.6279   0.0394       14        0         817     0.95
+   0.070198       0.202       0.202            0            0           0           0     0.814   0.0493       14        0         860      0.9
+   0.063178    0.149048    0.149048            0            0           0           0    0.4884   0.0366       14        0         903     0.95
+   0.060019    0.175218    0.175218            0            0           0           0    0.5349   0.0516       14        0         946     0.95
+   0.057018    0.182174    0.182174            0            0           0           0    0.5349   0.0558       14        0         989     0.95
+   0.054167    0.157619    0.157619            0            0           0           0    0.4884   0.0454       14        0        1032     0.95
+   0.051459    0.185455    0.185455            0            0           0           0    0.5116   0.0552       14        0        1075     0.95
+   0.048886    0.164118    0.164118            0            0           0           0    0.3953   0.0411       14        0        1118     0.95
+   0.046442      0.1732      0.1732            0            0           0           0    0.5814   0.0522    13.37        0        1161     0.95
+    0.04412    0.162632    0.162632            0            0           0           0    0.4419   0.0417       14        0        1204     0.95
+   0.041914     0.17077     0.17077            0            0           0           0    0.6047   0.0478       14        0        1247     0.95
+   0.039818    0.155334    0.155334            0            0           0           0    0.3488   0.0548       14        0        1290     0.95
+   0.037827       0.139       0.139            0            0           0           0    0.4651   0.0352    12.72        0        1333     0.95
+   0.035936    0.143334    0.143334            0            0           0           0    0.2791   0.0334    13.04        0        1376     0.95
+   0.034139      0.1225      0.1225            0            0           0           0    0.3721   0.0392    10.94        0        1419     0.95
+   0.032432    0.148667    0.148667            0            0           0           0    0.3488   0.0342     10.2        0        1462     0.95
+    0.03081        0.12        0.12            0            0           0           0     0.186   0.0283    9.271        0        1505     0.95
+    0.02927       0.116       0.116            0            0           0           0    0.2326   0.0212    6.917        0        1548     0.95
+   0.027806    0.133334    0.133334            0            0           0           0    0.2791   0.0398    5.482        0        1591     0.95
+   0.026416    0.136667    0.136667            0            0           0           0    0.2791   0.0274      4.6        0        1634     0.95
+   0.025095    0.112667    0.112667            0            0           0           0    0.3488   0.0212    3.859        0        1677     0.95
+    0.02384    0.130001    0.130001            0            0           0           0    0.4419   0.0327    3.508        0        1720     0.95
+   0.022648    0.151601    0.151601            0            0           0           0    0.5814   0.0432    3.514        0        1763     0.95
+   0.021516    0.110001    0.110001            0            0           0           0   0.04651   0.0283    4.011        0        1806     0.95
+    0.02044    0.142501    0.142501            0            0           0           0    0.3721   0.0334    2.433        0        1849     0.95
+   0.019418    0.205001    0.205001            0            0           0           0    0.3721   0.0314    2.268        0        1892     0.95
+   0.018447    0.177273    0.177273            0            0           0           0    0.5116   0.0447    2.114        0        1935     0.95
+   0.017525    0.161251    0.161251            0            0           0           0    0.3721   0.0219    2.265        0        1978     0.95
+   0.016649    0.142001    0.142001            0            0           0           0    0.2326   0.0301    2.111        0        2021     0.95
+   0.015816    0.230001    0.230001            0            0           0           0   0.06977     0.02    1.673        0        2064     0.95
+   0.015025    0.250001    0.250001            0            0           0           0         0        0    1.054        0        2107     0.95
+   0.014274    0.250001    0.250001            0            0           0           0         0        0        1        0        2150      0.8
+   0.011419    0.250001    0.250001            0            0           0           0         0        0        1        0        2193      0.8
+  0.0091355    0.250001    0.250001            0            0           0           0         0        0        1        0        2236      0.8
+  0.0073084    0.250001    0.250001            0            0           0           0         0        0        1        0        2279      0.8
+  0.0058467    0.250001    0.250001            0            0           0           0         0        0        1        0        2322      0.8
+  0.0046774    0.250001    0.250001            0            0           0           0         0        0        1        0        2365      0.8
+  0.0037419    0.250001    0.250001            0            0           0           0         0        0        1        0        2408      0.8
+  0.0029935    0.250001    0.250001            0            0           0           0         0        0        1        0        2451      0.8
+  0.0023948    0.250001    0.250001            0            0           0           0         0        0        1        0        2494      0.8
+  0.0019158    0.250001    0.250001            0            0           0           0         0        0        1        0        2537      0.8
+  0.0015327    0.250001    0.250001            0            0           0           0         0        0        1        0        2580      0.8
+  0.0012261    0.250001    0.250001            0            0           0           0         0        0        1        0        2623      0.8
+ 0.00098091    0.250001    0.250001            0            0           0           0         0        0        1        0        2666      0.8
+ 0.00078473    0.250001    0.250001            0            0           0           0         0        0        1        0        2709      0.8
+ 0.00062778    0.250001    0.250001            0            0           0           0         0        0        1        0        2752      0.8
+          0    0.250001    0.250001            0            0           0           0         0        0        1        0        2795  
+
+BB estimate of min-dist (placement) wirelength is ;25
+bb_cost recomputed from scratch is 0.25.
+
+Completed placement consistency check successfully.
+
+Placement. Cost: 0.250001  bb_cost: 0.250001  td_cost: 0  delay_cost: 0.
+Placement took 0.000828 seconds
+build rr_graph took 0.005426 seconds
+Confirming Router Algorithm: DIRECTED_SEARCH.
+mst took 0 seconds
+routing iteration 1
+routing iteration took 3.8e-05 seconds
+wirelength after first iteration 24, total available wirelength 3689, ratio 0.00650583
+Successfully routed after 1 routing iterations by Directed Search.
+
+Checking to ensure routing is legal ...
+Completed routing consistency check successfully.
+
+Serial number (magic cookie) for the routing is: -24313
+Circuit successfully routed with a channel width factor of 17.
+
+
+Average number of bends per net: 2.00000  Maximum # of bends: 3
+
+
+The number of routed nets (nonglobal): 2
+Wirelength results (all in units of 1 clb segments):
+	Total wirelength: 24   Average net length: 12.0000
+	Maximum net length: 12
+
+Wirelength results in terms of physical segments:
+	Total wiring segments used: 24   Av. wire segments per net: 12.0000
+	Maximum segments used by a net: 12
+
+	Total local nets with reserved CLB opins: 0
+
+
+X - Directed channels:
+
+j	max occ	av_occ		capacity
+0	1	0.142857 	17
+1	2	0.714286 	17
+2	0	0.00000  	17
+3	0	0.00000  	17
+4	0	0.00000  	17
+5	0	0.00000  	17
+6	0	0.00000  	17
+7	0	0.00000  	17
+8	0	0.00000  	17
+9	0	0.00000  	17
+10	0	0.00000  	17
+11	0	0.00000  	17
+12	0	0.00000  	17
+13	0	0.00000  	17
+14	0	0.00000  	17
+
+Y - Directed channels:
+
+i	max occ	av_occ		capacity
+0	0	0.00000  	17
+1	0	0.00000  	17
+2	0	0.00000  	17
+3	0	0.00000  	17
+4	0	0.00000  	17
+5	1	0.0714286	17
+6	0	0.00000  	17
+7	2	1.21429  	17
+
+Total Tracks in X-direction: 255  in Y-direction: 136
+
+Logic Area (in minimum width transistor areas, excludes I/Os and empty grid tiles):
+Total Logic Block Area (Warning, need to add pitch of routing to blocks with height > 3): 2.94e+06 
+Total Used Logic Block Area: 30000 
+
+Routing area (in minimum width transistor areas):
+Assuming no buffer sharing (pessimistic). Total: 1.63902e+07  Per logic tile: 167247.
+Assuming buffer sharing (slightly optimistic). Total: 5.82936e+06  Per logic tile: 59483.3
+
+
+Segment usage by type (index):
+Segment type       Fractional utilization
+------------       ----------------------
+       0                  0.00651
+
+Segment usage by length:
+Segment length       Fractional utilization
+--------------       ----------------------
+        1                   0.00651
+Routing took 0.006134 seconds
+/home/ubuntu/rasp30/prog_assembly/libs/chip_parameters/mismatch_map/mismatch_map_chip13_30a
+./ors_buffer
+.subckt ota
+['net2_1', 'net1_1', '1e-06']
+ota
+/home/ubuntu/rasp30/vtr_release/vpr/vpr /home/ubuntu/ashes/ashes_fg/fpaa/./arch/rasp3a_arch.xml ./ors_buffer/ors_buffer -net_file ./ors_buffer/ors_buffer.net -place_file ./ors_buffer/ors_buffer.place -route_file ./ors_buffer/ors_buffer.route  -route_chan_width 17 -fix_pins ./ors_buffer/ors_buffer.pads -nodisp -timing_analysis off
+net1_1
+['open', 'open', 'open', 'open', 'open', 'open', 'open', 'open', 'open', 'open', 'open', 'open', 'open', 'open', 'open', 'open', 'open', 'open', 'open', 'open', 'open', 'open', 'open', 'open']
+ ------------- (net2_1) ------------- 
+|  OPIN  (8,9) --> CHANY  (7,9) T/P: 15 16 |
+yeehaaa!
+io_e [ 8, 9] CHANY  (477,633) T15 E16
+SWC 
+| CHANY  (7,9) --> CHANY  (7,8) T/P: 15 -1 |
+io_e [ 8, 8] SBLOCK ns (478 1048)
+SWC 
+| CHANY  (7,8) --> CHANY  (7,7) T/P: 15 -1 |
+io_e [ 8, 7] SBLOCK ns (478 1047)
+SWC 
+| CHANY  (7,7) --> CHANY  (7,6) T/P: 15 -1 |
+io_e [ 8, 6] SBLOCK ns (478 1046)
+SWC 
+| CHANY  (7,6) --> CHANY  (7,5) T/P: 15 -1 |
+io_e [ 8, 5] SBLOCK ns (478 1045)
+SWC 
+| CHANY  (7,5) --> CHANY  (7,4) T/P: 15 -1 |
+io_e [ 8, 4] SBLOCK ns (478 1044)
+SWC 
+| CHANY  (7,4) --> CHANY  (7,3) T/P: 15 -1 |
+io_e [ 8, 3] SBLOCK ns (478 1043)
+SWC 
+| CHANY  (7,3) --> CHANY  (7,2) T/P: 15 -1 |
+io_e [ 8, 2] SBLOCK ns (478 1042)
+SWC 
+| CHANY  (7,2) --> CHANX  (7,1) T/P: 15 -1 |
+io_e [ 8, 1] SBLOCK nw (478 1025)
+SWC 
+| CHANX  (7,1) --> CHANX  (6,1) T/P: 15 -1 |
+cab2 [ 7, 1] SBLOCK ew (447 865)
+SWC 
+| CHANX  (6,1) --> CHANY  (5,1) T/P: 15 -1 |
+clb [ 6, 1] SBLOCK es (377 945)
+SWC 
+| CHANY  (5,1) --> CHANX  (5,0) T/P: 15 -1 |
+io_sd [ 6, 0] SBLOCK nw (375 304)
+SWC 
+| CHANX  (5,0) -->  IPIN  (5,1) T/P: 15 11 |
+io_sa [ 5, 0] CHANX  (321,384) T15 XI11
+~~~~ PIN SINK ~~~~ || net (net2_1) -> pin 11 in 5 1
+SWC 
+ ------------- (net1_1) ------------- 
+|  OPIN  (5,1) --> CHANX  (5,1) T/P: 16 24 |
+ cab [ 5, 1] CHANX  (310,657) T16 O4
+SWC 
+| CHANX  (5,1) --> CHANX  (6,1) T/P: 16 -1 |
+clb [ 6, 1] SBLOCK we (376 1025)
+SWC 
+| CHANX  (6,1) --> CHANX  (7,1) T/P: 16 -1 |
+cab2 [ 7, 1] SBLOCK we (446 865)
+SWC 
+| CHANX  (7,1) --> CHANY  (7,2) T/P: 16 -1 |
+io_e [ 8, 1] SBLOCK wn (477 1025)
+SWC 
+| CHANY  (7,2) --> CHANY  (7,3) T/P: 16 -1 |
+io_e [ 8, 2] SBLOCK sn (477 1042)
+SWC 
+| CHANY  (7,3) --> CHANY  (7,4) T/P: 16 -1 |
+io_e [ 8, 3] SBLOCK sn (477 1043)
+SWC 
+| CHANY  (7,4) --> CHANY  (7,5) T/P: 16 -1 |
+io_e [ 8, 4] SBLOCK sn (477 1044)
+SWC 
+| CHANY  (7,5) --> CHANY  (7,6) T/P: 16 -1 |
+io_e [ 8, 5] SBLOCK sn (477 1045)
+SWC 
+| CHANY  (7,6) --> CHANY  (7,7) T/P: 16 -1 |
+io_e [ 8, 6] SBLOCK sn (477 1046)
+SWC 
+| CHANY  (7,7) --> CHANY  (7,8) T/P: 16 -1 |
+io_e [ 8, 7] SBLOCK sn (477 1047)
+SWC 
+| CHANY  (7,8) --> CHANY  (7,9) T/P: 16 -1 |
+io_e [ 8, 8] SBLOCK sn (477 1048)
+SWC 
+| CHANY  (7,9) --> CHANY (7,10) T/P: 16 -1 |
+io_e [ 8, 9] SBLOCK sn (477 1049)
+SWC 
+| CHANY (7,10) -->  IPIN (8,10) T/P: 16 15 |
+yeehaaa!
+io_e [ 8,10] CHANY  (477,650) T16 OE3
+~~~~ PIN SINK ~~~~ || net (net1_1) -> pin 15 in 8 10
+SWC 
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+cab.I[11]
+ota[0].in[0]
+local interconnect 13 cab.I[11] -> 3 ota[0].in[0] (29 13) -> (335 209)
+ota[0].out[0]
+cab.O[4]
+local interconnect 97 ota[0].out[0] -> 261 cab.O[4] (25 38) -> (331 609)
+getting here!
+class: complexBlock - name: net2_1 - type: #tgate[1] - num: 5 
+O3 tgate[1] -> (8 34) -> (484 553)
+I/O Blocks dev FGs
+!!!!!!!!!!!!!!tgate[1] -->  DEV FGs  -> (8 26) -> (484 425)
+!!!!!!!!!!!!!!tgate[1] -->  DEV FGs  -> (7 25) -> (483 409)
+class: complexBlock - name: out:net1_1 - type: #tgate[1] - num: 5 
+O3 tgate[1] -> (8 34) -> (484 554)
+I/O Blocks dev FGs
+!!!!!!!!!!!!!!tgate[1] -->  DEV FGs  -> (8 26) -> (484 426)
+!!!!!!!!!!!!!!tgate[1] -->  DEV FGs  -> (7 25) -> (483 410)
+[477, 633, 0, 0]
+[478, 1048, 0, 0]
+[478, 1047, 0, 0]
+[478, 1046, 0, 0]
+[478, 1045, 0, 0]
+[478, 1044, 0, 0]
+[478, 1043, 0, 0]
+[478, 1042, 0, 0]
+[478, 1025, 0, 0]
+[447, 865, 1, 0, 0, 0]
+[377, 945, 0, 0]
+[375, 304, 0, 0]
+[321, 384, 0, 0]
+[310, 657, 1, 0, 0, 0]
+[376, 1025, 0, 0]
+[446, 865, 1, 0, 0, 0]
+[477, 1025, 0, 0]
+[477, 1042, 0, 0]
+[477, 1043, 0, 0]
+[477, 1044, 0, 0]
+[477, 1045, 0, 0]
+[477, 1046, 0, 0]
+[477, 1047, 0, 0]
+[477, 1048, 0, 0]
+[477, 1049, 0, 0]
+[477, 650, 1, 0, 0, 0]
+[335, 209, 0, 0]
+[331, 609, 0, 0]
+[484, 553, 0, 0]
+[484, 425, 0, 0]
+[483, 409, 0, 0]
+[484, 554, 0, 0]
+[484, 426, 0, 0]
+[483, 410, 0, 0]
+/home/ubuntu/ashes/ors_buffer
+34
+[[4.770e+02 6.330e+02 1.000e-07 0.000e+00]
+ [4.780e+02 1.048e+03 1.000e-07 0.000e+00]
+ [4.780e+02 1.047e+03 1.000e-07 0.000e+00]
+ [4.780e+02 1.046e+03 1.000e-07 0.000e+00]
+ [4.780e+02 1.045e+03 1.000e-07 0.000e+00]
+ [4.780e+02 1.044e+03 1.000e-07 0.000e+00]
+ [4.780e+02 1.043e+03 1.000e-07 0.000e+00]
+ [4.780e+02 1.042e+03 1.000e-07 0.000e+00]
+ [4.780e+02 1.025e+03 1.000e-07 0.000e+00]
+ [4.470e+02 8.650e+02 1.000e-07 0.000e+00]
+ [3.770e+02 9.450e+02 1.000e-07 0.000e+00]
+ [3.750e+02 3.040e+02 1.000e-07 0.000e+00]
+ [3.210e+02 3.840e+02 1.000e-07 0.000e+00]
+ [3.100e+02 6.570e+02 1.000e-07 0.000e+00]
+ [3.760e+02 1.025e+03 1.000e-07 0.000e+00]
+ [4.460e+02 8.650e+02 1.000e-07 0.000e+00]
+ [4.770e+02 1.025e+03 1.000e-07 0.000e+00]
+ [4.770e+02 1.042e+03 1.000e-07 0.000e+00]
+ [4.770e+02 1.043e+03 1.000e-07 0.000e+00]
+ [4.770e+02 1.044e+03 1.000e-07 0.000e+00]
+ [4.770e+02 1.045e+03 1.000e-07 0.000e+00]
+ [4.770e+02 1.046e+03 1.000e-07 0.000e+00]
+ [4.770e+02 1.047e+03 1.000e-07 0.000e+00]
+ [4.770e+02 1.048e+03 1.000e-07 0.000e+00]
+ [4.770e+02 1.049e+03 1.000e-07 0.000e+00]
+ [4.770e+02 6.500e+02 1.000e-07 0.000e+00]
+ [3.350e+02 2.090e+02 1.000e-07 0.000e+00]
+ [3.310e+02 6.090e+02 1.000e-07 0.000e+00]
+ [4.840e+02 5.530e+02 1.000e-07 0.000e+00]
+ [4.840e+02 4.250e+02 1.000e-07 0.000e+00]
+ [4.830e+02 4.090e+02 1.000e-07 0.000e+00]
+ [4.840e+02 5.540e+02 1.000e-07 0.000e+00]
+ [4.840e+02 4.260e+02 1.000e-07 0.000e+00]
+ [4.830e+02 4.100e+02 1.000e-07 0.000e+00]]
+34
+[[4.77000000e+02 6.33000000e+02 1.00000000e-07 0.00000000e+00
+  9.12504913e+03]
+ [4.78000000e+02 1.04800000e+03 1.00000000e-07 0.00000000e+00
+  9.12504913e+03]
+ [4.78000000e+02 1.04700000e+03 1.00000000e-07 0.00000000e+00
+  9.12504913e+03]
+ [4.78000000e+02 1.04600000e+03 1.00000000e-07 0.00000000e+00
+  9.12504913e+03]
+ [4.78000000e+02 1.04500000e+03 1.00000000e-07 0.00000000e+00
+  9.12504913e+03]
+ [4.78000000e+02 1.04400000e+03 1.00000000e-07 0.00000000e+00
+  9.12504913e+03]
+ [4.78000000e+02 1.04300000e+03 1.00000000e-07 0.00000000e+00
+  9.12504913e+03]
+ [4.78000000e+02 1.04200000e+03 1.00000000e-07 0.00000000e+00
+  9.12504913e+03]
+ [4.78000000e+02 1.02500000e+03 1.00000000e-07 0.00000000e+00
+  9.12504913e+03]
+ [4.47000000e+02 8.65000000e+02 1.00000000e-07 0.00000000e+00
+  9.12504913e+03]
+ [3.77000000e+02 9.45000000e+02 1.00000000e-07 0.00000000e+00
+  9.12504913e+03]
+ [3.75000000e+02 3.04000000e+02 1.00000000e-07 0.00000000e+00
+  9.12504913e+03]
+ [3.21000000e+02 3.84000000e+02 1.00000000e-07 0.00000000e+00
+  9.12504913e+03]
+ [3.10000000e+02 6.57000000e+02 1.00000000e-07 0.00000000e+00
+  9.12504913e+03]
+ [3.76000000e+02 1.02500000e+03 1.00000000e-07 0.00000000e+00
+  9.12504913e+03]
+ [4.46000000e+02 8.65000000e+02 1.00000000e-07 0.00000000e+00
+  9.12504913e+03]
+ [4.77000000e+02 1.02500000e+03 1.00000000e-07 0.00000000e+00
+  9.12504913e+03]
+ [4.77000000e+02 1.04200000e+03 1.00000000e-07 0.00000000e+00
+  9.12504913e+03]
+ [4.77000000e+02 1.04300000e+03 1.00000000e-07 0.00000000e+00
+  9.12504913e+03]
+ [4.77000000e+02 1.04400000e+03 1.00000000e-07 0.00000000e+00
+  9.12504913e+03]
+ [4.77000000e+02 1.04500000e+03 1.00000000e-07 0.00000000e+00
+  9.12504913e+03]
+ [4.77000000e+02 1.04600000e+03 1.00000000e-07 0.00000000e+00
+  9.12504913e+03]
+ [4.77000000e+02 1.04700000e+03 1.00000000e-07 0.00000000e+00
+  9.12504913e+03]
+ [4.77000000e+02 1.04800000e+03 1.00000000e-07 0.00000000e+00
+  9.12504913e+03]
+ [4.77000000e+02 1.04900000e+03 1.00000000e-07 0.00000000e+00
+  9.12504913e+03]
+ [4.77000000e+02 6.50000000e+02 1.00000000e-07 0.00000000e+00
+  9.12504913e+03]
+ [3.35000000e+02 2.09000000e+02 1.00000000e-07 0.00000000e+00
+  9.12504913e+03]
+ [3.31000000e+02 6.09000000e+02 1.00000000e-07 0.00000000e+00
+  9.12504913e+03]
+ [4.84000000e+02 5.53000000e+02 1.00000000e-07 0.00000000e+00
+  9.12504913e+03]
+ [4.84000000e+02 4.25000000e+02 1.00000000e-07 0.00000000e+00
+  9.12504913e+03]
+ [4.83000000e+02 4.09000000e+02 1.00000000e-07 0.00000000e+00
+  9.12504913e+03]
+ [4.84000000e+02 5.54000000e+02 1.00000000e-07 0.00000000e+00
+  9.12504913e+03]
+ [4.84000000e+02 4.26000000e+02 1.00000000e-07 0.00000000e+00
+  9.12504913e+03]
+ [4.83000000e+02 4.10000000e+02 1.00000000e-07 0.00000000e+00
+  9.12504913e+03]]

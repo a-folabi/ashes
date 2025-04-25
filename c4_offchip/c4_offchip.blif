@@ -1,0 +1,13 @@
+.model c4_offchip
+.inputs net2_1 vcc
+.outputs net3_1
+# 1 pad_in
+# 13 pad_out
+
+# dc_in
+.subckt fgota in[0]=vcc in[1]=net4_1 out[0]=net4_1 #fgota_bias =2e-06&fgota_p_bias =2e-06&fgota_n_bias =4.449e-07&fgota_small_cap =0
+
+# C4
+.subckt c4_sp in[0]=net2_1 in[1]=net4_1 out[0]=net3_1 #c4_sp_ota_bias[0] =3e-06&c4_sp_ota_bias[1] =3.000e-09&c4_sp_fg[0] =0&c4_sp_ota_small_cap[0] =0&c4_sp_ota_small_cap[1] =0&c4_sp_ota_p_bias[0] =1e-06&c4_sp_ota_n_bias[0] =1e-06&c4_sp_ota_p_bias[1] =1.000e-09&c4_sp_ota_n_bias[1] =1.000e-09&c4_sp_cap_3x[0] =0&c4_sp_cap_2x[0] =0&c4_sp_cap_1x[0] =0
+
+.end

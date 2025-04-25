@@ -1,0 +1,3 @@
+vcc 7 0 5 #int[5]
+net2_1 8 1 5 #tgate[1]
+out:net1_1 1 15 0 #ana_buff_out[0]

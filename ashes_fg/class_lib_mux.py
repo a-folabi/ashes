@@ -13,7 +13,7 @@ class STD_GorS_IndirectSwitches(MUX):
 
         self.name = "TSMC350nm_GorS_IndrctSwcs"
 
-        self.In = Port(circuit,self,"Input","N",2*self.dim[1])
+        self.Input = Port(circuit,self,"Input","N",2*self.dim[1])
 
         # Add cell to circuit
         circuit.addInstance(self,self.island)
@@ -60,13 +60,13 @@ class STD_GateMuxSWC(MUX):
         circuit.addInstance(self,self.island)
 
 class STD_IndirectGateSwitch(MUX):
-    def __init__(self,circuit,island=None,num=0,col=-1):
+    def __init__(self,circuit,island=None,num=1,col=-1):
         self.circuit = circuit
         self.pins = []
         self.ports = []
         self.island = island
         self.num = num
-        self.dim = (0,self.num)
+        self.dim = (1,self.num)
         self.col = col
         self.type = "switch_ind"
         if col < 0:
@@ -74,8 +74,16 @@ class STD_IndirectGateSwitch(MUX):
 
         self.name = "TSMC350nm_IndirectSwitches"
 
-        self.VINJ = Port(circuit,self,"VINJ","N",2*self.dim[1])
+        self.VPWR = Port(circuit,self,"VPWR","N",2*self.dim[1])
+        self.VINJ_T = Port(circuit,self,"VINJ_T","N",1*self.dim[1])
         self.GND = Port(circuit,self,"GND","N",2*self.dim[1])
+        self.CTRL_B = Port(circuit,self,"CTRL_B","S",2*self.dim[1])
+        self.run_r = Port(circuit,self,"run_r","E",1*self.dim[1])
+        self.prog_r = Port(circuit,self,"prog_r","E",1*self.dim[1])
+        self.Vg = Port(circuit,self,"Vg","S",2*self.dim[1])
+        self.VTUN = Port(circuit,self,"VTUN","S",1*self.dim[1])
+        self.VINJ = Port(circuit,self,"VINJ","S",1*self.dim[1])
+        self.VDD = Port(circuit,self,"VDD","S",2*self.dim[1])
 
         # Add cell to circuit
         circuit.addInstance(self,self.island)

@@ -1,0 +1,1360 @@
+GAS LISTING /home/ubuntu/rasp30/prog_assembly/libs/asm_code/tunnel_revtun_SWC_CAB_ver00.s43 			page 1
+
+
+   1               	.include "pmem_defs.asm"
+   1               	/*===========================================================================*/
+   2               	/* Copyright (C) 2001 Authors                                                */
+   3               	/*                                                                           */
+   4               	/* This source file may be used and distributed without restriction provided */
+   5               	/* that this copyright statement is not removed from the file and that any   */
+   6               	/* derivative work contains the original copyright notice and the associated */
+   7               	/* disclaimer.                                                               */
+   8               	/*                                                                           */
+   9               	/* This source file is free software; you can redistribute it and/or modify  */
+  10               	/* it under the terms of the GNU Lesser General Public License as published  */
+  11               	/* by the Free Software Foundation; either version 2.1 of the License, or    */
+  12               	/* (at your option) any later version.                                       */
+  13               	/*                                                                           */
+  14               	/* This source is distributed in the hope that it will be useful, but WITHOUT*/
+  15               	/* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or     */
+  16               	/* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public       */
+  17               	/* License for more details.                                                 */
+  18               	/*                                                                           */
+  19               	/* You should have received a copy of the GNU Lesser General Public License  */
+  20               	/* along with this source; if not, write to the Free Software Foundation,    */
+  21               	/* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA        */
+  22               	/*                                                                           */
+  23               	/*===========================================================================*/
+  24               	/*                          MEMORY DEFINITION FILE                           */
+  25               	/*---------------------------------------------------------------------------*/
+  26               	/*                                                                           */
+  27               	/* Author(s):                                                                */
+  28               	/*             - Olivier Girard,    olgirard@gmail.com                       */
+  29               	/*                                                                           */
+  30               	/*---------------------------------------------------------------------------*/
+  31               	/* $Rev: 19 $                                                                */
+  32               	/* $LastChangedBy: olivier.girard $                                          */
+  33               	/* $LastChangedDate: 2009-08-04 23:47:15 +0200 (Tue, 04 Aug 2009) $          */
+  34               	/*===========================================================================*/
+  35               	
+  36               	/*---------------------------------------------------------------------------*/
+  37               	/*                                   SFR                                     */
+  38               	/*---------------------------------------------------------------------------*/
+  39               	.set    IE1,       0x0000
+  40               	.set    IE1_HI,    0x0001
+  41               	.set    IFG1,      0x0002
+  42               	.set    IFG1_HI,   0x0003
+  43               	.set    CPU_ID_LO, 0x0004
+  44               	.set    CPU_ID_HI, 0x0006
+  45               	.set    CPU_NR,    0x0008
+  46               	
+  47               	/*---------------------------------------------------------------------------*/
+  48               	/*                                    GPIOs                                  */
+  49               	/*---------------------------------------------------------------------------*/
+  50               	.set    P1IN,      0x0020
+  51               	.set    P1OUT,     0x0021
+  52               	.set    P1DIR,     0x0022
+  53               	.set    P1IFG,     0x0023
+  54               	.set    P1IES,     0x0024
+  55               	.set    P1IE,      0x0025
+  56               	.set    P1SEL,     0x0026
+GAS LISTING /home/ubuntu/rasp30/prog_assembly/libs/asm_code/tunnel_revtun_SWC_CAB_ver00.s43 			page 2
+
+
+  57               	
+  58               	.set    P2IN,      0x0028
+  59               	.set    P2OUT,     0x0029
+  60               	.set    P2DIR,     0x002A
+  61               	.set    P2IFG,     0x002B
+  62               	.set    P2IES,     0x002C
+  63               	.set    P2IE,      0x002D
+  64               	.set    P2SEL,     0x002E
+  65               	
+  66               	.set    P3IN,      0x0018
+  67               	.set    P3OUT,     0x0019
+  68               	.set    P3DIR,     0x001A
+  69               	.set    P3SEL,     0x001B
+  70               	
+  71               	.set    P4IN,      0x001C
+  72               	.set    P4OUT,     0x001D
+  73               	.set    P4DIR,     0x001E
+  74               	.set    P4SEL,     0x001F
+  75               		
+  76               	.set    P5IN,      0x0030
+  77               	.set    P5OUT,     0x0031
+  78               	.set    P5DIR,     0x0032
+  79               	.set    P5SEL,     0x0033
+  80               	
+  81               	.set    P6IN,      0x0034
+  82               	.set    P6OUT,     0x0035
+  83               	.set    P6DIR,     0x0036
+  84               	.set    P6SEL,     0x0037
+  85               	
+  86               	/*---------------------------------------------------------------------------*/
+  87               	/*                           BASIC CLOCK MODULE                              */
+  88               	/*---------------------------------------------------------------------------*/
+  89               	.set    BCSCTL1,   0x0057
+  90               	.set    BCSCTL2,   0x0058
+  91               	
+  92               	/*---------------------------------------------------------------------------*/
+  93               	/*                             WATCHDOG TIMER                                */
+  94               	/*---------------------------------------------------------------------------*/
+  95               	.set    WDTCTL,    0x0120
+  96               	
+  97               	/*---------------------------------------------------------------------------*/
+  98               	/*                           HARDWARE MULTIPLIER                             */
+  99               	/*---------------------------------------------------------------------------*/
+ 100               	.set    MPY,       0x0130
+ 101               	.set    MPYS,      0x0132
+ 102               	.set    MAC,       0x0134
+ 103               	.set    MACS,      0x0136
+ 104               	.set    OP2,       0x0138
+ 105               	.set    RESLO,     0x013A
+ 106               	.set    RESHI,     0x013C
+ 107               	.set    SUMEXT,    0x013E
+ 108               	
+ 109               	/*---------------------------------------------------------------------------*/
+ 110               	/*                                 TIMER A                                   */
+ 111               	/*---------------------------------------------------------------------------*/
+ 112               	.set    TACTL,     0x0160
+ 113               	.set    TAR,       0x0170
+GAS LISTING /home/ubuntu/rasp30/prog_assembly/libs/asm_code/tunnel_revtun_SWC_CAB_ver00.s43 			page 3
+
+
+ 114               	.set    TACCTL0,   0x0162
+ 115               	.set    TACCR0,    0x0172
+ 116               	.set    TACCTL1,   0x0164
+ 117               	.set    TACCR1,    0x0174
+ 118               	.set    TACCTL2,   0x0166
+ 119               	.set    TACCR2,    0x0176
+ 120               	.set    TAIV,      0x012E
+ 121               	
+ 122               	/*---------------------------------------------------------------------------*/
+ 123               	/*                          DATA MEMORY MAPPING                              */
+ 124               	/*---------------------------------------------------------------------------*/
+ 125               	.set    DMEM_BASE, 16384
+ 126               	
+ 127               	.set    DMEM_200,  (DMEM_BASE+0x00)
+ 128               	.set    DMEM_201,  (DMEM_BASE+0x01)
+ 129               	.set    DMEM_202,  (DMEM_BASE+0x02)
+ 130               	.set    DMEM_203,  (DMEM_BASE+0x03)
+ 131               	.set    DMEM_204,  (DMEM_BASE+0x04)
+ 132               	.set    DMEM_205,  (DMEM_BASE+0x05)
+ 133               	.set    DMEM_206,  (DMEM_BASE+0x06)
+ 134               	.set    DMEM_207,  (DMEM_BASE+0x07)
+ 135               	.set    DMEM_208,  (DMEM_BASE+0x08)
+ 136               	.set    DMEM_209,  (DMEM_BASE+0x09)
+ 137               	.set    DMEM_20A,  (DMEM_BASE+0x0A)
+ 138               	.set    DMEM_20B,  (DMEM_BASE+0x0B)
+ 139               	.set    DMEM_20C,  (DMEM_BASE+0x0C)
+ 140               	.set    DMEM_20D,  (DMEM_BASE+0x0D)
+ 141               	.set    DMEM_20E,  (DMEM_BASE+0x0E)
+ 142               	.set    DMEM_20F,  (DMEM_BASE+0x0F)
+ 143               	
+ 144               	.set    DMEM_210,  (DMEM_BASE+0x10)
+ 145               	.set    DMEM_211,  (DMEM_BASE+0x11)
+ 146               	.set    DMEM_212,  (DMEM_BASE+0x12)
+ 147               	.set    DMEM_213,  (DMEM_BASE+0x13)
+ 148               	.set    DMEM_214,  (DMEM_BASE+0x14)
+ 149               	.set    DMEM_215,  (DMEM_BASE+0x15)
+ 150               	.set    DMEM_216,  (DMEM_BASE+0x16)
+ 151               	.set    DMEM_217,  (DMEM_BASE+0x17)
+ 152               	.set    DMEM_218,  (DMEM_BASE+0x18)
+ 153               	.set    DMEM_219,  (DMEM_BASE+0x19)
+ 154               	.set    DMEM_21A,  (DMEM_BASE+0x1A)
+ 155               	.set    DMEM_21B,  (DMEM_BASE+0x1B)
+ 156               	.set    DMEM_21C,  (DMEM_BASE+0x1C)
+ 157               	.set    DMEM_21D,  (DMEM_BASE+0x1D)
+ 158               	.set    DMEM_21E,  (DMEM_BASE+0x1E)
+ 159               	.set    DMEM_21F,  (DMEM_BASE+0x1F)
+ 160               	
+ 161               	.set    DMEM_220,  (DMEM_BASE+0x20)
+ 162               	.set    DMEM_221,  (DMEM_BASE+0x21)
+ 163               	.set    DMEM_222,  (DMEM_BASE+0x22)
+ 164               	.set    DMEM_223,  (DMEM_BASE+0x23)
+ 165               	.set    DMEM_224,  (DMEM_BASE+0x24)
+ 166               	.set    DMEM_225,  (DMEM_BASE+0x25)
+ 167               	.set    DMEM_226,  (DMEM_BASE+0x26)
+ 168               	.set    DMEM_227,  (DMEM_BASE+0x27)
+ 169               	.set    DMEM_228,  (DMEM_BASE+0x28)
+ 170               	.set    DMEM_229,  (DMEM_BASE+0x29)
+GAS LISTING /home/ubuntu/rasp30/prog_assembly/libs/asm_code/tunnel_revtun_SWC_CAB_ver00.s43 			page 4
+
+
+ 171               	.set    DMEM_22A,  (DMEM_BASE+0x2A)
+ 172               	.set    DMEM_22B,  (DMEM_BASE+0x2B)
+ 173               	.set    DMEM_22C,  (DMEM_BASE+0x2C)
+ 174               	.set    DMEM_22D,  (DMEM_BASE+0x2D)
+ 175               	.set    DMEM_22E,  (DMEM_BASE+0x2E)
+ 176               	.set    DMEM_22F,  (DMEM_BASE+0x2F)
+ 177               	
+ 178               	.set    DMEM_230,  (DMEM_BASE+0x30)
+ 179               	.set    DMEM_231,  (DMEM_BASE+0x31)
+ 180               	.set    DMEM_232,  (DMEM_BASE+0x32)
+ 181               	.set    DMEM_233,  (DMEM_BASE+0x33)
+ 182               	.set    DMEM_234,  (DMEM_BASE+0x34)
+ 183               	.set    DMEM_235,  (DMEM_BASE+0x35)
+ 184               	.set    DMEM_236,  (DMEM_BASE+0x36)
+ 185               	.set    DMEM_237,  (DMEM_BASE+0x37)
+ 186               	.set    DMEM_238,  (DMEM_BASE+0x38)
+ 187               	.set    DMEM_239,  (DMEM_BASE+0x39)
+ 188               	.set    DMEM_23A,  (DMEM_BASE+0x3A)
+ 189               	.set    DMEM_23B,  (DMEM_BASE+0x3B)
+ 190               	.set    DMEM_23C,  (DMEM_BASE+0x3C)
+ 191               	.set    DMEM_23D,  (DMEM_BASE+0x3D)
+ 192               	.set    DMEM_23E,  (DMEM_BASE+0x3E)
+ 193               	.set    DMEM_23F,  (DMEM_BASE+0x3F)
+ 194               	
+ 195               	.set    DMEM_240,  (DMEM_BASE+0x40)
+ 196               	.set    DMEM_241,  (DMEM_BASE+0x41)
+ 197               	.set    DMEM_242,  (DMEM_BASE+0x42)
+ 198               	.set    DMEM_243,  (DMEM_BASE+0x43)
+ 199               	.set    DMEM_244,  (DMEM_BASE+0x44)
+ 200               	.set    DMEM_245,  (DMEM_BASE+0x45)
+ 201               	.set    DMEM_246,  (DMEM_BASE+0x46)
+ 202               	.set    DMEM_247,  (DMEM_BASE+0x47)
+ 203               	.set    DMEM_248,  (DMEM_BASE+0x48)
+ 204               	.set    DMEM_249,  (DMEM_BASE+0x49)
+ 205               	.set    DMEM_24A,  (DMEM_BASE+0x4A)
+ 206               	.set    DMEM_24B,  (DMEM_BASE+0x4B)
+ 207               	.set    DMEM_24C,  (DMEM_BASE+0x4C)
+ 208               	.set    DMEM_24D,  (DMEM_BASE+0x4D)
+ 209               	.set    DMEM_24E,  (DMEM_BASE+0x4E)
+ 210               	.set    DMEM_24F,  (DMEM_BASE+0x4F)
+ 211               	
+ 212               	.set    DMEM_250,  (DMEM_BASE+0x50)
+ 213               	.set    DMEM_251,  (DMEM_BASE+0x51)
+ 214               	.set    DMEM_252,  (DMEM_BASE+0x52)
+ 215               	.set    DMEM_253,  (DMEM_BASE+0x53)
+ 216               	.set    DMEM_254,  (DMEM_BASE+0x54)
+ 217               	.set    DMEM_255,  (DMEM_BASE+0x55)
+ 218               	.set    DMEM_256,  (DMEM_BASE+0x56)
+ 219               	.set    DMEM_257,  (DMEM_BASE+0x57)
+ 220               	.set    DMEM_258,  (DMEM_BASE+0x58)
+ 221               	.set    DMEM_259,  (DMEM_BASE+0x59)
+ 222               	.set    DMEM_25A,  (DMEM_BASE+0x5A)
+ 223               	.set    DMEM_25B,  (DMEM_BASE+0x5B)
+ 224               	.set    DMEM_25C,  (DMEM_BASE+0x5C)
+ 225               	.set    DMEM_25D,  (DMEM_BASE+0x5D)
+ 226               	.set    DMEM_25E,  (DMEM_BASE+0x5E)
+ 227               	.set    DMEM_25F,  (DMEM_BASE+0x5F)
+GAS LISTING /home/ubuntu/rasp30/prog_assembly/libs/asm_code/tunnel_revtun_SWC_CAB_ver00.s43 			page 5
+
+
+ 228               	
+ 229               	.set    DMEM_260,  (DMEM_BASE+0x60)
+ 230               	.set    DMEM_261,  (DMEM_BASE+0x61)
+ 231               	.set    DMEM_262,  (DMEM_BASE+0x62)
+ 232               	.set    DMEM_263,  (DMEM_BASE+0x63)
+ 233               	.set    DMEM_264,  (DMEM_BASE+0x64)
+ 234               	.set    DMEM_265,  (DMEM_BASE+0x65)
+ 235               	.set    DMEM_266,  (DMEM_BASE+0x66)
+ 236               	.set    DMEM_267,  (DMEM_BASE+0x67)
+ 237               	.set    DMEM_268,  (DMEM_BASE+0x68)
+ 238               	.set    DMEM_269,  (DMEM_BASE+0x69)
+ 239               	.set    DMEM_26A,  (DMEM_BASE+0x6A)
+ 240               	.set    DMEM_26B,  (DMEM_BASE+0x6B)
+ 241               	.set    DMEM_26C,  (DMEM_BASE+0x6C)
+ 242               	.set    DMEM_26D,  (DMEM_BASE+0x6D)
+ 243               	.set    DMEM_26E,  (DMEM_BASE+0x6E)
+ 244               	.set    DMEM_26F,  (DMEM_BASE+0x6F)
+ 245               	
+ 246               	.set    DMEM_300,  (DMEM_BASE+0x100)
+ 247               	
+ 248               	/*---------------------------------------------------------------------------*/
+ 249               	/*                        PROGRAM MEMORY MAPPING                             */
+ 250               	/*---------------------------------------------------------------------------*/
+ 251               	.set    PMEM_LENGTH, 16384
+ 252               	
+ 253               	/*---------------------------------------------------------------------------*/
+ 254               	/*                        Programming register addresses                     */
+ 255               	/*---------------------------------------------------------------------------*/
+ 256               	.set    DRAIN_CTRL,     0x0B00
+ 257               	.set    GATE_S,         0x0B02
+ 258               	.set    ADC,            0x0B04
+ 259               	.set    PULSE_CTRL,     0x0B06
+ 260               	.set    ROW_SEL,        0x0B08
+ 261               	.set    COL_SEL,        0x0B0A
+ 262               	.set    PROG_BITS,      0x0B0C
+ 263               	.set    TUN_MUX,        0x0B0E
+ 264               	.set    GATE_US_P,      0x0B10
+ 265               	.set    GATE_US_N,      0x0B12
+ 266               	.set    BIAS_DACS,      0x0B14
+ 267               	.set    GP_PER_1,       0x0160
+ 268               	.set    GP_PER_2,       0x0162
+ 269               	.set    GP_PER_3,       0x0164
+ 270               	.set    GP_PER_4,       0x0166
+ 271               	
+   2               	.include "chip_para_TR.asm"
+   1               	/**********************************/
+   2               	/* TR (Tunnel & Reverse tunnel)   */
+   3               	/**********************************/
+   4               	.set TUN_TIME_SP, 3 /* tunneling time for switch FGs (ms) */
+   5               	.set R_TUN_TIME_SP, 2 /* reverse tunneling time for switch FGs (ms) */
+   6               	.set TUN_TIME_TP_CAB, 40 /* tunneling time for CAB FGs (ms) */
+   7               	.set R_TUN_TIME_TP_CAB, 40 /* Reverse tunneling time for CAB FGs (ms) */
+   3               	
+   4               	.global main
+   5               	
+   6               	main:
+   7 0000 3140 5040 	        mov     #DMEM_250, r1           ; Initialize stack pointer
+GAS LISTING /home/ubuntu/rasp30/prog_assembly/libs/asm_code/tunnel_revtun_SWC_CAB_ver00.s43 			page 6
+
+
+   8 0004 3740 0050 		mov	#0x5000, r7
+   9 0008 0A43      		mov	#0, r10			; Initialize time
+  10 000a 3540 8813 	        mov     #5000, r5             	; Number of ms
+  11               	init_wait:
+  12 000e 1583      	        dec.w   r5 
+  13 0010 FE23      	        jnz     init_wait
+  14 0012 B240 1000 		mov	#0x0010, &BCSCTL2	; Divide clock 20MHz
+  14      5800 
+  15 0018 B240 805A 		mov	#0x5A80, &WDTCTL	; Watchdog controller 
+  15      2001 
+  16 001e 32C2      		dint
+  17 0020 A243 0E0B 		mov	#0x0002, &TUN_MUX
+  18 0024 B240 04BE 	        mov     #0xBE04, &GP_PER_3      ; Vtun_ext = 5V, enable 6V, esd=6v
+  18      6401 
+  19 002a B240 6600 		mov     #0x0066, &DRAIN_CTRL    ; drain = ivdd, no use DAC, i2v mux control = No connection  
+  19      000B 
+  20 0030 B240 2400 	        mov     #0x0024, &GP_PER_1      ; IVDD to 2.5V, Set vtun_ext = On
+  20      6001 
+  21 0036 B240 0080 		mov     #0x8000, &PROG_BITS     ; PROG = 1, OV_N = don't care, MEAS_ADC = 0, CLEAR_N = 0
+  21      0C0B 
+  22 003c 8243 080B 		mov     #0,    &ROW_SEL
+  23 0040 8243 0A0B 	        mov     #0,    &COL_SEL
+  24               		
+  25 0044 B012 0000 	        call 	#tunnel_swc
+  26 0048 B012 0000 	        call 	#tunnel_cab
+  27 004c B012 0000 	        call 	#reverse_tunnel_swc
+  28 0050 B012 0000 	        call 	#reverse_tunnel_cab
+  29               		
+  30 0054 B743 0000 		mov	#0xFFFF, @r7		; Data End
+  31 0058 1A3D      		jmp     end_of_test
+  32               	
+  33               	tunnel_swc:
+  34 005a 1B43      		mov	#1, r11		; Max loop 
+  35               	tunnel_swc_s:
+  36 005c B240 0080 		mov     #0x8000, &PROG_BITS     ; PROG = 1, OV_N = don't care, MEAS_ADC = 0, CLEAR_N = 0
+  36      0C0B 
+  37 0062 B240 04AE 	     	mov     #0xAE04, &GP_PER_3      ; VTUN_EXT = 12V
+  37      6401 
+  38 0068 B240 2400 	        mov     #0x0024, &GP_PER_1      ; IVDD to 2.5V, Set vtun_ext = On
+  38      6001 
+  39 006e 8243 080B 		mov     #0,    &ROW_SEL
+  40 0072 8243 0A0B 	        mov     #0,    &COL_SEL
+  41 0076 3540 0500 	        mov     #5, r5             	; Number of ms
+  42 007a B012 0000 	        call    #wait_ms                ; Call the waiting function
+  43 007e B240 4000 		mov	#0x0040, &GATE_S	; gate_s = gnd
+  43      020B 
+  44 0084 B240 4000 		mov	#0x0040, &GATE_US_P	; gate_us_p = gnd
+  44      100B 
+  45 008a B240 4000 		mov	#0x0040, &GATE_US_N	; gate_us_n = gnd
+  45      120B 
+  46 0090 B240 2600 		mov     #0x0026, &DRAIN_CTRL    ; drain = gnd, no use DAC, i2v mux control = No connection  
+  46      000B 
+  47 0096 A242 6001 		mov     #0x0004, &GP_PER_1      ; IVDD to gnd, Set vtun_ext = On
+  48 009a B243 0E0B 		mov     #0xFFFF, &TUN_MUX       ; Set tunnel mux, <3>:switch <4>:cab <5>:ble
+  49 009e 3540 0300 	        mov     #TUN_TIME_SP, r5          	; Number of 10us to tunnel
+  50 00a2 B012 0000 		call    #wait_ms              ; Call the waiting function
+  51 00a6 3A50 0300 		add     #TUN_TIME_SP, r10        		; Calculate time
+GAS LISTING /home/ubuntu/rasp30/prog_assembly/libs/asm_code/tunnel_revtun_SWC_CAB_ver00.s43 			page 7
+
+
+  52 00aa A243 0E0B 		mov     #0x0002, &TUN_MUX       ; Reset tunnel mux (gnd)
+  53 00ae B240 04BE 		mov     #0xBE04, &GP_PER_3    	; VTUN_EXT = 5V
+  53      6401 
+  54 00b4 B240 6600 		mov     #0x0066, &DRAIN_CTRL    ; drain = ivdd, no use DAC, i2v mux control = No connection  
+  54      000B 
+  55 00ba B240 2400 	        mov     #0x0024, &GP_PER_1      ; IVDD to 2.5V, Set vtun_ext = On
+  55      6001 
+  56 00c0 3540 1400 		mov     #20, r5             	; Number of ms
+  57 00c4 B012 0000 	        call    #wait_ms                ; Call the waiting function
+  58 00c8 1B83      	        dec.w   r11
+  59 00ca 0124      	        jz      tunnel_swc_e
+  60 00cc C73F      		jmp	tunnel_swc_s
+  61               	tunnel_swc_e:
+  62 00ce 3041      		ret
+  63               	
+  64               	tunnel_cab:
+  65 00d0 1B43      		mov	#1, r11			; Max loop 
+  66               	tunnel_cab_s:
+  67 00d2 B240 0080 		mov     #0x8000, &PROG_BITS     ; PROG = 1, OV_N = don't care, MEAS_ADC = 0, CLEAR_N = 0
+  67      0C0B 
+  68 00d8 B240 04AE 	     	mov     #0xAE04, &GP_PER_3      ; VTUN_EXT = 12V
+  68      6401 
+  69 00de B240 2400 	        mov     #0x0024, &GP_PER_1      ; IVDD to 2.5V, Set vtun_ext = On
+  69      6001 
+  70 00e4 8243 080B 		mov     #0,    &ROW_SEL
+  71 00e8 8243 0A0B 	        mov     #0,    &COL_SEL
+  72 00ec 3540 0500 	        mov     #5, r5             	; Number of ms
+  73 00f0 B012 0000 	        call    #wait_ms                ; Call the waiting function
+  74 00f4 B240 4000 		mov	#0x0040, &GATE_S	; gate_s = gnd
+  74      020B 
+  75 00fa B240 4000 		mov	#0x0040, &GATE_US_P	; gate_us_p = gnd
+  75      100B 
+  76 0100 B240 4000 		mov	#0x0040, &GATE_US_N	; gate_us_n = gnd
+  76      120B 
+  77 0106 B240 2600 		mov     #0x0026, &DRAIN_CTRL    ; drain = gnd, no use DAC, i2v mux control = No connection  
+  77      000B 
+  78 010c A242 6001 		mov     #0x0004, &GP_PER_1      ; IVDD to gnd, Set vtun_ext = 12V
+  79               		;mov     #0xFFFF, &TUN_MUX       ; Set tunnel mux, <3>:switch <4>:cab <5>:ble
+  80 0110 B240 1000 		mov     #0x0010, &TUN_MUX       ; Set CAB tunnel mux, <3>:switch <4>:cab <5>:ble
+  80      0E0B 
+  81 0116 3540 2800 	        mov     #TUN_TIME_TP_CAB, r5          	; Number of 10us to tunnel
+  82 011a B012 0000 		call    #wait_ms 	        ; Call the waiting function
+  83 011e 3A50 2800 		add     #TUN_TIME_TP_CAB, r10        		; Calculate time
+  84 0122 A243 0E0B 		mov     #0x0002, &TUN_MUX       ; Reset tunnel mux (gnd)
+  85 0126 B240 04BE 		mov     #0xBE04, &GP_PER_3    	; VTUN_EXT = 5V
+  85      6401 
+  86 012c B240 6600 		mov     #0x0066, &DRAIN_CTRL    ; drain = ivdd, no use DAC, i2v mux control = No connection  
+  86      000B 
+  87 0132 B240 2400 	        mov     #0x0024, &GP_PER_1      ; IVDD to 2.5V, Set vtun_ext = On
+  87      6001 
+  88 0138 3540 1400 		mov     #20, r5             	; Number of ms
+  89 013c B012 0000 	        call    #wait_ms                ; Call the waiting function
+  90 0140 1B83      	        dec.w   r11
+  91 0142 0124      	        jz      tunnel_cab_e
+  92 0144 C63F      		jmp	tunnel_cab_s
+  93               	tunnel_cab_e:
+  94 0146 3041      		ret
+GAS LISTING /home/ubuntu/rasp30/prog_assembly/libs/asm_code/tunnel_revtun_SWC_CAB_ver00.s43 			page 8
+
+
+  95               	
+  96               	reverse_tunnel_swc:
+  97 0148 1B43      		mov	#1, r11			; Max loop
+  98               	reverse_tunnel_swc_s:
+  99 014a B240 0080 	        mov     #0x8000, &PROG_BITS     ; PROG = 1, OV_N = don't care, MEAS_ADC = 0, CLEAR_N = 0
+  99      0C0B 
+ 100 0150 B240 2000 	        mov     #0x0020, &GP_PER_1      ; IVDD to 2.5V, Set vtun_ext = Off
+ 100      6001 
+ 101 0156 A243 0E0B 		mov     #0x0002, &TUN_MUX       ; ReSet tunnel mux (gnd), <3>:switch <4>:cab <5>:ble
+ 102 015a B240 6600 		mov     #0x0066, &DRAIN_CTRL    ; drain = ivdd, no use DAC, i2v mux control = No connection  
+ 102      000B 
+ 103 0160 B240 6000 		mov	#0x0060, &GATE_S
+ 103      020B 
+ 104 0166 B240 6000 		mov	#0x0060, &GATE_US_P
+ 104      100B 
+ 105 016c B240 6000 		mov	#0x0060, &GATE_US_N
+ 105      120B 
+ 106 0172 8243 080B 		mov     #0,    &ROW_SEL
+ 107 0176 8243 0A0B 	        mov     #0,    &COL_SEL
+ 108 017a 3540 0500 	        mov     #5, r5             	; Number of ms
+ 109 017e B012 0000 	        call    #wait_ms                ; Call the waiting function
+ 110 0182 B240 1000 	        mov     #0x0010, &GP_PER_1      ; IVDD to 6.0V, Set vtun_ext = Off(0V)
+ 110      6001 
+ 111 0188 2543      	        mov     #R_TUN_TIME_SP, r5	         	; Number of 10us to reverse_tunnel
+ 112 018a B012 0000 		call    #wait_ms	        ; Call the waiting function
+ 113 018e 2A53      		add     #R_TUN_TIME_SP, r10		        ; Calculate time
+ 114 0190 B240 2000 	        mov     #0x0020, &GP_PER_1      ; IVDD to 2.5V, Set vtun_ext = Off(0V)
+ 114      6001 
+ 115 0196 3540 0500 	        mov     #5, r5             	; Number of ms
+ 116 019a B012 0000 	        call    #wait_ms                ; Call the waiting function
+ 117 019e B240 4000 		mov	#0x0040, &GATE_S	; gate_s = gnd
+ 117      020B 
+ 118 01a4 B240 4000 		mov	#0x0040, &GATE_US_P	; gate_us_p = gnd
+ 118      100B 
+ 119 01aa B240 4000 		mov	#0x0040, &GATE_US_N	; gate_us_n = gnd
+ 119      120B 
+ 120 01b0 B240 2600 		mov     #0x0026, &DRAIN_CTRL    ; drain = gnd, no use DAC, i2v mux control = No connection  
+ 120      000B 
+ 121 01b6 A242 6001 		mov     #0x0004, &GP_PER_1      ; IVDD to 0V, Set vtun_ext = On
+ 122 01ba 2543      		mov     #2, r5             	; Number of ms
+ 123 01bc B012 0000 		call    #wait_ms                ; Call the waiting function
+ 124 01c0 B240 2400 	        mov     #0x0024, &GP_PER_1      ; IVDD to 2.5V, Set vtun_ext = On
+ 124      6001 
+ 125 01c6 1543      	        mov     #1, r5             	; Number of ms
+ 126 01c8 B012 0000 	        call    #wait_ms                ; Call the waiting function
+ 127 01cc 1B83      	        dec.w   r11
+ 128 01ce 0124      	        jz      reverse_tunnel_swc_e
+ 129 01d0 BC3F      		jmp	reverse_tunnel_swc_s
+ 130               	reverse_tunnel_swc_e:
+ 131 01d2 3041      		ret
+ 132               	
+ 133               	reverse_tunnel_cab:
+ 134 01d4 1B43      		mov	#1, r11			; Max loop
+ 135               	reverse_tunnel_cab_s:
+ 136 01d6 B240 0080 	        mov     #0x8000, &PROG_BITS     ; PROG = 1, OV_N = don't care, MEAS_ADC = 0, CLEAR_N = 0
+ 136      0C0B 
+ 137               	        ;mov     #0x0020, &GP_PER_1      ; IVDD to 2.5V, Set vtun_ext = Off
+GAS LISTING /home/ubuntu/rasp30/prog_assembly/libs/asm_code/tunnel_revtun_SWC_CAB_ver00.s43 			page 9
+
+
+ 138 01dc B240 2400 	        mov     #0x0024, &GP_PER_1      ; IVDD to 2.5V, Set vtun_ext = On
+ 138      6001 
+ 139               		;mov     #0x0002, &TUN_MUX       ; ReSet tunnel mux (gnd), <3>:switch <4>:cab <5>:ble
+ 140 01e2 B240 2800 		mov     #0x0028, &TUN_MUX       ; ReSet tunnel mux (gnd), <3>:switch <4>:cab <5>:ble
+ 140      0E0B 
+ 141 01e8 B240 6600 		mov     #0x0066, &DRAIN_CTRL    ; drain = ivdd, no use DAC, i2v mux control = No connection  
+ 141      000B 
+ 142 01ee B240 6000 		mov	#0x0060, &GATE_S
+ 142      020B 
+ 143 01f4 B240 6000 		mov	#0x0060, &GATE_US_P
+ 143      100B 
+ 144 01fa B240 6000 		mov	#0x0060, &GATE_US_N
+ 144      120B 
+ 145 0200 8243 080B 		mov     #0,    &ROW_SEL
+ 146 0204 8243 0A0B 	        mov     #0,    &COL_SEL
+ 147 0208 3540 0500 	        mov     #5, r5             	; Number of ms
+ 148 020c B012 0000 	        call    #wait_ms                ; Call the waiting function
+ 149 0210 B240 1000 	        mov     #0x0010, &GP_PER_1      ; IVDD to 6.0V, Set vtun_ext = Off(0V)
+ 149      6001 
+ 150 0216 3540 2800 	        mov     #R_TUN_TIME_TP_CAB, r5	         	; Number of 10us to reverse_tunnel
+ 151 021a B012 0000 		call    #wait_ms              	; Call the waiting function
+ 152 021e 3A50 2800 		add     #R_TUN_TIME_TP_CAB, r10	        	; Calculate time
+ 153 0222 B240 2000 	        mov     #0x0020, &GP_PER_1      ; IVDD to 2.5V, Set vtun_ext = Off(0V)
+ 153      6001 
+ 154 0228 3540 0500 	        mov     #5, r5             	; Number of ms
+ 155 022c B012 0000 	        call    #wait_ms                ; Call the waiting function
+ 156 0230 B240 4000 		mov	#0x0040, &GATE_S	; gate_s = gnd
+ 156      020B 
+ 157 0236 B240 4000 		mov	#0x0040, &GATE_US_P	; gate_us_p = gnd
+ 157      100B 
+ 158 023c B240 4000 		mov	#0x0040, &GATE_US_N	; gate_us_n = gnd
+ 158      120B 
+ 159 0242 B240 2600 		mov     #0x0026, &DRAIN_CTRL    ; drain = gnd, no use DAC, i2v mux control = No connection  
+ 159      000B 
+ 160 0248 A242 6001 		mov     #0x0004, &GP_PER_1      ; IVDD to 0V, Set vtun_ext = On
+ 161 024c 2543      		mov     #2, r5             	; Number of ms
+ 162 024e B012 0000 		call    #wait_ms                ; Call the waiting function
+ 163 0252 B240 2400 	        mov     #0x0024, &GP_PER_1      ; IVDD to 2.5V, Set vtun_ext = On
+ 163      6001 
+ 164 0258 A243 0E0B 		mov     #0x0002, &TUN_MUX       ; ReSet tunnel mux (gnd), <3>:switch <4>:cab <5>:ble
+ 165 025c 1543      	        mov     #1, r5             	; Number of ms
+ 166 025e B012 0000 	        call    #wait_ms                ; Call the waiting function
+ 167 0262 1B83      	        dec.w   r11
+ 168 0264 0124      	        jz      reverse_tunnel_cab_e
+ 169 0266 B73F      		jmp	reverse_tunnel_cab_s
+ 170               	reverse_tunnel_cab_e:
+ 171 0268 3041      		ret
+ 172               	
+ 173               	wait_ms:
+ 174 026a 3440 FC0C 	        mov     #3324, r4               ; Number of clock cycles in a ms (chariterized by pulse mea
+ 175 026e 0644      	        mov     r4, r6                  ; Get number of inner loop iterations
+ 176               	wait_ms_loop:
+ 177 0270 1683      	        dec.w   r6                      ; Subtract from number of clk cycles.Execution takes 2 cloc
+ 178 0272 FE23      	        jnz     wait_ms_loop            ; Test for loop termination. Execution takes 2 clock cycles
+ 179 0274 0644      	        mov     r4, r6                  ; Reset number of clock cycles
+ 180 0276 1583      	        dec.w   r5                      ; Decrement number of ms total
+ 181 0278 FB23      	        jnz     wait_ms_loop            ; Keep looping if necessary
+GAS LISTING /home/ubuntu/rasp30/prog_assembly/libs/asm_code/tunnel_revtun_SWC_CAB_ver00.s43 			page 10
+
+
+ 182 027a 3041      	        ret    
+ 183               	 
+ 184               	wait_10us:
+ 185 027c 3440 2200 	        mov     #34, r4                 ; Number of clock cycles in 100 us (3324 was divided by 100
+ 186 0280 0644      	        mov     r4, r6                  ; Get number of inner loop iterations
+ 187               	wait_10us_loop:
+ 188 0282 1683      	        dec.w   r6                      ; Subtract from number of clk cycles.Execution takes 2 cloc
+ 189 0284 FE23      	        jnz     wait_10us_loop          ; Test for loop termination. Execution takes 2 clock cycles
+ 190 0286 0644      	        mov     r4, r6                  ; Reset number of clock cycles
+ 191 0288 1583      	        dec.w   r5                      ; Decrement number of ms total
+ 192 028a FB23      	        jnz     wait_10us_loop          ; Keep looping if necessary
+ 193 028c 3041      	        ret   
+ 194               	
+ 195               	end_of_test:
+ 196 028e 8243 5800 		mov	#0x0000, &BCSCTL2
+ 197 0292 0343      		nop
+ 198 0294 3043      		br #0xffff
+ 199               	
+ 200               	/* ----------------------         INTERRUPT VECTORS  --------------- */
+ 201               	.section .vectors, "a"
+ 202 0000 0000      	.word end_of_test  ; Interrupt  0 (lowest priority)    <unused>
+ 203 0002 0000      	.word end_of_test  ; Interrupt  1                      <unused>
+ 204 0004 0000      	.word end_of_test  ; Interrupt  2                      <unused>
+ 205 0006 0000      	.word end_of_test  ; Interrupt  3                      <unused>
+ 206 0008 0000      	.word end_of_test  ; Interrupt  4                      <unused>
+ 207 000a 0000      	.word end_of_test  ; Interrupt  5                      <unused>
+ 208 000c 0000      	.word end_of_test  ; Interrupt  6                      <unused>
+ 209 000e 0000      	.word end_of_test  ; Interrupt  7                      <unused>
+ 210 0010 0000      	.word end_of_test  ; Interrupt  8                      <unused>
+ 211 0012 0000      	.word end_of_test  ; Interrupt  9                      <unused>
+ 212 0014 0000      	.word end_of_test  ; Interrupt 10                      Watchdog timer
+ 213 0016 0000      	.word end_of_test  ; Interrupt 11                      <unused>
+ 214 0018 0000      	.word end_of_test  ; Interrupt 12                      <unused>
+ 215 001a 0000      	.word end_of_test  ; Interrupt 13                      <unused>
+ 216 001c 0000      	.word end_of_test  ; Interrupt 14                      NMI
+ 217 001e 0000      	.word main         ; Interrupt 15 (highest priority)   RESET
+GAS LISTING /home/ubuntu/rasp30/prog_assembly/libs/asm_code/tunnel_revtun_SWC_CAB_ver00.s43 			page 11
+
+
+DEFINED SYMBOLS
+       pmem_defs.asm:39     *ABS*:0000000000000000 IE1
+       pmem_defs.asm:40     *ABS*:0000000000000001 IE1_HI
+       pmem_defs.asm:41     *ABS*:0000000000000002 IFG1
+       pmem_defs.asm:42     *ABS*:0000000000000003 IFG1_HI
+       pmem_defs.asm:43     *ABS*:0000000000000004 CPU_ID_LO
+       pmem_defs.asm:44     *ABS*:0000000000000006 CPU_ID_HI
+       pmem_defs.asm:45     *ABS*:0000000000000008 CPU_NR
+       pmem_defs.asm:50     *ABS*:0000000000000020 P1IN
+       pmem_defs.asm:51     *ABS*:0000000000000021 P1OUT
+       pmem_defs.asm:52     *ABS*:0000000000000022 P1DIR
+       pmem_defs.asm:53     *ABS*:0000000000000023 P1IFG
+       pmem_defs.asm:54     *ABS*:0000000000000024 P1IES
+       pmem_defs.asm:55     *ABS*:0000000000000025 P1IE
+       pmem_defs.asm:56     *ABS*:0000000000000026 P1SEL
+       pmem_defs.asm:58     *ABS*:0000000000000028 P2IN
+       pmem_defs.asm:59     *ABS*:0000000000000029 P2OUT
+       pmem_defs.asm:60     *ABS*:000000000000002a P2DIR
+       pmem_defs.asm:61     *ABS*:000000000000002b P2IFG
+       pmem_defs.asm:62     *ABS*:000000000000002c P2IES
+       pmem_defs.asm:63     *ABS*:000000000000002d P2IE
+       pmem_defs.asm:64     *ABS*:000000000000002e P2SEL
+       pmem_defs.asm:66     *ABS*:0000000000000018 P3IN
+       pmem_defs.asm:67     *ABS*:0000000000000019 P3OUT
+       pmem_defs.asm:68     *ABS*:000000000000001a P3DIR
+       pmem_defs.asm:69     *ABS*:000000000000001b P3SEL
+       pmem_defs.asm:71     *ABS*:000000000000001c P4IN
+       pmem_defs.asm:72     *ABS*:000000000000001d P4OUT
+       pmem_defs.asm:73     *ABS*:000000000000001e P4DIR
+       pmem_defs.asm:74     *ABS*:000000000000001f P4SEL
+       pmem_defs.asm:76     *ABS*:0000000000000030 P5IN
+       pmem_defs.asm:77     *ABS*:0000000000000031 P5OUT
+       pmem_defs.asm:78     *ABS*:0000000000000032 P5DIR
+       pmem_defs.asm:79     *ABS*:0000000000000033 P5SEL
+       pmem_defs.asm:81     *ABS*:0000000000000034 P6IN
+       pmem_defs.asm:82     *ABS*:0000000000000035 P6OUT
+       pmem_defs.asm:83     *ABS*:0000000000000036 P6DIR
+       pmem_defs.asm:84     *ABS*:0000000000000037 P6SEL
+       pmem_defs.asm:89     *ABS*:0000000000000057 BCSCTL1
+       pmem_defs.asm:90     *ABS*:0000000000000058 BCSCTL2
+       pmem_defs.asm:95     *ABS*:0000000000000120 WDTCTL
+       pmem_defs.asm:100    *ABS*:0000000000000130 MPY
+       pmem_defs.asm:101    *ABS*:0000000000000132 MPYS
+       pmem_defs.asm:102    *ABS*:0000000000000134 MAC
+       pmem_defs.asm:103    *ABS*:0000000000000136 MACS
+       pmem_defs.asm:104    *ABS*:0000000000000138 OP2
+       pmem_defs.asm:105    *ABS*:000000000000013a RESLO
+       pmem_defs.asm:106    *ABS*:000000000000013c RESHI
+       pmem_defs.asm:107    *ABS*:000000000000013e SUMEXT
+       pmem_defs.asm:112    *ABS*:0000000000000160 TACTL
+       pmem_defs.asm:113    *ABS*:0000000000000170 TAR
+       pmem_defs.asm:114    *ABS*:0000000000000162 TACCTL0
+       pmem_defs.asm:115    *ABS*:0000000000000172 TACCR0
+       pmem_defs.asm:116    *ABS*:0000000000000164 TACCTL1
+       pmem_defs.asm:117    *ABS*:0000000000000174 TACCR1
+       pmem_defs.asm:118    *ABS*:0000000000000166 TACCTL2
+       pmem_defs.asm:119    *ABS*:0000000000000176 TACCR2
+GAS LISTING /home/ubuntu/rasp30/prog_assembly/libs/asm_code/tunnel_revtun_SWC_CAB_ver00.s43 			page 12
+
+
+       pmem_defs.asm:120    *ABS*:000000000000012e TAIV
+       pmem_defs.asm:125    *ABS*:0000000000004000 DMEM_BASE
+       pmem_defs.asm:127    *ABS*:0000000000004000 DMEM_200
+       pmem_defs.asm:128    *ABS*:0000000000004001 DMEM_201
+       pmem_defs.asm:129    *ABS*:0000000000004002 DMEM_202
+       pmem_defs.asm:130    *ABS*:0000000000004003 DMEM_203
+       pmem_defs.asm:131    *ABS*:0000000000004004 DMEM_204
+       pmem_defs.asm:132    *ABS*:0000000000004005 DMEM_205
+       pmem_defs.asm:133    *ABS*:0000000000004006 DMEM_206
+       pmem_defs.asm:134    *ABS*:0000000000004007 DMEM_207
+       pmem_defs.asm:135    *ABS*:0000000000004008 DMEM_208
+       pmem_defs.asm:136    *ABS*:0000000000004009 DMEM_209
+       pmem_defs.asm:137    *ABS*:000000000000400a DMEM_20A
+       pmem_defs.asm:138    *ABS*:000000000000400b DMEM_20B
+       pmem_defs.asm:139    *ABS*:000000000000400c DMEM_20C
+       pmem_defs.asm:140    *ABS*:000000000000400d DMEM_20D
+       pmem_defs.asm:141    *ABS*:000000000000400e DMEM_20E
+       pmem_defs.asm:142    *ABS*:000000000000400f DMEM_20F
+       pmem_defs.asm:144    *ABS*:0000000000004010 DMEM_210
+       pmem_defs.asm:145    *ABS*:0000000000004011 DMEM_211
+       pmem_defs.asm:146    *ABS*:0000000000004012 DMEM_212
+       pmem_defs.asm:147    *ABS*:0000000000004013 DMEM_213
+       pmem_defs.asm:148    *ABS*:0000000000004014 DMEM_214
+       pmem_defs.asm:149    *ABS*:0000000000004015 DMEM_215
+       pmem_defs.asm:150    *ABS*:0000000000004016 DMEM_216
+       pmem_defs.asm:151    *ABS*:0000000000004017 DMEM_217
+       pmem_defs.asm:152    *ABS*:0000000000004018 DMEM_218
+       pmem_defs.asm:153    *ABS*:0000000000004019 DMEM_219
+       pmem_defs.asm:154    *ABS*:000000000000401a DMEM_21A
+       pmem_defs.asm:155    *ABS*:000000000000401b DMEM_21B
+       pmem_defs.asm:156    *ABS*:000000000000401c DMEM_21C
+       pmem_defs.asm:157    *ABS*:000000000000401d DMEM_21D
+       pmem_defs.asm:158    *ABS*:000000000000401e DMEM_21E
+       pmem_defs.asm:159    *ABS*:000000000000401f DMEM_21F
+       pmem_defs.asm:161    *ABS*:0000000000004020 DMEM_220
+       pmem_defs.asm:162    *ABS*:0000000000004021 DMEM_221
+       pmem_defs.asm:163    *ABS*:0000000000004022 DMEM_222
+       pmem_defs.asm:164    *ABS*:0000000000004023 DMEM_223
+       pmem_defs.asm:165    *ABS*:0000000000004024 DMEM_224
+       pmem_defs.asm:166    *ABS*:0000000000004025 DMEM_225
+       pmem_defs.asm:167    *ABS*:0000000000004026 DMEM_226
+       pmem_defs.asm:168    *ABS*:0000000000004027 DMEM_227
+       pmem_defs.asm:169    *ABS*:0000000000004028 DMEM_228
+       pmem_defs.asm:170    *ABS*:0000000000004029 DMEM_229
+       pmem_defs.asm:171    *ABS*:000000000000402a DMEM_22A
+       pmem_defs.asm:172    *ABS*:000000000000402b DMEM_22B
+       pmem_defs.asm:173    *ABS*:000000000000402c DMEM_22C
+       pmem_defs.asm:174    *ABS*:000000000000402d DMEM_22D
+       pmem_defs.asm:175    *ABS*:000000000000402e DMEM_22E
+       pmem_defs.asm:176    *ABS*:000000000000402f DMEM_22F
+       pmem_defs.asm:178    *ABS*:0000000000004030 DMEM_230
+       pmem_defs.asm:179    *ABS*:0000000000004031 DMEM_231
+       pmem_defs.asm:180    *ABS*:0000000000004032 DMEM_232
+       pmem_defs.asm:181    *ABS*:0000000000004033 DMEM_233
+       pmem_defs.asm:182    *ABS*:0000000000004034 DMEM_234
+       pmem_defs.asm:183    *ABS*:0000000000004035 DMEM_235
+       pmem_defs.asm:184    *ABS*:0000000000004036 DMEM_236
+GAS LISTING /home/ubuntu/rasp30/prog_assembly/libs/asm_code/tunnel_revtun_SWC_CAB_ver00.s43 			page 13
+
+
+       pmem_defs.asm:185    *ABS*:0000000000004037 DMEM_237
+       pmem_defs.asm:186    *ABS*:0000000000004038 DMEM_238
+       pmem_defs.asm:187    *ABS*:0000000000004039 DMEM_239
+       pmem_defs.asm:188    *ABS*:000000000000403a DMEM_23A
+       pmem_defs.asm:189    *ABS*:000000000000403b DMEM_23B
+       pmem_defs.asm:190    *ABS*:000000000000403c DMEM_23C
+       pmem_defs.asm:191    *ABS*:000000000000403d DMEM_23D
+       pmem_defs.asm:192    *ABS*:000000000000403e DMEM_23E
+       pmem_defs.asm:193    *ABS*:000000000000403f DMEM_23F
+       pmem_defs.asm:195    *ABS*:0000000000004040 DMEM_240
+       pmem_defs.asm:196    *ABS*:0000000000004041 DMEM_241
+       pmem_defs.asm:197    *ABS*:0000000000004042 DMEM_242
+       pmem_defs.asm:198    *ABS*:0000000000004043 DMEM_243
+       pmem_defs.asm:199    *ABS*:0000000000004044 DMEM_244
+       pmem_defs.asm:200    *ABS*:0000000000004045 DMEM_245
+       pmem_defs.asm:201    *ABS*:0000000000004046 DMEM_246
+       pmem_defs.asm:202    *ABS*:0000000000004047 DMEM_247
+       pmem_defs.asm:203    *ABS*:0000000000004048 DMEM_248
+       pmem_defs.asm:204    *ABS*:0000000000004049 DMEM_249
+       pmem_defs.asm:205    *ABS*:000000000000404a DMEM_24A
+       pmem_defs.asm:206    *ABS*:000000000000404b DMEM_24B
+       pmem_defs.asm:207    *ABS*:000000000000404c DMEM_24C
+       pmem_defs.asm:208    *ABS*:000000000000404d DMEM_24D
+       pmem_defs.asm:209    *ABS*:000000000000404e DMEM_24E
+       pmem_defs.asm:210    *ABS*:000000000000404f DMEM_24F
+       pmem_defs.asm:212    *ABS*:0000000000004050 DMEM_250
+       pmem_defs.asm:213    *ABS*:0000000000004051 DMEM_251
+       pmem_defs.asm:214    *ABS*:0000000000004052 DMEM_252
+       pmem_defs.asm:215    *ABS*:0000000000004053 DMEM_253
+       pmem_defs.asm:216    *ABS*:0000000000004054 DMEM_254
+       pmem_defs.asm:217    *ABS*:0000000000004055 DMEM_255
+       pmem_defs.asm:218    *ABS*:0000000000004056 DMEM_256
+       pmem_defs.asm:219    *ABS*:0000000000004057 DMEM_257
+       pmem_defs.asm:220    *ABS*:0000000000004058 DMEM_258
+       pmem_defs.asm:221    *ABS*:0000000000004059 DMEM_259
+       pmem_defs.asm:222    *ABS*:000000000000405a DMEM_25A
+       pmem_defs.asm:223    *ABS*:000000000000405b DMEM_25B
+       pmem_defs.asm:224    *ABS*:000000000000405c DMEM_25C
+       pmem_defs.asm:225    *ABS*:000000000000405d DMEM_25D
+       pmem_defs.asm:226    *ABS*:000000000000405e DMEM_25E
+       pmem_defs.asm:227    *ABS*:000000000000405f DMEM_25F
+       pmem_defs.asm:229    *ABS*:0000000000004060 DMEM_260
+       pmem_defs.asm:230    *ABS*:0000000000004061 DMEM_261
+       pmem_defs.asm:231    *ABS*:0000000000004062 DMEM_262
+       pmem_defs.asm:232    *ABS*:0000000000004063 DMEM_263
+       pmem_defs.asm:233    *ABS*:0000000000004064 DMEM_264
+       pmem_defs.asm:234    *ABS*:0000000000004065 DMEM_265
+       pmem_defs.asm:235    *ABS*:0000000000004066 DMEM_266
+       pmem_defs.asm:236    *ABS*:0000000000004067 DMEM_267
+       pmem_defs.asm:237    *ABS*:0000000000004068 DMEM_268
+       pmem_defs.asm:238    *ABS*:0000000000004069 DMEM_269
+       pmem_defs.asm:239    *ABS*:000000000000406a DMEM_26A
+       pmem_defs.asm:240    *ABS*:000000000000406b DMEM_26B
+       pmem_defs.asm:241    *ABS*:000000000000406c DMEM_26C
+       pmem_defs.asm:242    *ABS*:000000000000406d DMEM_26D
+       pmem_defs.asm:243    *ABS*:000000000000406e DMEM_26E
+       pmem_defs.asm:244    *ABS*:000000000000406f DMEM_26F
+GAS LISTING /home/ubuntu/rasp30/prog_assembly/libs/asm_code/tunnel_revtun_SWC_CAB_ver00.s43 			page 14
+
+
+       pmem_defs.asm:246    *ABS*:0000000000004100 DMEM_300
+       pmem_defs.asm:251    *ABS*:0000000000004000 PMEM_LENGTH
+       pmem_defs.asm:256    *ABS*:0000000000000b00 DRAIN_CTRL
+       pmem_defs.asm:257    *ABS*:0000000000000b02 GATE_S
+       pmem_defs.asm:258    *ABS*:0000000000000b04 ADC
+       pmem_defs.asm:259    *ABS*:0000000000000b06 PULSE_CTRL
+       pmem_defs.asm:260    *ABS*:0000000000000b08 ROW_SEL
+       pmem_defs.asm:261    *ABS*:0000000000000b0a COL_SEL
+       pmem_defs.asm:262    *ABS*:0000000000000b0c PROG_BITS
+       pmem_defs.asm:263    *ABS*:0000000000000b0e TUN_MUX
+       pmem_defs.asm:264    *ABS*:0000000000000b10 GATE_US_P
+       pmem_defs.asm:265    *ABS*:0000000000000b12 GATE_US_N
+       pmem_defs.asm:266    *ABS*:0000000000000b14 BIAS_DACS
+       pmem_defs.asm:267    *ABS*:0000000000000160 GP_PER_1
+       pmem_defs.asm:268    *ABS*:0000000000000162 GP_PER_2
+       pmem_defs.asm:269    *ABS*:0000000000000164 GP_PER_3
+       pmem_defs.asm:270    *ABS*:0000000000000166 GP_PER_4
+    chip_para_TR.asm:4      *ABS*:0000000000000003 TUN_TIME_SP
+    chip_para_TR.asm:5      *ABS*:0000000000000002 R_TUN_TIME_SP
+    chip_para_TR.asm:6      *ABS*:0000000000000028 TUN_TIME_TP_CAB
+    chip_para_TR.asm:7      *ABS*:0000000000000028 R_TUN_TIME_TP_CAB
+/home/ubuntu/rasp30/prog_assembly/libs/asm_code/tunnel_revtun_SWC_CAB_ver00.s43:6      .text:0000000000000000 main
+/home/ubuntu/rasp30/prog_assembly/libs/asm_code/tunnel_revtun_SWC_CAB_ver00.s43:11     .text:000000000000000e init_wait
+/home/ubuntu/rasp30/prog_assembly/libs/asm_code/tunnel_revtun_SWC_CAB_ver00.s43:33     .text:000000000000005a tunnel_swc
+/home/ubuntu/rasp30/prog_assembly/libs/asm_code/tunnel_revtun_SWC_CAB_ver00.s43:64     .text:00000000000000d0 tunnel_cab
+/home/ubuntu/rasp30/prog_assembly/libs/asm_code/tunnel_revtun_SWC_CAB_ver00.s43:96     .text:0000000000000148 reverse_tunnel_swc
+/home/ubuntu/rasp30/prog_assembly/libs/asm_code/tunnel_revtun_SWC_CAB_ver00.s43:133    .text:00000000000001d4 reverse_tunnel_cab
+/home/ubuntu/rasp30/prog_assembly/libs/asm_code/tunnel_revtun_SWC_CAB_ver00.s43:195    .text:000000000000028e end_of_test
+/home/ubuntu/rasp30/prog_assembly/libs/asm_code/tunnel_revtun_SWC_CAB_ver00.s43:35     .text:000000000000005c tunnel_swc_s
+/home/ubuntu/rasp30/prog_assembly/libs/asm_code/tunnel_revtun_SWC_CAB_ver00.s43:173    .text:000000000000026a wait_ms
+/home/ubuntu/rasp30/prog_assembly/libs/asm_code/tunnel_revtun_SWC_CAB_ver00.s43:61     .text:00000000000000ce tunnel_swc_e
+/home/ubuntu/rasp30/prog_assembly/libs/asm_code/tunnel_revtun_SWC_CAB_ver00.s43:66     .text:00000000000000d2 tunnel_cab_s
+/home/ubuntu/rasp30/prog_assembly/libs/asm_code/tunnel_revtun_SWC_CAB_ver00.s43:93     .text:0000000000000146 tunnel_cab_e
+/home/ubuntu/rasp30/prog_assembly/libs/asm_code/tunnel_revtun_SWC_CAB_ver00.s43:98     .text:000000000000014a reverse_tunnel_swc_s
+/home/ubuntu/rasp30/prog_assembly/libs/asm_code/tunnel_revtun_SWC_CAB_ver00.s43:130    .text:00000000000001d2 reverse_tunnel_swc_e
+/home/ubuntu/rasp30/prog_assembly/libs/asm_code/tunnel_revtun_SWC_CAB_ver00.s43:135    .text:00000000000001d6 reverse_tunnel_cab_s
+/home/ubuntu/rasp30/prog_assembly/libs/asm_code/tunnel_revtun_SWC_CAB_ver00.s43:170    .text:0000000000000268 reverse_tunnel_cab_e
+/home/ubuntu/rasp30/prog_assembly/libs/asm_code/tunnel_revtun_SWC_CAB_ver00.s43:176    .text:0000000000000270 wait_ms_loop
+/home/ubuntu/rasp30/prog_assembly/libs/asm_code/tunnel_revtun_SWC_CAB_ver00.s43:184    .text:000000000000027c wait_10us
+/home/ubuntu/rasp30/prog_assembly/libs/asm_code/tunnel_revtun_SWC_CAB_ver00.s43:187    .text:0000000000000282 wait_10us_loop
+
+NO UNDEFINED SYMBOLS
+
+tunnel_revtun_SWC_CAB.o:     file format elf32-msp430
+tunnel_revtun_SWC_CAB.o
+architecture: msp430:430, flags 0x00000011:
+HAS_RELOC, HAS_SYMS
+start address 0x00000000
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         00000296  00000000  00000000  00000034  2**0
+                  CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
+  1 .data         00000000  00000000  00000000  000002ca  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  2 .bss          00000000  00000000  00000000  000002ca  2**0
+                  ALLOC
+  3 .vectors      00000020  00000000  00000000  000002ca  2**0
+                  CONTENTS, ALLOC, LOAD, RELOC, READONLY, DATA
+SYMBOL TABLE:
+00000000 l    d  .text	00000000 .text
+00000000 l    d  .data	00000000 .data
+00000000 l    d  .bss	00000000 .bss
+00000000 l       *ABS*	00000000 IE1
+00000001 l       *ABS*	00000000 IE1_HI
+00000002 l       *ABS*	00000000 IFG1
+00000003 l       *ABS*	00000000 IFG1_HI
+00000004 l       *ABS*	00000000 CPU_ID_LO
+00000006 l       *ABS*	00000000 CPU_ID_HI
+00000008 l       *ABS*	00000000 CPU_NR
+00000020 l       *ABS*	00000000 P1IN
+00000021 l       *ABS*	00000000 P1OUT
+00000022 l       *ABS*	00000000 P1DIR
+00000023 l       *ABS*	00000000 P1IFG
+00000024 l       *ABS*	00000000 P1IES
+00000025 l       *ABS*	00000000 P1IE
+00000026 l       *ABS*	00000000 P1SEL
+00000028 l       *ABS*	00000000 P2IN
+00000029 l       *ABS*	00000000 P2OUT
+0000002a l       *ABS*	00000000 P2DIR
+0000002b l       *ABS*	00000000 P2IFG
+0000002c l       *ABS*	00000000 P2IES
+0000002d l       *ABS*	00000000 P2IE
+0000002e l       *ABS*	00000000 P2SEL
+00000018 l       *ABS*	00000000 P3IN
+00000019 l       *ABS*	00000000 P3OUT
+0000001a l       *ABS*	00000000 P3DIR
+0000001b l       *ABS*	00000000 P3SEL
+0000001c l       *ABS*	00000000 P4IN
+0000001d l       *ABS*	00000000 P4OUT
+0000001e l       *ABS*	00000000 P4DIR
+0000001f l       *ABS*	00000000 P4SEL
+00000030 l       *ABS*	00000000 P5IN
+00000031 l       *ABS*	00000000 P5OUT
+00000032 l       *ABS*	00000000 P5DIR
+00000033 l       *ABS*	00000000 P5SEL
+00000034 l       *ABS*	00000000 P6IN
+00000035 l       *ABS*	00000000 P6OUT
+00000036 l       *ABS*	00000000 P6DIR
+00000037 l       *ABS*	00000000 P6SEL
+00000057 l       *ABS*	00000000 BCSCTL1
+00000058 l       *ABS*	00000000 BCSCTL2
+00000120 l       *ABS*	00000000 WDTCTL
+00000130 l       *ABS*	00000000 MPY
+00000132 l       *ABS*	00000000 MPYS
+00000134 l       *ABS*	00000000 MAC
+00000136 l       *ABS*	00000000 MACS
+00000138 l       *ABS*	00000000 OP2
+0000013a l       *ABS*	00000000 RESLO
+0000013c l       *ABS*	00000000 RESHI
+0000013e l       *ABS*	00000000 SUMEXT
+00000160 l       *ABS*	00000000 TACTL
+00000170 l       *ABS*	00000000 TAR
+00000162 l       *ABS*	00000000 TACCTL0
+00000172 l       *ABS*	00000000 TACCR0
+00000164 l       *ABS*	00000000 TACCTL1
+00000174 l       *ABS*	00000000 TACCR1
+00000166 l       *ABS*	00000000 TACCTL2
+00000176 l       *ABS*	00000000 TACCR2
+0000012e l       *ABS*	00000000 TAIV
+00004000 l       *ABS*	00000000 DMEM_BASE
+00004000 l       *ABS*	00000000 DMEM_200
+00004001 l       *ABS*	00000000 DMEM_201
+00004002 l       *ABS*	00000000 DMEM_202
+00004003 l       *ABS*	00000000 DMEM_203
+00004004 l       *ABS*	00000000 DMEM_204
+00004005 l       *ABS*	00000000 DMEM_205
+00004006 l       *ABS*	00000000 DMEM_206
+00004007 l       *ABS*	00000000 DMEM_207
+00004008 l       *ABS*	00000000 DMEM_208
+00004009 l       *ABS*	00000000 DMEM_209
+0000400a l       *ABS*	00000000 DMEM_20A
+0000400b l       *ABS*	00000000 DMEM_20B
+0000400c l       *ABS*	00000000 DMEM_20C
+0000400d l       *ABS*	00000000 DMEM_20D
+0000400e l       *ABS*	00000000 DMEM_20E
+0000400f l       *ABS*	00000000 DMEM_20F
+00004010 l       *ABS*	00000000 DMEM_210
+00004011 l       *ABS*	00000000 DMEM_211
+00004012 l       *ABS*	00000000 DMEM_212
+00004013 l       *ABS*	00000000 DMEM_213
+00004014 l       *ABS*	00000000 DMEM_214
+00004015 l       *ABS*	00000000 DMEM_215
+00004016 l       *ABS*	00000000 DMEM_216
+00004017 l       *ABS*	00000000 DMEM_217
+00004018 l       *ABS*	00000000 DMEM_218
+00004019 l       *ABS*	00000000 DMEM_219
+0000401a l       *ABS*	00000000 DMEM_21A
+0000401b l       *ABS*	00000000 DMEM_21B
+0000401c l       *ABS*	00000000 DMEM_21C
+0000401d l       *ABS*	00000000 DMEM_21D
+0000401e l       *ABS*	00000000 DMEM_21E
+0000401f l       *ABS*	00000000 DMEM_21F
+00004020 l       *ABS*	00000000 DMEM_220
+00004021 l       *ABS*	00000000 DMEM_221
+00004022 l       *ABS*	00000000 DMEM_222
+00004023 l       *ABS*	00000000 DMEM_223
+00004024 l       *ABS*	00000000 DMEM_224
+00004025 l       *ABS*	00000000 DMEM_225
+00004026 l       *ABS*	00000000 DMEM_226
+00004027 l       *ABS*	00000000 DMEM_227
+00004028 l       *ABS*	00000000 DMEM_228
+00004029 l       *ABS*	00000000 DMEM_229
+0000402a l       *ABS*	00000000 DMEM_22A
+0000402b l       *ABS*	00000000 DMEM_22B
+0000402c l       *ABS*	00000000 DMEM_22C
+0000402d l       *ABS*	00000000 DMEM_22D
+0000402e l       *ABS*	00000000 DMEM_22E
+0000402f l       *ABS*	00000000 DMEM_22F
+00004030 l       *ABS*	00000000 DMEM_230
+00004031 l       *ABS*	00000000 DMEM_231
+00004032 l       *ABS*	00000000 DMEM_232
+00004033 l       *ABS*	00000000 DMEM_233
+00004034 l       *ABS*	00000000 DMEM_234
+00004035 l       *ABS*	00000000 DMEM_235
+00004036 l       *ABS*	00000000 DMEM_236
+00004037 l       *ABS*	00000000 DMEM_237
+00004038 l       *ABS*	00000000 DMEM_238
+00004039 l       *ABS*	00000000 DMEM_239
+0000403a l       *ABS*	00000000 DMEM_23A
+0000403b l       *ABS*	00000000 DMEM_23B
+0000403c l       *ABS*	00000000 DMEM_23C
+0000403d l       *ABS*	00000000 DMEM_23D
+0000403e l       *ABS*	00000000 DMEM_23E
+0000403f l       *ABS*	00000000 DMEM_23F
+00004040 l       *ABS*	00000000 DMEM_240
+00004041 l       *ABS*	00000000 DMEM_241
+00004042 l       *ABS*	00000000 DMEM_242
+00004043 l       *ABS*	00000000 DMEM_243
+00004044 l       *ABS*	00000000 DMEM_244
+00004045 l       *ABS*	00000000 DMEM_245
+00004046 l       *ABS*	00000000 DMEM_246
+00004047 l       *ABS*	00000000 DMEM_247
+00004048 l       *ABS*	00000000 DMEM_248
+00004049 l       *ABS*	00000000 DMEM_249
+0000404a l       *ABS*	00000000 DMEM_24A
+0000404b l       *ABS*	00000000 DMEM_24B
+0000404c l       *ABS*	00000000 DMEM_24C
+0000404d l       *ABS*	00000000 DMEM_24D
+0000404e l       *ABS*	00000000 DMEM_24E
+0000404f l       *ABS*	00000000 DMEM_24F
+00004050 l       *ABS*	00000000 DMEM_250
+00004051 l       *ABS*	00000000 DMEM_251
+00004052 l       *ABS*	00000000 DMEM_252
+00004053 l       *ABS*	00000000 DMEM_253
+00004054 l       *ABS*	00000000 DMEM_254
+00004055 l       *ABS*	00000000 DMEM_255
+00004056 l       *ABS*	00000000 DMEM_256
+00004057 l       *ABS*	00000000 DMEM_257
+00004058 l       *ABS*	00000000 DMEM_258
+00004059 l       *ABS*	00000000 DMEM_259
+0000405a l       *ABS*	00000000 DMEM_25A
+0000405b l       *ABS*	00000000 DMEM_25B
+0000405c l       *ABS*	00000000 DMEM_25C
+0000405d l       *ABS*	00000000 DMEM_25D
+0000405e l       *ABS*	00000000 DMEM_25E
+0000405f l       *ABS*	00000000 DMEM_25F
+00004060 l       *ABS*	00000000 DMEM_260
+00004061 l       *ABS*	00000000 DMEM_261
+00004062 l       *ABS*	00000000 DMEM_262
+00004063 l       *ABS*	00000000 DMEM_263
+00004064 l       *ABS*	00000000 DMEM_264
+00004065 l       *ABS*	00000000 DMEM_265
+00004066 l       *ABS*	00000000 DMEM_266
+00004067 l       *ABS*	00000000 DMEM_267
+00004068 l       *ABS*	00000000 DMEM_268
+00004069 l       *ABS*	00000000 DMEM_269
+0000406a l       *ABS*	00000000 DMEM_26A
+0000406b l       *ABS*	00000000 DMEM_26B
+0000406c l       *ABS*	00000000 DMEM_26C
+0000406d l       *ABS*	00000000 DMEM_26D
+0000406e l       *ABS*	00000000 DMEM_26E
+0000406f l       *ABS*	00000000 DMEM_26F
+00004100 l       *ABS*	00000000 DMEM_300
+00004000 l       *ABS*	00000000 PMEM_LENGTH
+00000b00 l       *ABS*	00000000 DRAIN_CTRL
+00000b02 l       *ABS*	00000000 GATE_S
+00000b04 l       *ABS*	00000000 ADC
+00000b06 l       *ABS*	00000000 PULSE_CTRL
+00000b08 l       *ABS*	00000000 ROW_SEL
+00000b0a l       *ABS*	00000000 COL_SEL
+00000b0c l       *ABS*	00000000 PROG_BITS
+00000b0e l       *ABS*	00000000 TUN_MUX
+00000b10 l       *ABS*	00000000 GATE_US_P
+00000b12 l       *ABS*	00000000 GATE_US_N
+00000b14 l       *ABS*	00000000 BIAS_DACS
+00000160 l       *ABS*	00000000 GP_PER_1
+00000162 l       *ABS*	00000000 GP_PER_2
+00000164 l       *ABS*	00000000 GP_PER_3
+00000166 l       *ABS*	00000000 GP_PER_4
+00000003 l       *ABS*	00000000 TUN_TIME_SP
+00000002 l       *ABS*	00000000 R_TUN_TIME_SP
+00000028 l       *ABS*	00000000 TUN_TIME_TP_CAB
+00000028 l       *ABS*	00000000 R_TUN_TIME_TP_CAB
+0000000e l       .text	00000000 init_wait
+0000005a l       .text	00000000 tunnel_swc
+000000d0 l       .text	00000000 tunnel_cab
+00000148 l       .text	00000000 reverse_tunnel_swc
+000001d4 l       .text	00000000 reverse_tunnel_cab
+0000028e l       .text	00000000 end_of_test
+0000005c l       .text	00000000 tunnel_swc_s
+0000026a l       .text	00000000 wait_ms
+000000ce l       .text	00000000 tunnel_swc_e
+000000d2 l       .text	00000000 tunnel_cab_s
+00000146 l       .text	00000000 tunnel_cab_e
+0000014a l       .text	00000000 reverse_tunnel_swc_s
+000001d2 l       .text	00000000 reverse_tunnel_swc_e
+000001d6 l       .text	00000000 reverse_tunnel_cab_s
+00000268 l       .text	00000000 reverse_tunnel_cab_e
+00000270 l       .text	00000000 wait_ms_loop
+0000027c l       .text	00000000 wait_10us
+00000282 l       .text	00000000 wait_10us_loop
+00000000 l    d  .vectors	00000000 .vectors
+00000000 g       .text	00000000 main
+
+
+Contents of section .text:
+ 0000 31405040 37400050 0a433540 88131583  1@P@7@.P.C5@....
+ 0010 fe23b240 10005800 b240805a 200132c2  .#.@..X..@.Z .2.
+ 0020 a2430e0b b24004be 6401b240 6600000b  .C...@..d..@f...
+ 0030 b2402400 6001b240 00800c0b 8243080b  .@$.`..@.....C..
+ 0040 82430a0b b0120000 b0120000 b0120000  .C..............
+ 0050 b0120000 b7430000 1a3d1b43 b2400080  .....C...=.C.@..
+ 0060 0c0bb240 04ae6401 b2402400 60018243  ...@..d..@$.`..C
+ 0070 080b8243 0a0b3540 0500b012 0000b240  ...C..5@.......@
+ 0080 4000020b b2404000 100bb240 4000120b  @....@@....@@...
+ 0090 b2402600 000ba242 6001b243 0e0b3540  .@&....B`..C..5@
+ 00a0 0300b012 00003a50 0300a243 0e0bb240  ......:P...C...@
+ 00b0 04be6401 b2406600 000bb240 24006001  ..d..@f....@$.`.
+ 00c0 35401400 b0120000 1b830124 c73f3041  5@.........$.?0A
+ 00d0 1b43b240 00800c0b b24004ae 6401b240  .C.@.....@..d..@
+ 00e0 24006001 8243080b 82430a0b 35400500  $.`..C...C..5@..
+ 00f0 b0120000 b2404000 020bb240 4000100b  .....@@....@@...
+ 0100 b2404000 120bb240 2600000b a2426001  .@@....@&....B`.
+ 0110 b2401000 0e0b3540 2800b012 00003a50  .@....5@(.....:P
+ 0120 2800a243 0e0bb240 04be6401 b2406600  (..C...@..d..@f.
+ 0130 000bb240 24006001 35401400 b0120000  ...@$.`.5@......
+ 0140 1b830124 c63f3041 1b43b240 00800c0b  ...$.?0A.C.@....
+ 0150 b2402000 6001a243 0e0bb240 6600000b  .@ .`..C...@f...
+ 0160 b2406000 020bb240 6000100b b2406000  .@`....@`....@`.
+ 0170 120b8243 080b8243 0a0b3540 0500b012  ...C...C..5@....
+ 0180 0000b240 10006001 2543b012 00002a53  ...@..`.%C....*S
+ 0190 b2402000 60013540 0500b012 0000b240  .@ .`.5@.......@
+ 01a0 4000020b b2404000 100bb240 4000120b  @....@@....@@...
+ 01b0 b2402600 000ba242 60012543 b0120000  .@&....B`.%C....
+ 01c0 b2402400 60011543 b0120000 1b830124  .@$.`..C.......$
+ 01d0 bc3f3041 1b43b240 00800c0b b2402400  .?0A.C.@.....@$.
+ 01e0 6001b240 28000e0b b2406600 000bb240  `..@(....@f....@
+ 01f0 6000020b b2406000 100bb240 6000120b  `....@`....@`...
+ 0200 8243080b 82430a0b 35400500 b0120000  .C...C..5@......
+ 0210 b2401000 60013540 2800b012 00003a50  .@..`.5@(.....:P
+ 0220 2800b240 20006001 35400500 b0120000  (..@ .`.5@......
+ 0230 b2404000 020bb240 4000100b b2404000  .@@....@@....@@.
+ 0240 120bb240 2600000b a2426001 2543b012  ...@&....B`.%C..
+ 0250 0000b240 24006001 a2430e0b 1543b012  ...@$.`..C...C..
+ 0260 00001b83 0124b73f 30413440 fc0c0644  .....$.?0A4@...D
+ 0270 1683fe23 06441583 fb233041 34402200  ...#.D...#0A4@".
+ 0280 06441683 fe230644 1583fb23 30418243  .D...#.D...#0A.C
+ 0290 58000343 3043                        X..C0C          
+Contents of section .vectors:
+ 0000 00000000 00000000 00000000 00000000  ................
+ 0010 00000000 00000000 00000000 00000000  ................
+
+Disassembly of section .text:
+
+00000000 <main>:
+   0:	31 40 50 40 	mov	#16464,	r1	;#0x4050
+   4:	37 40 00 50 	mov	#20480,	r7	;#0x5000
+   8:	0a 43       	clr	r10		
+   a:	35 40 88 13 	mov	#5000,	r5	;#0x1388
+
+0000000e <init_wait>:
+   e:	15 83       	dec	r5		
+  10:	fe 23       	jnz	$-2      	;abs 0xe
+  12:	b2 40 10 00 	mov	#16,	&0x0058	;#0x0010
+  16:	58 00 
+  18:	b2 40 80 5a 	mov	#23168,	&0x0120	;#0x5a80
+  1c:	20 01 
+  1e:	32 c2       	dint			
+  20:	a2 43 0e 0b 	mov	#2,	&0x0b0e	;r3 As==10
+  24:	b2 40 04 be 	mov	#-16892,&0x0164	;#0xbe04
+  28:	64 01 
+  2a:	b2 40 66 00 	mov	#102,	&0x0b00	;#0x0066
+  2e:	00 0b 
+  30:	b2 40 24 00 	mov	#36,	&0x0160	;#0x0024
+  34:	60 01 
+  36:	b2 40 00 80 	mov	#-32768,&0x0b0c	;#0x8000
+  3a:	0c 0b 
+  3c:	82 43 08 0b 	mov	#0,	&0x0b08	;r3 As==00
+  40:	82 43 0a 0b 	mov	#0,	&0x0b0a	;r3 As==00
+  44:	b0 12 00 00 	call	#0x0000	
+			46: R_MSP430_16	.text+0x5a
+  48:	b0 12 00 00 	call	#0x0000	
+			4a: R_MSP430_16	.text+0xd0
+  4c:	b0 12 00 00 	call	#0x0000	
+			4e: R_MSP430_16	.text+0x148
+  50:	b0 12 00 00 	call	#0x0000	
+			52: R_MSP430_16	.text+0x1d4
+  54:	b7 43 00 00 	mov	#-1,	0(r7)	;r3 As==11, 0x0000(r7)
+  58:	1a 3d       	jmp	$+566    	;abs 0x28e
+
+0000005a <tunnel_swc>:
+  5a:	1b 43       	mov	#1,	r11	;r3 As==01
+
+0000005c <tunnel_swc_s>:
+  5c:	b2 40 00 80 	mov	#-32768,&0x0b0c	;#0x8000
+  60:	0c 0b 
+  62:	b2 40 04 ae 	mov	#-20988,&0x0164	;#0xae04
+  66:	64 01 
+  68:	b2 40 24 00 	mov	#36,	&0x0160	;#0x0024
+  6c:	60 01 
+  6e:	82 43 08 0b 	mov	#0,	&0x0b08	;r3 As==00
+  72:	82 43 0a 0b 	mov	#0,	&0x0b0a	;r3 As==00
+  76:	35 40 05 00 	mov	#5,	r5	;#0x0005
+  7a:	b0 12 00 00 	call	#0x0000	
+			7c: R_MSP430_16	.text+0x26a
+  7e:	b2 40 40 00 	mov	#64,	&0x0b02	;#0x0040
+  82:	02 0b 
+  84:	b2 40 40 00 	mov	#64,	&0x0b10	;#0x0040
+  88:	10 0b 
+  8a:	b2 40 40 00 	mov	#64,	&0x0b12	;#0x0040
+  8e:	12 0b 
+  90:	b2 40 26 00 	mov	#38,	&0x0b00	;#0x0026
+  94:	00 0b 
+  96:	a2 42 60 01 	mov	#4,	&0x0160	;r2 As==10
+  9a:	b2 43 0e 0b 	mov	#-1,	&0x0b0e	;r3 As==11
+  9e:	35 40 03 00 	mov	#3,	r5	;#0x0003
+  a2:	b0 12 00 00 	call	#0x0000	
+			a4: R_MSP430_16	.text+0x26a
+  a6:	3a 50 03 00 	add	#3,	r10	;#0x0003
+  aa:	a2 43 0e 0b 	mov	#2,	&0x0b0e	;r3 As==10
+  ae:	b2 40 04 be 	mov	#-16892,&0x0164	;#0xbe04
+  b2:	64 01 
+  b4:	b2 40 66 00 	mov	#102,	&0x0b00	;#0x0066
+  b8:	00 0b 
+  ba:	b2 40 24 00 	mov	#36,	&0x0160	;#0x0024
+  be:	60 01 
+  c0:	35 40 14 00 	mov	#20,	r5	;#0x0014
+  c4:	b0 12 00 00 	call	#0x0000	
+			c6: R_MSP430_16	.text+0x26a
+  c8:	1b 83       	dec	r11		
+  ca:	01 24       	jz	$+4      	;abs 0xce
+  cc:	c7 3f       	jmp	$-112    	;abs 0x5c
+
+000000ce <tunnel_swc_e>:
+  ce:	30 41       	ret			
+
+000000d0 <tunnel_cab>:
+  d0:	1b 43       	mov	#1,	r11	;r3 As==01
+
+000000d2 <tunnel_cab_s>:
+  d2:	b2 40 00 80 	mov	#-32768,&0x0b0c	;#0x8000
+  d6:	0c 0b 
+  d8:	b2 40 04 ae 	mov	#-20988,&0x0164	;#0xae04
+  dc:	64 01 
+  de:	b2 40 24 00 	mov	#36,	&0x0160	;#0x0024
+  e2:	60 01 
+  e4:	82 43 08 0b 	mov	#0,	&0x0b08	;r3 As==00
+  e8:	82 43 0a 0b 	mov	#0,	&0x0b0a	;r3 As==00
+  ec:	35 40 05 00 	mov	#5,	r5	;#0x0005
+  f0:	b0 12 00 00 	call	#0x0000	
+			f2: R_MSP430_16	.text+0x26a
+  f4:	b2 40 40 00 	mov	#64,	&0x0b02	;#0x0040
+  f8:	02 0b 
+  fa:	b2 40 40 00 	mov	#64,	&0x0b10	;#0x0040
+  fe:	10 0b 
+ 100:	b2 40 40 00 	mov	#64,	&0x0b12	;#0x0040
+ 104:	12 0b 
+ 106:	b2 40 26 00 	mov	#38,	&0x0b00	;#0x0026
+ 10a:	00 0b 
+ 10c:	a2 42 60 01 	mov	#4,	&0x0160	;r2 As==10
+ 110:	b2 40 10 00 	mov	#16,	&0x0b0e	;#0x0010
+ 114:	0e 0b 
+ 116:	35 40 28 00 	mov	#40,	r5	;#0x0028
+ 11a:	b0 12 00 00 	call	#0x0000	
+			11c: R_MSP430_16	.text+0x26a
+ 11e:	3a 50 28 00 	add	#40,	r10	;#0x0028
+ 122:	a2 43 0e 0b 	mov	#2,	&0x0b0e	;r3 As==10
+ 126:	b2 40 04 be 	mov	#-16892,&0x0164	;#0xbe04
+ 12a:	64 01 
+ 12c:	b2 40 66 00 	mov	#102,	&0x0b00	;#0x0066
+ 130:	00 0b 
+ 132:	b2 40 24 00 	mov	#36,	&0x0160	;#0x0024
+ 136:	60 01 
+ 138:	35 40 14 00 	mov	#20,	r5	;#0x0014
+ 13c:	b0 12 00 00 	call	#0x0000	
+			13e: R_MSP430_16	.text+0x26a
+ 140:	1b 83       	dec	r11		
+ 142:	01 24       	jz	$+4      	;abs 0x146
+ 144:	c6 3f       	jmp	$-114    	;abs 0xd2
+
+00000146 <tunnel_cab_e>:
+ 146:	30 41       	ret			
+
+00000148 <reverse_tunnel_swc>:
+ 148:	1b 43       	mov	#1,	r11	;r3 As==01
+
+0000014a <reverse_tunnel_swc_s>:
+ 14a:	b2 40 00 80 	mov	#-32768,&0x0b0c	;#0x8000
+ 14e:	0c 0b 
+ 150:	b2 40 20 00 	mov	#32,	&0x0160	;#0x0020
+ 154:	60 01 
+ 156:	a2 43 0e 0b 	mov	#2,	&0x0b0e	;r3 As==10
+ 15a:	b2 40 66 00 	mov	#102,	&0x0b00	;#0x0066
+ 15e:	00 0b 
+ 160:	b2 40 60 00 	mov	#96,	&0x0b02	;#0x0060
+ 164:	02 0b 
+ 166:	b2 40 60 00 	mov	#96,	&0x0b10	;#0x0060
+ 16a:	10 0b 
+ 16c:	b2 40 60 00 	mov	#96,	&0x0b12	;#0x0060
+ 170:	12 0b 
+ 172:	82 43 08 0b 	mov	#0,	&0x0b08	;r3 As==00
+ 176:	82 43 0a 0b 	mov	#0,	&0x0b0a	;r3 As==00
+ 17a:	35 40 05 00 	mov	#5,	r5	;#0x0005
+ 17e:	b0 12 00 00 	call	#0x0000	
+			180: R_MSP430_16	.text+0x26a
+ 182:	b2 40 10 00 	mov	#16,	&0x0160	;#0x0010
+ 186:	60 01 
+ 188:	25 43       	mov	#2,	r5	;r3 As==10
+ 18a:	b0 12 00 00 	call	#0x0000	
+			18c: R_MSP430_16	.text+0x26a
+ 18e:	2a 53       	incd	r10		
+ 190:	b2 40 20 00 	mov	#32,	&0x0160	;#0x0020
+ 194:	60 01 
+ 196:	35 40 05 00 	mov	#5,	r5	;#0x0005
+ 19a:	b0 12 00 00 	call	#0x0000	
+			19c: R_MSP430_16	.text+0x26a
+ 19e:	b2 40 40 00 	mov	#64,	&0x0b02	;#0x0040
+ 1a2:	02 0b 
+ 1a4:	b2 40 40 00 	mov	#64,	&0x0b10	;#0x0040
+ 1a8:	10 0b 
+ 1aa:	b2 40 40 00 	mov	#64,	&0x0b12	;#0x0040
+ 1ae:	12 0b 
+ 1b0:	b2 40 26 00 	mov	#38,	&0x0b00	;#0x0026
+ 1b4:	00 0b 
+ 1b6:	a2 42 60 01 	mov	#4,	&0x0160	;r2 As==10
+ 1ba:	25 43       	mov	#2,	r5	;r3 As==10
+ 1bc:	b0 12 00 00 	call	#0x0000	
+			1be: R_MSP430_16	.text+0x26a
+ 1c0:	b2 40 24 00 	mov	#36,	&0x0160	;#0x0024
+ 1c4:	60 01 
+ 1c6:	15 43       	mov	#1,	r5	;r3 As==01
+ 1c8:	b0 12 00 00 	call	#0x0000	
+			1ca: R_MSP430_16	.text+0x26a
+ 1cc:	1b 83       	dec	r11		
+ 1ce:	01 24       	jz	$+4      	;abs 0x1d2
+ 1d0:	bc 3f       	jmp	$-134    	;abs 0x14a
+
+000001d2 <reverse_tunnel_swc_e>:
+ 1d2:	30 41       	ret			
+
+000001d4 <reverse_tunnel_cab>:
+ 1d4:	1b 43       	mov	#1,	r11	;r3 As==01
+
+000001d6 <reverse_tunnel_cab_s>:
+ 1d6:	b2 40 00 80 	mov	#-32768,&0x0b0c	;#0x8000
+ 1da:	0c 0b 
+ 1dc:	b2 40 24 00 	mov	#36,	&0x0160	;#0x0024
+ 1e0:	60 01 
+ 1e2:	b2 40 28 00 	mov	#40,	&0x0b0e	;#0x0028
+ 1e6:	0e 0b 
+ 1e8:	b2 40 66 00 	mov	#102,	&0x0b00	;#0x0066
+ 1ec:	00 0b 
+ 1ee:	b2 40 60 00 	mov	#96,	&0x0b02	;#0x0060
+ 1f2:	02 0b 
+ 1f4:	b2 40 60 00 	mov	#96,	&0x0b10	;#0x0060
+ 1f8:	10 0b 
+ 1fa:	b2 40 60 00 	mov	#96,	&0x0b12	;#0x0060
+ 1fe:	12 0b 
+ 200:	82 43 08 0b 	mov	#0,	&0x0b08	;r3 As==00
+ 204:	82 43 0a 0b 	mov	#0,	&0x0b0a	;r3 As==00
+ 208:	35 40 05 00 	mov	#5,	r5	;#0x0005
+ 20c:	b0 12 00 00 	call	#0x0000	
+			20e: R_MSP430_16	.text+0x26a
+ 210:	b2 40 10 00 	mov	#16,	&0x0160	;#0x0010
+ 214:	60 01 
+ 216:	35 40 28 00 	mov	#40,	r5	;#0x0028
+ 21a:	b0 12 00 00 	call	#0x0000	
+			21c: R_MSP430_16	.text+0x26a
+ 21e:	3a 50 28 00 	add	#40,	r10	;#0x0028
+ 222:	b2 40 20 00 	mov	#32,	&0x0160	;#0x0020
+ 226:	60 01 
+ 228:	35 40 05 00 	mov	#5,	r5	;#0x0005
+ 22c:	b0 12 00 00 	call	#0x0000	
+			22e: R_MSP430_16	.text+0x26a
+ 230:	b2 40 40 00 	mov	#64,	&0x0b02	;#0x0040
+ 234:	02 0b 
+ 236:	b2 40 40 00 	mov	#64,	&0x0b10	;#0x0040
+ 23a:	10 0b 
+ 23c:	b2 40 40 00 	mov	#64,	&0x0b12	;#0x0040
+ 240:	12 0b 
+ 242:	b2 40 26 00 	mov	#38,	&0x0b00	;#0x0026
+ 246:	00 0b 
+ 248:	a2 42 60 01 	mov	#4,	&0x0160	;r2 As==10
+ 24c:	25 43       	mov	#2,	r5	;r3 As==10
+ 24e:	b0 12 00 00 	call	#0x0000	
+			250: R_MSP430_16	.text+0x26a
+ 252:	b2 40 24 00 	mov	#36,	&0x0160	;#0x0024
+ 256:	60 01 
+ 258:	a2 43 0e 0b 	mov	#2,	&0x0b0e	;r3 As==10
+ 25c:	15 43       	mov	#1,	r5	;r3 As==01
+ 25e:	b0 12 00 00 	call	#0x0000	
+			260: R_MSP430_16	.text+0x26a
+ 262:	1b 83       	dec	r11		
+ 264:	01 24       	jz	$+4      	;abs 0x268
+ 266:	b7 3f       	jmp	$-144    	;abs 0x1d6
+
+00000268 <reverse_tunnel_cab_e>:
+ 268:	30 41       	ret			
+
+0000026a <wait_ms>:
+ 26a:	34 40 fc 0c 	mov	#3324,	r4	;#0x0cfc
+ 26e:	06 44       	mov	r4,	r6	
+
+00000270 <wait_ms_loop>:
+ 270:	16 83       	dec	r6		
+ 272:	fe 23       	jnz	$-2      	;abs 0x270
+ 274:	06 44       	mov	r4,	r6	
+ 276:	15 83       	dec	r5		
+ 278:	fb 23       	jnz	$-8      	;abs 0x270
+ 27a:	30 41       	ret			
+
+0000027c <wait_10us>:
+ 27c:	34 40 22 00 	mov	#34,	r4	;#0x0022
+ 280:	06 44       	mov	r4,	r6	
+
+00000282 <wait_10us_loop>:
+ 282:	16 83       	dec	r6		
+ 284:	fe 23       	jnz	$-2      	;abs 0x282
+ 286:	06 44       	mov	r4,	r6	
+ 288:	15 83       	dec	r5		
+ 28a:	fb 23       	jnz	$-8      	;abs 0x282
+ 28c:	30 41       	ret			
+
+0000028e <end_of_test>:
+ 28e:	82 43 58 00 	mov	#0,	&0x0058	;r3 As==00
+ 292:	03 43       	nop			
+ 294:	30 43       	br	#-1		;r3 As==11

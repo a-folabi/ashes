@@ -1,0 +1,10 @@
+.model ors_buffer
+.inputs net2_1
+.outputs net1_1
+# 5 pad_in
+# 13 pad_out
+
+#ota_buf
+.subckt ota_buf in[0]=net2_1 out[0]=net1_1 #ota_buf_bias =1e-05&ota_buf_ls =0
+
+.end

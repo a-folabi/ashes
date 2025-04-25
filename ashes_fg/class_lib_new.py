@@ -52,7 +52,7 @@ class TSMC350nm_4x2_Direct(StandardCell):
 		circuit.addInstance(self,self.island)
 
 class TSMC350nm_4x2_Indirect(StandardCell):
-	def __init__(self,circuit,island=None,dim=(1,1),Vd_P=None,Vd_R=None,Vs=None,VINJ=None,Vsel=None,Vg=None,GND=None,VTUN=None):
+	def __init__(self,circuit,island=None,dim=(1,1),Vd_P=None,Vd_R=None,Vs=None,VINJ=None,Vsel=None,Vg=None,GND=None,VTUN=None,GND_b=None):
 
 		# Define variables
 		self.circuit = circuit
@@ -72,10 +72,11 @@ class TSMC350nm_4x2_Indirect(StandardCell):
 		self.Vg = Port(circuit,self,'Vg','N',2*self.dim[1])
 		self.GND = Port(circuit,self,'GND','N',2*self.dim[1])
 		self.VTUN = Port(circuit,self,'VTUN','N',1*self.dim[1])
+		self.GND_b = Port(circuit,self,'GND_b','S',2*self.dim[1])
 
 
 		# Initialize ports with given values
-		portsInit = [Vd_P,Vd_R,Vs,VINJ,Vsel,Vg,GND,VTUN]
+		portsInit = [Vd_P,Vd_R,Vs,VINJ,Vsel,Vg,GND,VTUN,GND_b]
 		i=0
 		for p in self.ports:
 			self.assignPort(p,portsInit[i])
@@ -84,8 +85,8 @@ class TSMC350nm_4x2_Indirect(StandardCell):
 		# Add cell to circuit
 		circuit.addInstance(self,self.island)
 
-class TSMC350nm_4WTA(StandardCell):
-	def __init__(self,circuit,island=None,dim=(1,1),Iin=None,Vout=None,Vs=None,VINJ=None,Vg=None,VTUN=None,PROG=None,Vmid=None,GND=None,Vs_b=None,VINJ_b=None,Vg_b=None,VTUN_b=None,PROG_b=None,Vmid_b=None,GND_b=None):
+class TSMC350nm_4WTA_IndirectProg(StandardCell):
+	def __init__(self,circuit,island=None,dim=(1,1),VD_P=None,Iin=None,Vout=None,Vmid=None,Vbias=None,Vsel=None,Vs=None,VINJ=None,Vg=None,VTUN=None,GND=None,PROG=None,Vsel_b=None,Vs_b=None,VINJ_b=None,Vg_b=None,VTUN_b=None,GND_b=None,PROG_b=None):
 
 		# Define variables
 		self.circuit = circuit
@@ -96,27 +97,30 @@ class TSMC350nm_4WTA(StandardCell):
 
 
 		# Define cell information
-		self.name = 'TSMC350nm_4WTA'
+		self.name = 'TSMC350nm_4WTA_IndirectProg'
+		self.VD_P = Port(circuit,self,'VD_P','W',4*self.dim[0])
 		self.Iin = Port(circuit,self,'Iin','W',4*self.dim[0])
 		self.Vout = Port(circuit,self,'Vout','E',4*self.dim[0])
+		self.Vmid = Port(circuit,self,'Vmid','E',1*self.dim[0])
+		self.Vbias = Port(circuit,self,'Vbias','E',1*self.dim[0])
+		self.Vsel = Port(circuit,self,'Vsel','N',1*self.dim[1])
 		self.Vs = Port(circuit,self,'Vs','N',1*self.dim[1])
 		self.VINJ = Port(circuit,self,'VINJ','N',1*self.dim[1])
 		self.Vg = Port(circuit,self,'Vg','N',1*self.dim[1])
 		self.VTUN = Port(circuit,self,'VTUN','N',1*self.dim[1])
-		self.PROG = Port(circuit,self,'PROG','N',1*self.dim[1])
-		self.Vmid = Port(circuit,self,'Vmid','N',1*self.dim[1])
 		self.GND = Port(circuit,self,'GND','N',1*self.dim[1])
+		self.PROG = Port(circuit,self,'PROG','N',1*self.dim[1])
+		self.Vsel_b = Port(circuit,self,'Vsel_b','S',1*self.dim[1])
 		self.Vs_b = Port(circuit,self,'Vs_b','S',1*self.dim[1])
 		self.VINJ_b = Port(circuit,self,'VINJ_b','S',1*self.dim[1])
 		self.Vg_b = Port(circuit,self,'Vg_b','S',1*self.dim[1])
 		self.VTUN_b = Port(circuit,self,'VTUN_b','S',1*self.dim[1])
-		self.PROG_b = Port(circuit,self,'PROG_b','S',1*self.dim[1])
-		self.Vmid_b = Port(circuit,self,'Vmid_b','S',1*self.dim[1])
 		self.GND_b = Port(circuit,self,'GND_b','S',1*self.dim[1])
+		self.PROG_b = Port(circuit,self,'PROG_b','S',1*self.dim[1])
 
 
 		# Initialize ports with given values
-		portsInit = [Iin,Vout,Vs,VINJ,Vg,VTUN,PROG,Vmid,GND,Vs_b,VINJ_b,Vg_b,VTUN_b,PROG_b,Vmid_b,GND_b]
+		portsInit = [VD_P,Iin,Vout,Vmid,Vbias,Vsel,Vs,VINJ,Vg,VTUN,GND,PROG,Vsel_b,Vs_b,VINJ_b,Vg_b,VTUN_b,GND_b,PROG_b]
 		i=0
 		for p in self.ports:
 			self.assignPort(p,portsInit[i])

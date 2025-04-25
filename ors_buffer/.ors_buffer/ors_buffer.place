@@ -1,0 +1,8 @@
+Netlist file: ./ors_buffer/ors_buffer.net   Architecture file: /home/ubuntu/ashes/ashes_fg/fpaa/./arch/rasp3a_arch.xml
+Array size: 7 x 14 logic blocks
+
+#block name	x	y	subblk	block number
+#----------	--	--	------	------------
+net1_1		5	5	0	#0
+out:net1_1	8	6	5	#1
+net2_1		8	5	5	#2
