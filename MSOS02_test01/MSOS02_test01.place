@@ -1,8 +1,0 @@
-Netlist file: /home/ubuntu/ashes/MSOS02_test01/MSOS02_test01.net   Architecture file: /home/ubuntu/rasp30/vpr2swcs/arch/rasp3a_arch.xml
-Array size: 7 x 14 logic blocks
-
-#block name	x	y	subblk	block number
-#----------	--	--	------	------------
-net5_1		1	6	0	#0
-out:net5_1	1	15	0	#1
-net2_1		8	1	5	#2
