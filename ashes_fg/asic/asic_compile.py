@@ -684,9 +684,9 @@ class Port:
         pinNum = 0
         if self.isStatic == True:
             return len(self.pins)
-        if self.location == "E" or self.location == "W":
+        elif (self.location == "E" or self.location == "W") and self.cell.dim[0] != 0:
             pinNum = len(self.pins)/self.cell.dim[0]
-        elif self.location == "N" or self.location == "S":
+        elif (self.location == "N" or self.location == "S") and self.cell.dim[1] != 0:
             pinNum = len(self.pins)/self.cell.dim[1]
         else:
             pinNum = len(self.pins)

@@ -66,7 +66,7 @@ class STD_IndirectGateSwitch(MUX):
         self.ports = []
         self.island = island
         self.num = num
-        self.dim = (1,self.num)
+        self.dim = (0,self.num)
         self.col = col
         self.type = "switch_ind"
         if col < 0:

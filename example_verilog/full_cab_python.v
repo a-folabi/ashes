@@ -26,7 +26,7 @@ module TOP(port1);
 
  	/*Programming Mux */ 
 	TSMC350nm_VinjDecode2to4_htile decoder(.island_num(0), .direction(horizontal), .bits(6));
-	TSMC350nm_IndirectSwitches switch(.island_num(0), .direction(vertical), .num(26));
+	TSMC350nm_IndirectSwitches switch(.island_num(0), .direction(horizontal), .num(26));
 	TSMC350nm_VinjDecode2to4_vtile decoder(.island_num(0), .direction(vertical), .bits(5));
 	TSMC350nm_drainSelect01d3 switch(.island_num(0), .direction(vertical), .num(5), .type(drain_select));
 	TSMC350nm_4TGate_ST_draincutoff switch(.island_num(0), .direction(vertical), .num(5), .type(prog_switch));
@@ -69,6 +69,6 @@ module TOP(port1);
 	TSMC350nm_4TGate_ST_draincutoff switch(.island_num(1), .direction(vertical), .num(12), .type(prog_switch));
 	TSMC350nm_GorS_IndrctSwcs switch(.island_num(1), .direction(horizontal), .num(20), .switch_n0_Input_0_(net1404[0]), .switch_n0_Input_1_(net1405[0]), .switch_n8_Input_1_(net1405[8]), .switch_n9_Input_0_(net1404[9]), .switch_n9_Input_1_(net1405[9]), .switch_n10_Input_0_(net1404[10]), .switch_n10_Input_1_(net1405[10]), .switch_n11_Input_0_(net1404[11]), .switch_n11_Input_1_(net1405[11]), .switch_n12_Input_0_(net1404[12]), .switch_n12_Input_1_(net1405[12]), .switch_n13_Input_0_(net1404[13]), .switch_n13_Input_1_(net1405[13]), .switch_n14_Input_0_(net1404[14]), .switch_n14_Input_1_(net1405[14]), .switch_n15_Input_0_(net1404[15]), .switch_n15_Input_1_(net1405[15]), .switch_n16_Input_0_(net1404[16]), .switch_n16_Input_1_(net1405[16]), .switch_n17_Input_0_(net1404[17]), .switch_n17_Input_1_(net1405[17]));
 	none switch_ind(.island_num(1), .direction(horizontal), .col(18));
-	TSMC350nm_IndirectSwitches switch_ind(.island_num(1), .direction(vertical), .col(19), .GND_0_(net1442), .CTRL_B_0_(net1508), .CTRL_B_1_(net1436), .run_r(net1437), .prog_r(net1512), .Vg_0_(net1438), .Vg_1_(net1439), .VTUN(net1440), .VINJ(net1441), .VDD_1_(net1404[0]));
+	TSMC350nm_IndirectSwitches switch_ind(.island_num(1), .direction(horizontal), .col(19), .GND_0_(net1442), .CTRL_B_0_(net1508), .CTRL_B_1_(net1436), .run_r(net1437), .prog_r(net1512), .Vg_0_(net1438), .Vg_1_(net1439), .VTUN(net1440), .VINJ(net1441), .VDD_1_(net1404[0]));
 
  endmodule

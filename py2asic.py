@@ -9,7 +9,7 @@ from ashes_fg.asic.asic_systems import *
 
 
 
-#exec(open("./example_python/full_cab_example.py").read())
+exec(open("./example_json/full_cab_python.py").read())
 
 #exec(open("./example_python/small_cab_example.py").read())
 
@@ -19,4 +19,4 @@ from ashes_fg.asic.asic_systems import *
 
 #exec(open("./example_python/small_fg_island.py").read())
 
-exec(open("./example_python/LPF_MeadSOS.py").read())
+#exec(open("./example_python/LPF_MeadSOS.py").read())
