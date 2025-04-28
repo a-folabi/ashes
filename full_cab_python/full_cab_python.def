@@ -27265,156 +27265,153 @@ BLOCKAGES 5366 ;
 
 END BLOCKAGES
 
-NETS 336 ;
-- net1874_0
-  ( I_0_43_4_0 GND_b<0> ) ( I_1_107 Input<1> ) 
+NETS 349 ;
+- net1881_0
+  ( I_0_43_4_0 GND_b<1> ) ( I_1_107 Input<1> ) ( I_1_107 GND ) 
 ;
-- net1892_0
-  ( I_0_43_4_0 GND_b<1> ) ( I_1_107 GND<0> ) 
+- net1959_0
+  ( I_0_43_4_0 VINJ_b<1> ) ( I_1_107 VINJ ) 
 ;
-- net1970_0
-  ( I_0_43_4_0 VINJ_b<1> ) ( I_1_107 VINJ<0> ) 
-;
-- net1905_0
+- net1894_0
   ( I_0_43_4_0 Vsel_b<0> ) ( I_1_107 Vsel<0> ) 
 ;
-- net1906_0
+- net1895_0
   ( I_0_43_4_0 Vsel_b<1> ) ( I_1_107 Vsel<1> ) 
 ;
-- net1931_0
+- net1920_0
   ( I_0_43_4_0 Vg_b<0> ) ( I_1_107 Vg_global<0> ) 
 ;
-- net1932_0
+- net1921_0
   ( I_0_43_4_0 Vg_b<1> ) ( I_1_107 Vg_global<1> ) 
 ;
-- net1957_0
-  ( I_0_43_4_0 VTUN_b ) ( I_1_107 VTUN<0> ) 
+- net1946_0
+  ( I_0_43_4_0 VTUN_b ) ( I_1_107 VTUN ) 
 ;
-- net1892_1
-  ( I_0_43_4_1 GND_b<1> ) ( I_1_108 GND<0> ) 
+- net1881_1
+  ( I_0_43_4_1 GND_b<1> ) ( I_1_108 GND ) 
 ;
-- net1970_1
-  ( I_0_43_4_1 VINJ_b<1> ) ( I_1_108 VINJ<0> ) 
+- net1959_1
+  ( I_0_43_4_1 VINJ_b<1> ) ( I_1_108 VINJ ) 
 ;
-- net1905_1
+- net1894_1
   ( I_0_43_4_1 Vsel_b<0> ) ( I_1_108 Vsel<0> ) 
 ;
-- net1906_1
+- net1895_1
   ( I_0_43_4_1 Vsel_b<1> ) ( I_1_108 Vsel<1> ) 
 ;
-- net1931_1
+- net1920_1
   ( I_0_43_4_1 Vg_b<0> ) ( I_1_108 Vg_global<0> ) 
 ;
-- net1932_1
+- net1921_1
   ( I_0_43_4_1 Vg_b<1> ) ( I_1_108 Vg_global<1> ) 
 ;
-- net1957_1
-  ( I_0_43_4_1 VTUN_b ) ( I_1_108 VTUN<0> ) 
+- net1946_1
+  ( I_0_43_4_1 VTUN_b ) ( I_1_108 VTUN ) 
 ;
-- net1892_2
-  ( I_0_43_4_2 GND_b<1> ) ( I_1_109 GND<0> ) 
+- net1881_2
+  ( I_0_43_4_2 GND_b<1> ) ( I_1_109 GND ) 
 ;
-- net1970_2
-  ( I_0_43_4_2 VINJ_b<1> ) ( I_1_109 VINJ<0> ) 
+- net1959_2
+  ( I_0_43_4_2 VINJ_b<1> ) ( I_1_109 VINJ ) 
 ;
-- net1905_2
+- net1894_2
   ( I_0_43_4_2 Vsel_b<0> ) ( I_1_109 Vsel<0> ) 
 ;
-- net1906_2
+- net1895_2
   ( I_0_43_4_2 Vsel_b<1> ) ( I_1_109 Vsel<1> ) 
 ;
-- net1931_2
+- net1920_2
   ( I_0_43_4_2 Vg_b<0> ) ( I_1_109 Vg_global<0> ) 
 ;
-- net1932_2
+- net1921_2
   ( I_0_43_4_2 Vg_b<1> ) ( I_1_109 Vg_global<1> ) 
 ;
-- net1957_2
-  ( I_0_43_4_2 VTUN_b ) ( I_1_109 VTUN<0> ) 
+- net1946_2
+  ( I_0_43_4_2 VTUN_b ) ( I_1_109 VTUN ) 
 ;
-- net1892_3
-  ( I_0_43_4_3 GND_b<1> ) ( I_1_110 GND<0> ) 
+- net1881_3
+  ( I_0_43_4_3 GND_b<1> ) ( I_1_110 GND ) 
 ;
-- net1970_3
-  ( I_0_43_4_3 VINJ_b<1> ) ( I_1_110 VINJ<0> ) 
+- net1959_3
+  ( I_0_43_4_3 VINJ_b<1> ) ( I_1_110 VINJ ) 
 ;
-- net1905_3
+- net1894_3
   ( I_0_43_4_3 Vsel_b<0> ) ( I_1_110 Vsel<0> ) 
 ;
-- net1906_3
+- net1895_3
   ( I_0_43_4_3 Vsel_b<1> ) ( I_1_110 Vsel<1> ) 
 ;
-- net1931_3
+- net1920_3
   ( I_0_43_4_3 Vg_b<0> ) ( I_1_110 Vg_global<0> ) 
 ;
-- net1932_3
+- net1921_3
   ( I_0_43_4_3 Vg_b<1> ) ( I_1_110 Vg_global<1> ) 
 ;
-- net1957_3
-  ( I_0_43_4_3 VTUN_b ) ( I_1_110 VTUN<0> ) 
+- net1946_3
+  ( I_0_43_4_3 VTUN_b ) ( I_1_110 VTUN ) 
 ;
-- net1892_4
-  ( I_0_43_4_4 GND_b<1> ) ( I_1_111 GND<0> ) 
+- net1881_4
+  ( I_0_43_4_4 GND_b<1> ) ( I_1_111 GND ) 
 ;
-- net1970_4
-  ( I_0_43_4_4 VINJ_b<1> ) ( I_1_111 VINJ<0> ) 
+- net1959_4
+  ( I_0_43_4_4 VINJ_b<1> ) ( I_1_111 VINJ ) 
 ;
-- net1905_4
+- net1894_4
   ( I_0_43_4_4 Vsel_b<0> ) ( I_1_111 Vsel<0> ) 
 ;
-- net1906_4
+- net1895_4
   ( I_0_43_4_4 Vsel_b<1> ) ( I_1_111 Vsel<1> ) 
 ;
-- net1931_4
+- net1920_4
   ( I_0_43_4_4 Vg_b<0> ) ( I_1_111 Vg_global<0> ) 
 ;
-- net1932_4
+- net1921_4
   ( I_0_43_4_4 Vg_b<1> ) ( I_1_111 Vg_global<1> ) 
 ;
-- net1957_4
-  ( I_0_43_4_4 VTUN_b ) ( I_1_111 VTUN<0> ) 
+- net1946_4
+  ( I_0_43_4_4 VTUN_b ) ( I_1_111 VTUN ) 
 ;
-- net1892_5
-  ( I_0_43_4_5 GND_b<1> ) ( I_1_112 GND<0> ) 
+- net1881_5
+  ( I_0_43_4_5 GND_b<1> ) ( I_1_112 GND ) 
 ;
-- net1970_5
-  ( I_0_43_4_5 VINJ_b<1> ) ( I_1_112 VINJ<0> ) 
+- net1959_5
+  ( I_0_43_4_5 VINJ_b<1> ) ( I_1_112 VINJ ) 
 ;
-- net1905_5
+- net1894_5
   ( I_0_43_4_5 Vsel_b<0> ) ( I_1_112 Vsel<0> ) 
 ;
-- net1906_5
+- net1895_5
   ( I_0_43_4_5 Vsel_b<1> ) ( I_1_112 Vsel<1> ) 
 ;
-- net1931_5
+- net1920_5
   ( I_0_43_4_5 Vg_b<0> ) ( I_1_112 Vg_global<0> ) 
 ;
-- net1932_5
+- net1921_5
   ( I_0_43_4_5 Vg_b<1> ) ( I_1_112 Vg_global<1> ) 
 ;
-- net1957_5
-  ( I_0_43_4_5 VTUN_b ) ( I_1_112 VTUN<0> ) 
+- net1946_5
+  ( I_0_43_4_5 VTUN_b ) ( I_1_112 VTUN ) 
 ;
-- net1892_6
-  ( I_0_43_4_6 GND_b<1> ) ( I_1_113 GND<0> ) 
+- net1881_6
+  ( I_0_43_4_6 GND_b<1> ) ( I_1_113 GND ) 
 ;
-- net1970_6
-  ( I_0_43_4_6 VINJ_b<1> ) ( I_1_113 VINJ<0> ) 
+- net1959_6
+  ( I_0_43_4_6 VINJ_b<1> ) ( I_1_113 VINJ ) 
 ;
-- net1905_6
+- net1894_6
   ( I_0_43_4_6 Vsel_b<0> ) ( I_1_113 Vsel<0> ) 
 ;
-- net1906_6
+- net1895_6
   ( I_0_43_4_6 Vsel_b<1> ) ( I_1_113 Vsel<1> ) 
 ;
-- net1931_6
+- net1920_6
   ( I_0_43_4_6 Vg_b<0> ) ( I_1_113 Vg_global<0> ) 
 ;
-- net1932_6
+- net1921_6
   ( I_0_43_4_6 Vg_b<1> ) ( I_1_113 Vg_global<1> ) 
 ;
-- net1957_6
-  ( I_0_43_4_6 VTUN_b ) ( I_1_113 VTUN<0> ) 
+- net1946_6
+  ( I_0_43_4_6 VTUN_b ) ( I_1_113 VTUN ) 
 ;
 - isle0_swc_net0
   ( I_0_56 decode<0> ) ( I_0_75 OUT<0> ) 
@@ -27572,304 +27569,304 @@ NETS 336 ;
 - isle0_swc_net79
   ( I_0_68 VPWR<1> ) ( I_0_84 RUN_OUT<3> ) 
 ;
-- net2078
+- net2067
   ( I_1_87 IN_CM<0> ) ( I_1_91_0_0 A<0> ) 
 ;
-- net2079
+- net2068
   ( I_1_87 IN_CM<1> ) ( I_1_91_0_0 A<1> ) 
 ;
-- net2080
+- net2069
   ( I_1_87 SelN ) ( I_1_91_0_0 A<2> ) 
 ;
-- net2081
+- net2070
   ( I_1_87 IN_TG ) ( I_1_91_0_0 A<3> ) 
 ;
-- net1874_16
+- net1869_16
   ( I_1_87 OUT_CM<0> ) ( I_1_123 Input<1> ) 
 ;
-- net1872_17
+- net1867_17
   ( I_1_87 OUT_CM<1> ) ( I_1_124 Input<0> ) 
 ;
-- net1874_17
+- net1869_17
   ( I_1_87 OUT_TG ) ( I_1_124 Input<1> ) 
 ;
-- net2085
+- net2074
   ( I_1_87 VPWR ) ( I_1_90 VPWR_b ) 
 ;
-- net2086
+- net2075
   ( I_1_87 GND ) ( I_1_90 GND_b ) 
 ;
-- net2070
+- net2059
   ( I_1_90 GATE_N ) ( I_1_93_0_0 A<0> ) 
 ;
-- net2071
+- net2060
   ( I_1_90 SOURCE_N ) ( I_1_93_0_0 A<1> ) 
 ;
-- net2072
+- net2061
   ( I_1_90 GATE_P ) ( I_1_93_0_0 A<2> ) 
 ;
-- net2073
+- net2062
   ( I_1_90 SOURCE_P ) ( I_1_93_0_0 A<3> ) 
 ;
-- net1874_15
+- net1869_15
   ( I_1_90 DRAIN_N ) ( I_1_122 Input<1> ) 
 ;
-- net1872_16
+- net1867_16
   ( I_1_90 DRAIN_P ) ( I_1_123 Input<0> ) 
 ;
-- net2076
+- net2065
   ( I_1_90 VPWR ) ( I_1_94 Vs ) ( I_1_100 VPWR ) ( I_1_125 VDD<1> ) 
 ;
-- net2077
+- net2066
   ( I_1_90 GND ) ( I_1_92 GND_b ) 
 ;
-- net2055
+- net2044
   ( I_1_92 VD_P<0> ) ( I_1_95_0_0 P<0> ) 
 ;
-- net2056
+- net2045
   ( I_1_92 VD_P<1> ) ( I_1_95_0_0 P<1> ) 
 ;
-- net2057
+- net2046
   ( I_1_92 VD_P<2> ) ( I_1_95_0_0 P<2> ) 
 ;
-- net2058
+- net2047
   ( I_1_92 VD_P<3> ) ( I_1_95_0_0 P<3> ) 
 ;
-- net2059
+- net2048
   ( I_1_92 VIN<0> ) ( I_1_95_0_0 A<0> ) 
 ;
-- net2060
+- net2049
   ( I_1_92 VIN<1> ) ( I_1_95_0_0 A<1> ) 
 ;
-- net1874_14
+- net1869_14
   ( I_1_92 OUT<0> ) ( I_1_121 Input<1> ) 
 ;
-- net1872_15
+- net1867_15
   ( I_1_92 OUT<1> ) ( I_1_122 Input<0> ) 
 ;
-- net2063
+- net2052
   ( I_1_92 VINJ ) ( I_1_94 VINJ_b ) 
 ;
-- net2064
+- net2053
   ( I_1_92 Vsel<0> ) ( I_1_94 Vsel ) ( I_1_100 Vsel<0> ) ( I_1_125 CTRL_B<0> ) 
 ;
-- net2065
+- net2054
   ( I_1_92 Vsel<1> ) ( I_1_100 Vsel<1> ) ( I_1_125 CTRL_B<1> ) 
 ;
-- net2066
+- net2055
   ( I_1_92 Vg<0> ) ( I_1_100 Vg<0> ) ( I_1_125 Vg<0> ) 
 ;
-- net2067
+- net2056
   ( I_1_92 Vg<1> ) ( I_1_100 Vg<1> ) ( I_1_125 Vg<1> ) 
 ;
-- net2068
+- net2057
   ( I_1_92 GND ) ( I_1_94 GND_b ) 
 ;
-- net2069
+- net2058
   ( I_1_92 VTUN ) ( I_1_94 VTUN_b ) 
 ;
-- net2036
+- net2025
   ( I_1_94 VD_P<0> ) ( I_1_97_0_0 P<0> ) 
 ;
-- net2037
+- net2026
   ( I_1_94 VD_P<1> ) ( I_1_97_0_0 P<1> ) 
 ;
-- net2038
+- net2027
   ( I_1_94 VD_P<2> ) ( I_1_97_0_0 P<2> ) 
 ;
-- net2039
+- net2028
   ( I_1_94 VD_P<3> ) ( I_1_97_0_0 P<3> ) 
 ;
-- net2040
+- net2029
   ( I_1_94 Iin<0> ) ( I_1_97_0_0 A<0> ) 
 ;
-- net2041
+- net2030
   ( I_1_94 Iin<1> ) ( I_1_97_0_0 A<1> ) 
 ;
-- net2042
+- net2031
   ( I_1_94 Iin<2> ) ( I_1_97_0_0 A<2> ) 
 ;
-- net2043
+- net2032
   ( I_1_94 Iin<3> ) ( I_1_97_0_0 A<3> ) 
 ;
-- net1874_11
+- net1869_11
   ( I_1_94 Vout<0> ) ( I_1_118 Input<1> ) 
 ;
-- net1872_12
+- net1867_12
   ( I_1_94 Vout<1> ) ( I_1_119 Input<0> ) 
 ;
-- net1874_12
+- net1869_12
   ( I_1_94 Vout<2> ) ( I_1_119 Input<1> ) 
 ;
-- net1872_13
+- net1867_13
   ( I_1_94 Vout<3> ) ( I_1_120 Input<0> ) 
 ;
-- net1874_13
+- net1869_13
   ( I_1_94 Vmid ) ( I_1_120 Input<1> ) 
 ;
-- net1872_14
+- net1867_14
   ( I_1_94 Vbias ) ( I_1_121 Input<0> ) 
 ;
-- net2050
+- net2039
   ( I_1_94 VINJ ) ( I_1_96 VINJ_b ) 
 ;
-- net2051
+- net2040
   ( I_1_94 Vg ) ( I_1_96 Vg_b<0> ) 
 ;
-- net2052
+- net2041
   ( I_1_94 VTUN ) ( I_1_96 VTUN_b ) 
 ;
-- net2053
+- net2042
   ( I_1_94 GND ) ( I_1_96 GND_b ) 
 ;
-- net2054
+- net2043
   ( I_1_94 PROG ) ( I_1_96 PROG_b ) 
 ;
-- net2018
+- net2007
   ( I_1_96 VD_P<0> ) ( I_1_99_0_0 P<0> ) 
 ;
-- net2019
+- net2008
   ( I_1_96 VD_P<1> ) ( I_1_99_0_0 P<1> ) 
 ;
-- net2020
+- net2009
   ( I_1_96 VIN1_PLUS ) ( I_1_99_0_0 A<0> ) 
 ;
-- net2021
+- net2010
   ( I_1_96 VIN1_MINUS ) ( I_1_99_0_0 A<1> ) 
 ;
-- net2022
+- net2011
   ( I_1_96 VIN2_PLUS ) ( I_1_99_0_0 A<2> ) 
 ;
-- net2023
+- net2012
   ( I_1_96 VIN2_MINUS ) ( I_1_99_0_0 A<3> ) 
 ;
-- net1874_10
+- net1869_10
   ( I_1_96 OUTPUT<0> ) ( I_1_117 Input<1> ) 
 ;
-- net1872_11
+- net1867_11
   ( I_1_96 OUTPUT<1> ) ( I_1_118 Input<0> ) 
 ;
-- net2026
+- net2015
   ( I_1_96 Vsel<0> ) ( I_1_98 Vsel_b<0> ) 
 ;
-- net2027
+- net2016
   ( I_1_96 Vsel<1> ) ( I_1_98 Vsel_b<1> ) 
 ;
-- net2028
+- net2017
   ( I_1_96 RUN ) ( I_1_98 RUN_b ) 
 ;
-- net2029
+- net2018
   ( I_1_96 Vg<0> ) ( I_1_98 Vg_b<0> ) 
 ;
-- net2030
+- net2019
   ( I_1_96 Vg<1> ) ( I_1_98 Vg_b<1> ) 
 ;
-- net2031
+- net2020
   ( I_1_96 PROG ) ( I_1_98 PROG_b ) 
 ;
-- net2032
+- net2021
   ( I_1_96 VTUN ) ( I_1_98 VTUN_b ) 
 ;
-- net2033
+- net2022
   ( I_1_96 VINJ ) ( I_1_98 VINJ_b ) 
 ;
-- net2034
+- net2023
   ( I_1_96 GND ) ( I_1_98 GND_b ) 
 ;
-- net2035
+- net2024
   ( I_1_96 VPWR ) ( I_1_98 VPWR_b ) 
 ;
-- net2000
+- net1989
   ( I_1_98 VD_P<0> ) ( I_1_103_0_0 P<0> ) 
 ;
-- net2001
+- net1990
   ( I_1_98 VD_P<1> ) ( I_1_103_0_0 P<1> ) 
 ;
-- net2002
+- net1991
   ( I_1_98 VIN1_PLUS ) ( I_1_103_0_0 A<0> ) 
 ;
-- net2003
+- net1992
   ( I_1_98 VIN1_MINUS ) ( I_1_103_0_0 A<1> ) 
 ;
-- net2004
+- net1993
   ( I_1_98 VIN2_PLUS ) ( I_1_103_0_0 A<2> ) 
 ;
-- net2005
+- net1994
   ( I_1_98 VIN2_MINUS ) ( I_1_103_0_0 A<3> ) 
 ;
-- net1874_9
+- net1869_9
   ( I_1_98 OUTPUT<0> ) ( I_1_116 Input<1> ) 
 ;
-- net1872_10
+- net1867_10
   ( I_1_98 OUTPUT<1> ) ( I_1_117 Input<0> ) 
 ;
-- net2008
+- net1997
   ( I_1_98 Vsel<0> ) ( I_1_100 Vsel_b<0> ) 
 ;
-- net2009
+- net1998
   ( I_1_98 Vsel<1> ) ( I_1_100 Vsel_b<1> ) 
 ;
-- net2010
+- net1999
   ( I_1_98 RUN ) ( I_1_100 RUN_b ) 
 ;
-- net2011
+- net2000
   ( I_1_98 Vg<0> ) ( I_1_100 Vg_b<0> ) 
 ;
-- net2012
+- net2001
   ( I_1_98 Vg<1> ) ( I_1_100 Vg_b<1> ) 
 ;
-- net2013
+- net2002
   ( I_1_98 PROG ) ( I_1_100 PROG_b ) 
 ;
-- net2014
+- net2003
   ( I_1_98 VTUN ) ( I_1_100 VTUN_b ) 
 ;
-- net2015
+- net2004
   ( I_1_98 VINJ ) ( I_1_100 VINJ_b ) 
 ;
-- net2016
+- net2005
   ( I_1_98 GND ) ( I_1_100 GND_b ) 
 ;
-- net2017
+- net2006
   ( I_1_98 VPWR ) ( I_1_100 VPWR_b ) 
 ;
-- net1987
+- net1976
   ( I_1_100 VD_P<0> ) ( I_1_106_0_0 P<0> ) 
 ;
-- net1988
+- net1977
   ( I_1_100 VD_P<1> ) ( I_1_106_0_0 P<1> ) 
 ;
-- net1989
+- net1978
   ( I_1_100 VIN1_PLUS ) ( I_1_106_0_0 A<0> ) 
 ;
-- net1990
+- net1979
   ( I_1_100 VIN1_MINUS ) ( I_1_106_0_0 A<1> ) 
 ;
-- net1991
+- net1980
   ( I_1_100 VIN2_PLUS ) ( I_1_106_0_0 A<2> ) 
 ;
-- net1992
+- net1981
   ( I_1_100 VIN2_MINUS ) ( I_1_106_0_0 A<3> ) 
 ;
-- net1874_8
+- net1869_8
   ( I_1_100 OUTPUT<0> ) ( I_1_115 Input<1> ) 
 ;
-- net1872_9
+- net1867_9
   ( I_1_100 OUTPUT<1> ) ( I_1_116 Input<0> ) 
 ;
-- net1995
+- net1984
   ( I_1_100 RUN ) ( I_1_125 run_r ) 
 ;
-- net1996
+- net1985
   ( I_1_100 PROG ) ( I_1_125 prog_r ) 
 ;
-- net1997
+- net1986
   ( I_1_100 VTUN ) ( I_1_125 VTUN ) 
 ;
-- net1998
+- net1987
   ( I_1_100 VINJ ) ( I_1_125 VINJ ) 
 ;
-- net1999
+- net1988
   ( I_1_100 GND ) ( I_1_125 GND ) 
 ;
 END NETS

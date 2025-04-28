@@ -112,6 +112,11 @@ class S_SEC1(StandardCell):
         self.name = "S_BLOCK_SEC1_PINS"
 
         self.In = Port(circuit,self,"Input","N",2*self.dim[1])
+        self.VINJ_b = Port(circuit,self,"VINJ_b","S",1*self.dim[1])
+        self.Vsel_b = Port(circuit,self,"Vsel_b","S",2*self.dim[1])
+        self.Vg_b = Port(circuit,self,"Vg_b","S",2*self.dim[1])
+        self.TUN_b = Port(circuit,self,"VTUN_b","S",1*self.dim[1])
+        self.GND_b = Port(circuit,self,"GND_b","S",2*self.dim[1])
 
         # Add cell to circuit
         circuit.addInstance(self,self.island)

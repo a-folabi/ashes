@@ -293,6 +293,11 @@ C_EW.Vs_b[4] += CAB_GateSwitch.Input[4]
 C_EW.Vs_b[5] += CAB_GateSwitch.Input[5]
 C_EW.Vs_b[6] += CAB_GateSwitch.Input[6]
 C_EW.Vs_b[7] += CAB_GateSwitch.Input[7]
+SEC1.VINJ_b += CAB_GateSwitch.VINJ[7]
+SEC1.Vsel_b += CAB_GateSwitch.Vsel[14:16]
+SEC1.Vg_b += CAB_GateSwitch.Vg_global[14:16]
+SEC1.VTUN_b += CAB_GateSwitch.VTUN[7]
+SEC1.GND_b[1] += CAB_GateSwitch.GND[7]
 
 # Compilation
 design_limits = [1e6, 6.1e5]
