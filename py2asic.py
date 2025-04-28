@@ -9,7 +9,7 @@ from ashes_fg.asic.asic_systems import *
 
 
 
-#exec(open("./example_json/full_cab_python_two.py").read())
+exec(open("./example_json/full_cab_python.py").read())
 
 #exec(open("./example_python/small_cab_example.py").read())
 
@@ -21,6 +21,7 @@ from ashes_fg.asic.asic_systems import *
 
 #exec(open("./example_python/LPF_MeadSOS.py").read())
 
+"""
 Top = Circuit()
 testIsland = Island(Top)
 C_EW = IndirectVMM(Top,dim=[4,4],island=testIsland,decoderPlace=False)
@@ -43,3 +44,4 @@ location_islands = ((20600, 363500), (20600, 20000))
 
 compile_asic(Top,process="TSMC350nm",fileName="test_code",p_and_r = True,design_limits = design_limits, location_islands = location_islands)
 
+"""
