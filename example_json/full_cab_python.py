@@ -269,7 +269,6 @@ TGate_2nMirror.OUT_TG += CAB_GateSwitch.Input[35]
 TGate_2nMirror.VPWR += NandPfets.VPWR_b
 TGate_2nMirror.GND += NandPfets.GND_b
 
-C_EW.GND_b[0] += CAB_GateSwitch.Input[1]
 C_EW.Vsel_b += CAB_GateSwitch.Vsel[0:14]
 C_EW.Vg_b += CAB_GateSwitch.Vg_global[0:14]
 C_EW.VTUN_b += CAB_GateSwitch.VTUN[0:7]
@@ -280,6 +279,7 @@ C_EW.GND_b[7] += CAB_GateSwitch.GND[3]
 C_EW.GND_b[9] += CAB_GateSwitch.GND[4]
 C_EW.GND_b[11] += CAB_GateSwitch.GND[5]
 C_EW.GND_b[13] += CAB_GateSwitch.GND[6]
+CAB_GateSwitch.Input[1] += CAB_GateSwitch.GND[0]
 C_EW.VINJ_b[1] += CAB_GateSwitch.VINJ[0]
 C_EW.VINJ_b[3] += CAB_GateSwitch.VINJ[1]
 C_EW.VINJ_b[5] += CAB_GateSwitch.VINJ[2]
