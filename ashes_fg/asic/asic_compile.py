@@ -477,6 +477,23 @@ class Pin:
         elif self.net.isEmpty() == False:
             return True 
         
+    def isVectorConnected(self):
+        """
+        Checks if any pin in pin vector is connected
+        """
+        if self.isVector() == False:
+            return self.isConnected()
+        
+        idx = self.getPhysicalPin()
+
+        pinArr = self.port.pins[idx:len(self.port)+1:self.port.numPins()]
+
+        for p in pinArr:
+            if p.isConnected() == True:
+                return True
+                
+        return False
+            
     def isVector(self):
         """
         Checks if pin is part of a vectorized port
@@ -485,6 +502,7 @@ class Pin:
             return True
         else:
             return False
+            
         
     def getVectorSize(self):
         """
@@ -738,8 +756,8 @@ class Port:
         line = ""
         for i in range(int(self.numPins())):
             pin = self.pins[i]
-            if pin.isConnected():
-                
+
+            if pin.isVectorConnected():
                 line += ", ." + self.name
                 # Add vector notation for a vectorized port
                 if self.numPins() > 1:
