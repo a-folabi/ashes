@@ -168,10 +168,10 @@ TGate_2nMirror = TSMC350nm_TGate_2nMirror(Top,CABIsland)
 TGate_2nMirror.place([8,19])
 TGate_2nMirror.markCABDevice()
 
-VolSwitchIsland = Island(Top)
+#VolSwitchIsland = Island(Top)
 
-VolSwitch = TSMC350nm_volatile_swcs(Top,VolSwitchIsland,[1,6])
-VolSwitch.place([0,0])
+#VolSwitch = TSMC350nm_volatile_swcs(Top,VolSwitchIsland,[1,6])
+#VolSwitch.place([0,0])
 
 # Decoders
 CAB_DrainDecoder = STD_DrainDecoder(Top,CABIsland,bits=6)
@@ -296,7 +296,7 @@ C_EW.Vs_b[7] += CAB_GateSwitch.Input[7]
 SEC1.VINJ_b += CAB_GateSwitch.VINJ[7]
 SEC1.Vsel_b += CAB_GateSwitch.Vsel[14:16]
 SEC1.Vg_b += CAB_GateSwitch.Vg_global[14:16]
-SEC1.VTUN_b += CAB_GateSwitch.VTUN[7]
+SEC1.TUN_b += CAB_GateSwitch.VTUN[7]
 SEC1.GND_b[1] += CAB_GateSwitch.GND[7]
 
 # Compilation

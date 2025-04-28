@@ -169,22 +169,29 @@ class Circuit:
                     largestPin = None
                     # Find the dominant pin
                     for pin in net.pins:
-                        if pin.getVectorSize() > largestDim:
-                            largestDim = pin.getVectorSize()
-                            largestPin = pin
+                        # Ignore decoder cells (because they print flat, so their vector doesn't count)
+                        if pin.cell.isDecoder() == False:
+                            if pin.getVectorSize() > largestDim:
+                                largestDim = pin.getVectorSize()
+                                largestPin = pin
                             
-                    # Name all nets attached to that pin
-                    port = largestPin.port
-                    idxNum = self.Nets.index(net)
-                    idx = 0
-                    physicalPinIdx = largestPin.getPhysicalPin()
+                    # If the net only contain a decoder, it will mistakenly trigger containsVector() but 
+                    # will never pick up a largestPin because of the decoder ignore check
+                    if largestPin != None:
+                        # Name all nets attached to that pin
+                        port = largestPin.port
+                        idxNum = self.Nets.index(net)
+                        idx = 0
+                        physicalPinIdx = largestPin.getPhysicalPin()
 
-        
-                    for i in range(port.getVectorSize()):
-                        p = port.pins[physicalPinIdx + i*port.numPins()]
-                        p.net.number = idxNum
-                        p.net.index = idx
-                        idx += 1
+            
+                        for i in range(port.getVectorSize()):
+                            p = port.pins[physicalPinIdx + i*port.numPins()]
+                            p.net.number = idxNum
+                            p.net.index = idx
+                            idx += 1
+                    else:
+                       net.number = self.Nets.index(net) 
 
                 elif net.containsVector() == False:
                     net.number = self.Nets.index(net)
