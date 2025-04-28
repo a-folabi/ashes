@@ -14,6 +14,11 @@ class STD_GorS_IndirectSwitches(MUX):
         self.name = "TSMC350nm_GorS_IndrctSwcs"
 
         self.Input = Port(circuit,self,"Input","N",2*self.dim[1])
+        self.GND = Port(circuit,self,"GND","N",1*self.dim[1])
+        self.Vsel = Port(circuit,self,"Vsel","N",2*self.dim[1])
+        self.Vg_global = Port(circuit,self,"Vg_global","N",2*self.dim[1])
+        self.VTUN = Port(circuit,self,"VTUN","N",1*self.dim[1])
+        self.VINJ = Port(circuit,self,"VINJ","N",1*self.dim[1])
 
         # Add cell to circuit
         circuit.addInstance(self,self.island)
@@ -76,7 +81,7 @@ class STD_IndirectGateSwitch(MUX):
 
         self.VPWR = Port(circuit,self,"VPWR","N",2*self.dim[1])
         self.VINJ_T = Port(circuit,self,"VINJ_T","N",1*self.dim[1])
-        self.GND = Port(circuit,self,"GND","N",2*self.dim[1])
+        self.GND = Port(circuit,self,"GND","S",1*self.dim[1])
         self.CTRL_B = Port(circuit,self,"CTRL_B","S",2*self.dim[1])
         self.run_r = Port(circuit,self,"run_r","E",1*self.dim[1])
         self.prog_r = Port(circuit,self,"prog_r","E",1*self.dim[1])

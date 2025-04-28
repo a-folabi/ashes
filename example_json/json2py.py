@@ -48,7 +48,7 @@ CEW_col_inst = int(CEW_col/2)
 CNS_col_inst = int(CNS_col/2)
    
 Amatrix_row = len(data["cab"])
-Amatrix_col = 8
+Amatrix_col = data["Amatrix_cols"]
 Bmatrix_row = len(data["cab"])-1
 Bmatrix_col = math.ceil(cab_output_num/2)
                     
@@ -94,7 +94,7 @@ for i in range(Cblock_row_inst):
         f.write("SpaceDown_"+str(i)+" = S_spaceDOWN(Top,BlockIsland,["+str(i)+",1])\n")
         f.write("SpaceDown_"+str(i)+".place(["+str(Cblock_row_inst-i)+","+str(CEW_col_inst+2+i)+"])\n")
         if i==1:
-            f.write("Conn_"+str(i)+".markAbut()\n\n")
+            f.write("SpaceDown_"+str(i)+".markAbut()\n\n")
             
 f.write("SEC2 = S_SEC2(Top,BlockIsland,["+str(Cblock_row_inst)+",1])\n")
 f.write("SEC2.place([0,"+str(CEW_col_inst+Cblock_row_inst+2)+"])\n\n")
@@ -120,15 +120,15 @@ f.write("Block_GateSwitch = STD_IndirectGateSwitch(Top,island=BlockIsland,num="+
 
 if 16<Cblock_row_inst*4<33:
     f.write("Block_DrainDecode = STD_DrainDecoder(Top,island=BlockIsland,bits=5)\n")
-    f.write("Block_DrainSelect = STD_DrainSelect(Top,island=BlockIsland,num="+str(Cblock_row_inst)+")\n")
+    f.write("Block_DrainSelect = RunDrainSwitch(Top,island=BlockIsland,num="+str(Cblock_row_inst)+")\n")
     f.write("Block_DrainCutoff = DrainCutoff(Top,BlockIsland,num="+str(Cblock_row_inst)+")\n")
 elif 32<Cblock_row_inst*4<65:
     f.write("Block_DrainDecode = STD_DrainDecoder(Top,island=BlockIsland,bits=6)\n")
-    f.write("Block_DrainSelect = STD_DrainSelect(Top,island=BlockIsland,num="+str(Cblock_row_inst)+")\n")
+    f.write("Block_DrainSelect = RunDrainSwitch(Top,island=BlockIsland,num="+str(Cblock_row_inst)+")\n")
     f.write("Block_DrainCutoff = DrainCutoff(Top,BlockIsland,num="+str(Cblock_row_inst)+")\n") 
 elif 8<Cblock_row_inst*4<17:
     f.write("Block_DrainDecode = STD_DrainDecoder(Top,island=BlockIsland,bits=4)\n")
-    f.write("Block_DrainSelect = STD_DrainSelect(Top,island=BlockIsland,num="+str(Cblock_row_inst)+")\n")
+    f.write("Block_DrainSelect = RunDrainSwitch(Top,island=BlockIsland,num="+str(Cblock_row_inst)+")\n")
     f.write("Block_DrainCutoff = DrainCutoff(Top,BlockIsland,num="+str(Cblock_row_inst)+")\n")
 
 
@@ -167,8 +167,8 @@ f.write("Bswitch"+str(len(block_list))+".markAbut()\n\n")
 
 f.write("BtoOut = OutSwitch(Top,CABIsland,[1,"+str(Bmatrix_col)+"])\n")
 f.write("BtoOut.place(["+str(Bmatrix_row+3)+","+str(Amatrix_col)+"])\n\n")
-f.write("# Output Matrix")
-f.write("Outmatrix = IndirectVMM(Top,[8,18],island=CABIsland,decoderPlace=False,loc=["+str(Bmatrix_row+4)+","+str(Amatrix_col)+"])\n")
+f.write("# Output Matrix\n")
+f.write("Outmatrix = IndirectVMM(Top,[8,"+str(Bmatrix_col*2)+"],island=CABIsland,decoderPlace=False,loc=["+str(Bmatrix_row+4)+","+str(Amatrix_col)+"])\n")
 f.write("Oswitch = ST_BMatrix(Top,CABIsland,[2,1])\n")
 f.write("Oswitch.place(["+str(Bmatrix_row+4)+","+str(Amatrix_col+Bmatrix_col)+"])\n\n")
 
@@ -313,11 +313,15 @@ for block in block_list:
                             if block_list[block_list.index(block)-1][-1].isnumeric():
                                 if "Vsel_b" in lib[block_list[block_list.index(block)-1].split("__")[0]]["S"]:
                                     f.write(block+".Vsel += "+block_list[block_list.index(block)-1]+".Vsel_b\n")
+                                elif "Vsel_b[0:1]" in lib[block_list[block_list.index(block)-1].split("__")[0]]["S"]:
+                                    f.write(block+".Vsel += "+block_list[block_list.index(block)-1]+".Vsel_b[0]\n")
                                 else:
                                     f.write(block+".Vsel += CABElements_GateSwitch.CTRL_B[0]\n")
                             else:
                                 if "Vsel_b" in lib[block_list[block_list.index(block)-1]]["S"]:
                                     f.write(block+".Vsel += "+block_list[block_list.index(block)-1]+".Vsel_b\n")
+                                elif "Vsel_b[0:1]" in lib[block_list[block_list.index(block)-1]]["S"]:
+                                    f.write(block+".Vsel += "+block_list[block_list.index(block)-1]+".Vsel_b[0]\n")
                                 else:
                                     f.write(block+".Vsel += CABElements_GateSwitch.CTRL_B[0]\n")
                         elif top_port == "VINJ":
@@ -372,6 +376,41 @@ for block in block_list:
                                     f.write(block+".VG += "+block_list[block_list.index(block)-1]+".VG_b[0:2]\n")
                                 else:
                                     f.write(block+".VG += CABElements_GateSwitch.Vg[0:1]\n")
+                        elif top_port == "Vg":
+                            if block_list[block_list.index(block)-1][-1].isnumeric():
+                                if "Vg_b" in lib[block_list[block_list.index(block)-1].split("__")[0]]["S"]:
+                                    f.write(block+".Vg += "+block_list[block_list.index(block)-1]+".Vg_b\n")
+                                elif "VG_b" in lib[block_list[block_list.index(block)-1].split("__")[0]]["S"]:
+                                    f.write(block+".Vg += "+block_list[block_list.index(block)-1]+".VG_b\n")
+                                elif "Vg_b[0:1]" in lib[block_list[block_list.index(block)-1].split("__")[0]]["S"]:
+                                    f.write(block+".Vg += "+block_list[block_list.index(block)-1]+".Vg_b[0]\n")
+                                elif "VG_b[0:1]" in lib[block_list[block_list.index(block)-1].split("__")[0]]["S"]:
+                                    f.write(block+".Vg += "+block_list[block_list.index(block)-1]+".VG_b[0]\n")
+                                else:
+                                    f.write(block+".Vg += CABElements_GateSwitch.Vg[0]\n")
+                            else:
+                                if "Vg_b" in lib[block_list[block_list.index(block)-1]]["S"]:
+                                    f.write(block+".Vg += "+block_list[block_list.index(block)-1]+".Vg_b\n")
+                                elif "VG_b" in lib[block_list[block_list.index(block)-1]]["S"]:
+                                    f.write(block+".Vg += "+block_list[block_list.index(block)-1]+".VG_b\n")
+                                elif "Vg_b[0:1]" in lib[block_list[block_list.index(block)-1]]["S"]:
+                                    f.write(block+".Vg += "+block_list[block_list.index(block)-1]+".Vg_b[0]\n")
+                                elif "VG_b[0:1]" in lib[block_list[block_list.index(block)-1]]["S"]:
+                                    f.write(block+".Vg += "+block_list[block_list.index(block)-1]+".VG_b[0]\n")
+                                else:
+                                    f.write(block+".Vg += CABElements_GateSwitch.Vg[0]\n")
+                        elif top_port == "VG":
+                            if block_list[block_list.index(block)-1][-1].isnumeric():
+                                if "Vg_b" in lib[block_list[block_list.index(block)-1].split("__")[0]]["S"]:
+                                    f.write(block+".VG += "+block_list[block_list.index(block)-1]+".Vg_b\n")
+                                elif "VG_b" in lib[block_list[block_list.index(block)-1].split("__")[0]]["S"]:
+                                    f.write(block+".VG += "+block_list[block_list.index(block)-1]+".VG_b\n")
+                                elif "Vg_b[0:1]" in lib[block_list[block_list.index(block)-1].split("__")[0]]["S"]:
+                                    f.write(block+".VG += "+block_list[block_list.index(block)-1]+".Vg_b[0]\n")
+                                elif "VG_b[0:1]" in lib[block_list[block_list.index(block)-1].split("__")[0]]["S"]:
+                                    f.write(block+".VG += "+block_list[block_list.index(block)-1]+".VG_b[0]\n")
+                                else:
+                                    f.write(block+".VG += CABElements_GateSwitch.Vg[0]\n")
                         elif top_port == "PROG":
                             if block_list[block_list.index(block)-1][-1].isnumeric():
                                 if "PROG_b" in lib[block_list[block_list.index(block)-1].split("__")[0]]["S"]:
@@ -535,14 +574,14 @@ for block in block_list:
                                 elif "VG_b[0:1]" in lib[block_list[block_list.index(block)-1].split("__")[0]]["S"]:
                                     f.write(block+".Vg += "+block_list[block_list.index(block)-1]+".VG_b[0:2]\n")
                                 else:
-                                    f.write(block+".Vg += CABElements_GateSwitch.Vg[0:1]\n")
+                                    f.write(block+".Vg += CABElements_GateSwitch.Vg[0:2]\n")
                             else:
                                 if "Vg_b[0:1]" in lib[block_list[block_list.index(block)-1]]["S"]:
                                     f.write(block+".Vg += "+block_list[block_list.index(block)-1]+".Vg_b[0:2]\n")
                                 elif "VG_b[0:1]" in lib[block_list[block_list.index(block)-1]]["S"]:
                                     f.write(block+".Vg += "+block_list[block_list.index(block)-1]+".VG_b[0:2]\n")
                                 else:
-                                    f.write(block+".Vg += CABElements_GateSwitch.Vg[0:1]\n")
+                                    f.write(block+".Vg += CABElements_GateSwitch.Vg[0:2]\n")
                         elif top_port == "VG[0:1]":
                             if block_list[block_list.index(block)-1][-1].isnumeric():
                                 if "Vg_b[0:1]" in lib[block_list[block_list.index(block)-1].split("__")[0]]["S"]:
@@ -550,14 +589,60 @@ for block in block_list:
                                 elif "VG_b[0:1]" in lib[block_list[block_list.index(block)-1].split("__")[0]]["S"]:
                                     f.write(block+".VG += "+block_list[block_list.index(block)-1]+".VG_b[0:2]\n")
                                 else:
-                                    f.write(block+".VG += CABElements_GateSwitch.Vg[0:1]\n")
+                                    f.write(block+".VG += CABElements_GateSwitch.Vg[0:2]\n")
                             else:
                                 if "Vg_b[0:1]" in lib[block_list[block_list.index(block)-1]]["S"]:
                                     f.write(block+".VG += "+block_list[block_list.index(block)-1]+".Vg_b[0:2]\n")
                                 elif "VG_b[0:1]" in lib[block_list[block_list.index(block)-1]]["S"]:
                                     f.write(block+".VG += "+block_list[block_list.index(block)-1]+".VG_b[0:2]\n")
                                 else:
-                                    f.write(block+".VG += CABElements_GateSwitch.Vg[0:1]\n")
+                                    f.write(block+".VG += CABElements_GateSwitch.Vg[0:2]\n")
+                        elif top_port == "Vg":
+                            if block_list[block_list.index(block)-1][-1].isnumeric():
+                                if "Vg_b" in lib[block_list[block_list.index(block)-1].split("__")[0]]["S"]:
+                                    f.write(block+".Vg += "+block_list[block_list.index(block)-1]+".Vg_b\n")
+                                elif "VG_b" in lib[block_list[block_list.index(block)-1].split("__")[0]]["S"]:
+                                    f.write(block+".Vg += "+block_list[block_list.index(block)-1]+".VG_b\n")
+                                elif "Vg_b[0:1]" in lib[block_list[block_list.index(block)-1].split("__")[0]]["S"]:
+                                    f.write(block+".Vg += "+block_list[block_list.index(block)-1]+".Vg_b[0]\n")
+                                elif "VG_b[0:1]" in lib[block_list[block_list.index(block)-1].split("__")[0]]["S"]:
+                                    f.write(block+".Vg += "+block_list[block_list.index(block)-1]+".VG_b[0]\n")
+                                else:
+                                    f.write(block+".Vg += CABElements_GateSwitch.Vg[0]\n")
+                            else:
+                                if "Vg_b" in lib[block_list[block_list.index(block)-1]]["S"]:
+                                    f.write(block+".Vg += "+block_list[block_list.index(block)-1]+".Vg_b\n")
+                                elif "VG_b" in lib[block_list[block_list.index(block)-1]]["S"]:
+                                    f.write(block+".Vg += "+block_list[block_list.index(block)-1]+".VG_b\n")
+                                elif "Vg_b[0:1]" in lib[block_list[block_list.index(block)-1]]["S"]:
+                                    f.write(block+".Vg += "+block_list[block_list.index(block)-1]+".Vg_b[0]\n")
+                                elif "VG_b[0:1]" in lib[block_list[block_list.index(block)-1]]["S"]:
+                                    f.write(block+".Vg += "+block_list[block_list.index(block)-1]+".VG_b[0]\n")
+                                else:
+                                    f.write(block+".Vg += CABElements_GateSwitch.Vg[0]\n")
+                        elif top_port == "VG":
+                            if block_list[block_list.index(block)-1][-1].isnumeric():
+                                if "Vg_b" in lib[block_list[block_list.index(block)-1].split("__")[0]]["S"]:
+                                    f.write(block+".VG += "+block_list[block_list.index(block)-1]+".Vg_b\n")
+                                elif "VG_b" in lib[block_list[block_list.index(block)-1].split("__")[0]]["S"]:
+                                    f.write(block+".VG += "+block_list[block_list.index(block)-1]+".VG_b\n")
+                                elif "Vg_b[0:1]" in lib[block_list[block_list.index(block)-1].split("__")[0]]["S"]:
+                                    f.write(block+".VG += "+block_list[block_list.index(block)-1]+".Vg_b[0]\n")
+                                elif "VG_b[0:1]" in lib[block_list[block_list.index(block)-1].split("__")[0]]["S"]:
+                                    f.write(block+".VG += "+block_list[block_list.index(block)-1]+".VG_b[0]\n")
+                                else:
+                                    f.write(block+".VG += CABElements_GateSwitch.Vg[0]\n")
+                            else:
+                                if "Vg_b" in lib[block_list[block_list.index(block)-1]]["S"]:
+                                    f.write(block+".Vg += "+block_list[block_list.index(block)-1]+".Vg_b\n")
+                                elif "VG_b" in lib[block_list[block_list.index(block)-1]]["S"]:
+                                    f.write(block+".Vg += "+block_list[block_list.index(block)-1]+".VG_b\n")
+                                elif "Vg_b[0:1]" in lib[block_list[block_list.index(block)-1]]["S"]:
+                                    f.write(block+".Vg += "+block_list[block_list.index(block)-1]+".Vg_b[0]\n")
+                                elif "VG_b[0:1]" in lib[block_list[block_list.index(block)-1]]["S"]:
+                                    f.write(block+".Vg += "+block_list[block_list.index(block)-1]+".VG_b[0]\n")
+                                else:
+                                    f.write(block+".Vg += CABElements_GateSwitch.Vg[0]\n")
                         elif top_port == "PROG":
                             if block_list[block_list.index(block)-1][-1].isnumeric():
                                 if "PROG_b" in lib[block_list[block_list.index(block)-1].split("__")[0]]["S"]:
@@ -606,8 +691,20 @@ for block in block_list:
         
 #C to cab connections
 f.write("\n")
-f.write("CEW.GND_b[0] += CAB_GateSwitch.INPUT[1]\n")
-f.write("CAB_GateSwitch.INPUT[0] += CABElements_GateSwitch.VDD[1]\n")
+f.write("C_EW.GND_b[0] += CAB_GateSwitch.Input[1]\n")
+f.write("CAB_GateSwitch.Input[0] += CABElements_GateSwitch.VDD[1]\n")
+
+
+
+
+
+
+
+
+f.write("# Compilation\n")
+f.write("design_limits = [1e6, 6.1e5]\n")
+f.write("location_islands = ((20600, 363500), (20600, 20000), (160000,20000))\n")
+f.write('compile_asic(Top,process="TSMC350nm",fileName="full_cab_python",p_and_r = True,design_limits = design_limits, location_islands = location_islands)\n')
 
 
 
@@ -669,3 +766,4 @@ final.close()
 os.remove('full_cab_python_temp.py')
     
         
+

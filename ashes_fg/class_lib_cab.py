@@ -1,6 +1,20 @@
 from ashes_fg.asic.asic_compile import *
 
 
+class TSMC350nm_volatile_swcs(StandardCell):
+    def __init__(self,circuit,island=None,dim = (1,1)):
+        # Define variables
+        self.circuit = circuit
+        self.pins = []
+        self.ports = []
+        self.island = island
+        self.dim = dim
+
+        self.name = "TSMC350nm_volatile_swcs"
+        
+        circuit.addInstance(self,self.island)
+
+
 # SBLOCK
 #---------------------------------------------------------------------------------------------------
 class S_Buffer(StandardCell):

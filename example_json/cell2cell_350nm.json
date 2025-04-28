@@ -4,5 +4,5 @@
     "CNS_cols":18,
     "foundry": "TSMC",
     "process_node": "350nm",
-    "cab": ["TA2Cell_Weak__0","TA2Cell_Weak__1","TA2Cell_Strong","Cap_Bank","4WTA_IndirectProg","NandPfets","TGate_2nMirror"]
+    "cab": ["TA2Cell_Weak__0","TA2Cell_Weak__1","TA2Cell_Strong","4WTA_IndirectProg","Cap_Bank","NandPfets","TGate_2nMirror"]
 }

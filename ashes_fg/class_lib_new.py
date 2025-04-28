@@ -52,7 +52,7 @@ class TSMC350nm_4x2_Direct(StandardCell):
 		circuit.addInstance(self,self.island)
 
 class TSMC350nm_4x2_Indirect(StandardCell):
-	def __init__(self,circuit,island=None,dim=(1,1),Vd_P=None,Vd_R=None,Vs=None,VINJ=None,Vsel=None,Vg=None,GND=None,VTUN=None,GND_b=None):
+	def __init__(self,circuit,island=None,dim=(1,1),Vd_P=None,Vd_R=None,Vs=None,VINJ=None,Vsel=None,Vg=None,GND=None,VTUN=None,GND_b=None,Vs_b=None,VINJ_b=None,Vsel_b=None,Vg_b=None,VTUN_b=None):
 
 		# Define variables
 		self.circuit = circuit
@@ -73,10 +73,15 @@ class TSMC350nm_4x2_Indirect(StandardCell):
 		self.GND = Port(circuit,self,'GND','N',2*self.dim[1])
 		self.VTUN = Port(circuit,self,'VTUN','N',1*self.dim[1])
 		self.GND_b = Port(circuit,self,'GND_b','S',2*self.dim[1])
+		self.Vs_b = Port(circuit,self,'Vs_b','S',2*self.dim[1])
+		self.VINJ_b = Port(circuit,self,'VINJ_b','S',2*self.dim[1])
+		self.Vsel_b = Port(circuit,self,'Vsel_b','S',2*self.dim[1])
+		self.Vg_b = Port(circuit,self,'Vg_b','S',2*self.dim[1])
+		self.VTUN_b = Port(circuit,self,'VTUN_b','S',1*self.dim[1])
 
 
 		# Initialize ports with given values
-		portsInit = [Vd_P,Vd_R,Vs,VINJ,Vsel,Vg,GND,VTUN,GND_b]
+		portsInit = [Vd_P,Vd_R,Vs,VINJ,Vsel,Vg,GND,VTUN,GND_b,Vs_b,VINJ_b,Vsel_b,Vg_b,VTUN_b]
 		i=0
 		for p in self.ports:
 			self.assignPort(p,portsInit[i])
