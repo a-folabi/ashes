@@ -587,6 +587,7 @@ class Pin:
         """
         Returns Verilog text string for net
         """
+
         return self.net.print()
        
 class Port:
@@ -784,9 +785,12 @@ class Port:
 
                 line += "("
                 
-                if pin.isVector() == True:
+                if pin.cell.isMatrix() == True:
                     if pin.isShorted() == True:
-                        line += pin.print()
+                        #line += pin.print()
+                        idxStart = pin.net.index
+                        pinVectorText = "[" + str(idxStart) + ":" + str(idxStart + 1) + "]"
+                        line += "net" + str(pin.net.number) + pinVectorText
                     else:
                         idxStart = 0
                         idxEnd = self.getVectorSize()

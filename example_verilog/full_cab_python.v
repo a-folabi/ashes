@@ -5,7 +5,7 @@ module TOP(port1);
 	TSMC350nm_4x2_Indirect I__0 (.island_num(0), .row(0), .col(0), .matrix_row(5), .matrix_col(7), .GND_b_0_row_4(net117[0:7]), .GND_b_1_row_4(net2105[0:7]), .Vs_b_0_row_4(net123[0:7]), .Vs_b_1_row_4(net124[0:7]), .VINJ_b_1_row_4(net2112[0:7]), .Vsel_b_0_row_4(net2070[0:7]), .Vsel_b_1_row_4(net2071[0:7]), .Vg_b_0_row_4(net2084[0:7]), .Vg_b_1_row_4(net2085[0:7]), .VTUN_brow_4(net2098[0:7]));
 	TSMC350nm_4x2_Indirect I__1 (.island_num(0), .row(0), .col(17), .matrix_row(5), .matrix_col(9));
 	TSMC350nm_4TGate_ST_BMatrix I__2 (.island_num(0), .row(0), .col(26), .matrix_row(5), .matrix_col(1));
-	S_BLOCK_SEC1_PINS I__3 (.island_num(0), .row(0), .col(7), .matrix_row(5), .matrix_col(1), .VINJ_brow_4(net2125[0]), .Vsel_b_0_row_4(net2126[0]), .Vsel_b_1_row_4(net2127[0]), .Vg_b_0_row_4(net2128[0]), .Vg_b_1_row_4(net2129[0]), .VTUN_brow_4(net2130[0]), .GND_b_1_row_4(net2131[0]));
+	S_BLOCK_SEC1_PINS I__3 (.island_num(0), .row(0), .col(7), .matrix_row(5), .matrix_col(1), .VINJ_brow_4(net2125[0:1]), .Vsel_b_0_row_4(net2126[0:1]), .Vsel_b_1_row_4(net2127[0:1]), .Vg_b_0_row_4(net2128[0:1]), .Vg_b_1_row_4(net2129[0:1]), .VTUN_brow_4(net2130[0:1]), .GND_b_1_row_4(net2131[0:1]));
 	S_BLOCK_BUFFER I__4 (.island_num(0), .row(0), .col(8), .matrix_row(5), .matrix_col(1));
 	S_BLOCK_SPACE_UP_PINS I__5 (.island_num(0), .row(0), .col(9), .matrix_row(4), .matrix_col(1));
 	S_BLOCK_CONN_PINS I__6 (.island_num(0), .row(4), .col(9), .matrix_row(1), .matrix_col(1));
