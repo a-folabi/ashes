@@ -135,7 +135,7 @@ TA_Strong = TSMC350nm_TA2Cell_Strong(Top,CABIsland)
 TA_Strong.place([4,18])
 TA_Strong.markCABDevice()
 
-WTA = TSMC350nm_4WTA(Top,CABIsland)
+WTA = TSMC350nm_4WTA_IndirectProg(Top,CABIsland)
 WTA.place([5,18])
 WTA.markCABDevice()
 
@@ -193,22 +193,22 @@ Nmirror.IN_TG += Bswitch.A[21]
 
 # Feedback Connections
 # -------------------------------------------------------------------------------
-TA_Weak0.OUTPUT += CAB_GateSwitch.In[17:19]
-TA_Weak1.OUTPUT += CAB_GateSwitch.In[19:21]
-TA_Strong.OUTPUT += CAB_GateSwitch.In[21:23]
-WTA.Vout += CAB_GateSwitch.In[23:27]
-CapBank.OUT += CAB_GateSwitch.In[27:29]
-FETs.DRAIN_P += CAB_GateSwitch.In[29]
-FETs.DRAIN_N += CAB_GateSwitch.In[30]
-Nmirror.OUT_CM += CAB_GateSwitch.In[31:33]
-Nmirror.OUT_TG += CAB_GateSwitch.In[33]
+TA_Weak0.OUTPUT += CAB_GateSwitch.Input[17:19]
+TA_Weak1.OUTPUT += CAB_GateSwitch.Input[19:21]
+TA_Strong.OUTPUT += CAB_GateSwitch.Input[21:23]
+WTA.Vout += CAB_GateSwitch.Input[23:27]
+CapBank.OUT += CAB_GateSwitch.Input[27:29]
+FETs.DRAIN_P += CAB_GateSwitch.Input[29]
+FETs.DRAIN_N += CAB_GateSwitch.Input[30]
+Nmirror.OUT_CM += CAB_GateSwitch.Input[31:33]
+Nmirror.OUT_TG += CAB_GateSwitch.Input[33]
 
 # Power Connections
 
 # Frame
 # -------------------------------------------------------------------------------
 outerFrame = frame(Top)
-outerFrame.createPort("N","testPin",connection = CAB_GateSwitch.In[16])
+outerFrame.createPort("N","testPin",connection = CAB_GateSwitch.Input[16])
 
 # Compilation
 #-------------------------------------------------------------------------------
