@@ -14,6 +14,8 @@ class STD_GorS_IndirectSwitches(MUX):
         self.name = "TSMC350nm_GorS_IndrctSwcs"
 
         self.Input = Port(circuit,self,"Input","N",2*self.dim[1])
+        self.GND = Port(circuit,self,"GND","N",1*self.dim[1])
+        self.VTUN = Port(circuit,self,"VTUN","N",1*self.dim[1])
 
         # Add cell to circuit
         circuit.addInstance(self,self.island)

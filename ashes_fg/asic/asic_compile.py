@@ -40,7 +40,6 @@ def compile_asic(circuit,process="Process",fileName = "compiled",path = "./examp
     x_offset, y_offset = 400*track_spacing, 2000*track_spacing 
 
     design_area = (0, 0, design_limits[0], design_limits[1], x_offset, y_offset)
-    #location_islands = ((20600, 363500), (20600, 20000)) #<-location for tile v1
 
     # Run P&R if desired
     if p_and_r == True:
@@ -717,7 +716,13 @@ class Port:
             for j in range(self.numPins()):
                 pin = self.pins[p]
                 if pin.isConnected(): 
-                    line += ", ." + type + "_n" + str(i) + "_" + self.name + "_" + str(j) + "_("
+                    line += ", ." + type + "_n" + str(i) + "_" + self.name
+
+                    # Add pin number for ports with size > 1
+                    if self.numPins() > 1:
+                        line += "_" + str(j) + "_"
+
+                    line += "("
                     line += pin.print()
                     line += ")"
                 p+=1
@@ -740,7 +745,7 @@ class Port:
                 if self.numPins() > 1:
                     line +=  "_" + str(i) + "_"
 
-                if pin.isVector() ==  True or self.cell.isAbutted() == True:
+                if self.cell.isMatrix() ==  True or self.cell.isAbutted() == True:
                     if self.cell.isAbutted():
                         line += "row_0"
                     elif self.location == "E":
@@ -813,6 +818,14 @@ class StandardCell:
             if self.Abut == True:
                 return True
         except:
+            return False
+        
+    def isMatrix(self):
+        if self.dim[0] > 1:
+            return True
+        elif self.dim[1] > 1:
+            return True
+        else:
             return False
 
     def isDecoder(self):
@@ -917,6 +930,12 @@ class MUX(StandardCell):
             return True
         except:
             return False
+        
+    def getDirection(self):
+        if self.dim[0] < 1:
+            return "horizontal"
+        else:
+            return "vertical"
 
     def print(self,instanceNum,islandNum,row,col,processPrefix):
 
@@ -948,9 +967,3 @@ class MUX(StandardCell):
         text += ");"
         return text
     
-    def getDirection(self):
-        if self.dim[0] < 1:
-            return "horizontal"
-        else:
-            return "vertical"
-        
