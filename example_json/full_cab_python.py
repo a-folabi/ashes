@@ -533,13 +533,13 @@ VolSwitch.Vd_o[7] += Outmatrix.Vd_Pl[3]
 CABElements_GateSwitch.VDD[1] += BtoOut.AVDD_r
 CABElements_GateSwitch.VDD[1] += CAB_GateSwitch.AVDD_r
 CABElements_GateSwitch.PROG += BtoOut.prog_r
-#CABElements_GateSwitch.PROG += CAB_GateSwitch.prog_r
-#CABElements_GateSwitch.RUN += BtoOut.run_r
-#CABElements_GateSwitch.RUN += CAB_GateSwitch.run_r
+CABElements_GateSwitch.PROG += CAB_GateSwitch.prog_r
+CABElements_GateSwitch.RUN += BtoOut.run_r
+CABElements_GateSwitch.RUN += CAB_GateSwitch.run_r
 #CABElements_GateSwitch.prog_r += C_NS.Prog_b[8]
-#BtoOut.Vgrun_r += CAB_GateSwitch.Vgrun_r
-#CABElements_GateSwitch.RUN_IN[0] += CABElements_GateSwitch.RUN_IN[1]
-#CABElements_GateSwitch.Run_IN[0] += BtoOut.Vgrun_r
+BtoOut.Vgrun_r += CAB_GateSwitch.Vgrun_r
+CABElements_GateSwitch.RUN_IN[0] += CABElements_GateSwitch.RUN_IN[1]
+CABElements_GateSwitch.RUN_IN[0] += BtoOut.Vgrun_r
 
 # Compilation
 design_limits = [1e6, 6.1e5]

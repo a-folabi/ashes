@@ -648,6 +648,7 @@ class Port:
 
     def __iadd__(self,operand):
         self.connectPort(operand)
+        return self # Avoid turning self into a "none" type
 
     def connectPort(self,connection):
         """
@@ -683,6 +684,7 @@ class Port:
                 raise Exception("Invalid Assignment")
         else:
                 raise Exception("Invalid Assignment")
+        
 
 
     def isEmpty(self):
