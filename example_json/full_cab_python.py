@@ -510,7 +510,9 @@ VolSwitch.D += C_EW.Vs_b[12]
 VolSwitch.CLK += C_EW.Vs_b[13]
 VolSwitch.Q += C_EW.Vs_b[13]
 VolSwitch.com += CAB_GateSwitch.Input[16]
-CABElements_GateSwitch.VDD[1] += VolSwitch.VDD
+
+VolSwitch.VDD += CABElements_GateSwitch.VDD[1]
+
 VolSwitch.Vd_P += CAB_DrainSwitch.PR[35]
 #VolSwitch.Vd_in[0] += CAB_DrainSwitch.In[32]
 #VolSwitch.Vd_in[4] += CAB_DrainSwitch.PR[32]
@@ -524,5 +526,5 @@ VolSwitch.Vd_P += CAB_DrainSwitch.PR[35]
 # Compilation
 design_limits = [1e6, 6.1e5]
 location_islands = ((20600, 410000), (20600, 20000), (160000,20000))
-compile_asic(Top,process="TSMC350nm",fileName="full_cab_python",p_and_r = True,design_limits = design_limits, location_islands = location_islands)
+compile_asic(Top,process="TSMC350nm",fileName="full_cab_python",p_and_r = False,design_limits = design_limits, location_islands = location_islands)
 

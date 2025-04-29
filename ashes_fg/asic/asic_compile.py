@@ -196,6 +196,11 @@ class Circuit:
                 elif net.containsVector() == False:
                     net.number = self.Nets.index(net)
 
+                    # Check for non-decoder matrix
+                    for p in net.pins:
+                        if p.cell.isMatrix() and isinstance(p.cell,MUX) == False:
+                            net.index = 0
+
         for net in self.Nets:
             if net.number == -1:
                 wrongPort = net.pins[0].port.name
@@ -567,6 +572,8 @@ class Pin:
             self.net = self.net.connect(connection)
         elif isinstance(connection,Pin):
             self.net = self.net.connect(connection.getNet())
+        elif isinstance(connection,Port):
+            connection.connectPort(self)
 
     def disconnect(self):
         """

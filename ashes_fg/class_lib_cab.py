@@ -227,7 +227,7 @@ class DrainCutoff(MUX):
         self.ports = []
         self.island = island
         self.num = num
-        self.dim = (1,self.num)
+        self.dim = (self.num,0)
         self.decoder = True
         self.type = "switch"
         self.switchType = "prog_switch"
