@@ -611,6 +611,10 @@ class Port:
         self.cell = cell
         self.isStatic = static
 
+        # 0 pinNumber not allowed, means MUX cell trying to instantiate with dimension of 0
+        if pinNumber == 0:
+            pinNumber += 1
+
         #Generate pins equal to pinNumber
         self.pins = []
         for i in range(int(pinNumber)):
