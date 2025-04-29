@@ -12,6 +12,21 @@ class TSMC350nm_volatile_swcs(StandardCell):
 
         self.name = "TSMC350nm_volatile_swcs"
         
+        self.out = Port(circuit,self,"out","N",2*self.dim[1])
+        self.VINJ = Port(circuit,self,"VINJ","N",2*self.dim[1])
+        self.Vsel = Port(circuit,self,"Vsel","N",2*self.dim[1])
+        self.Vg = Port(circuit,self,"Vg","N",2*self.dim[1])
+        self.GND = Port(circuit,self,"GND","N",1*self.dim[1])
+        self.VTUN = Port(circuit,self,"VTUN","N",1*self.dim[1])
+        self.D = Port(circuit,self,"D","W",1*self.dim[0])
+        self.CLK = Port(circuit,self,"CLK","W",1*self.dim[0])
+        self.Q = Port(circuit,self,"Q","E",1*self.dim[0])
+        self.com = Port(circuit,self,"com","W",1*self.dim[0])
+        self.VDD = Port(circuit,self,"VDD","W",1*self.dim[0])
+        self.Vd_P = Port(circuit,self,"Vd_P","W",1*self.dim[0])
+        self.Vd_in = Port(circuit,self,"Vd_in","W",8*self.dim[0])
+        
+        
         circuit.addInstance(self,self.island)
 
 
@@ -133,6 +148,12 @@ class S_SEC2(StandardCell):
         self.name = "S_BLOCK_SEC2_PINS"
 
         self.In = Port(circuit,self,"Input","N",2*self.dim[1])
+        self.VINJ_b = Port(circuit,self,"VINJ_b","S",1*self.dim[1])
+        self.Vsel_b = Port(circuit,self,"Vsel_b","S",2*self.dim[1])
+        self.Vg_b = Port(circuit,self,"Vg_b","S",2*self.dim[1])
+        self.VTUN_b = Port(circuit,self,"VTUN_b","S",1*self.dim[1])
+        self.GND_b = Port(circuit,self,"GND_b","S",2*self.dim[1])
+
 
         # Add cell to circuit
         circuit.addInstance(self,self.island)
@@ -149,6 +170,12 @@ class S_SEC3(StandardCell):
         self.name = "S_BLOCK_SEC3_PINS"
 
         self.In = Port(circuit,self,"Input","N",2*self.dim[1])
+        self.VINJ_b = Port(circuit,self,"VINJ_b","S",1*self.dim[1])
+        self.Vsel_b = Port(circuit,self,"Vsel_b","S",2*self.dim[1])
+        self.Vg_b = Port(circuit,self,"Vg_b","S",2*self.dim[1])
+        self.VTUN_b = Port(circuit,self,"VTUN_b","S",1*self.dim[1])
+        self.GND_b = Port(circuit,self,"GND_b","S",2*self.dim[1])
+
 
         # Add cell to circuit
         circuit.addInstance(self,self.island)
@@ -206,6 +233,9 @@ class DrainCutoff(MUX):
         self.switchType = "prog_switch"
  
         self.name = "TSMC350nm_4TGate_ST_draincutoff"
+        
+        self.PR = Port(circuit,self,"PR","E",4*self.dim[0])
+        self.In = Port(circuit,self,"In","E",4*self.dim[0])
 
         # Add cell to circuit
         circuit.addInstance(self,self.island)

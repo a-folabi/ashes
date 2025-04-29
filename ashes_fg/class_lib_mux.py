@@ -34,11 +34,11 @@ class STD_IndirectGateDecoder(MUX):
         self.name = "TSMC350nm_VinjDecode2to4_htile"
 
         self.VGRUN = Port(circuit,self,"VGRUN","N",4*self.dim[1])
-        self.Run_Out = Port(circuit,self,"RUN_OUT","S",4*self.dim[1])
-        self.Out = Port(circuit,self,"OUT","S",4*self.dim[1])
+        self.RUN_OUT = Port(circuit,self,"RUN_OUT","S",4*self.dim[1])
+        self.OUT = Port(circuit,self,"OUT","S",4*self.dim[1])
         self.Enable = Port(circuit,self,"ENABLE","N",1,static=True)
-        #self.VINJ = Port(circuit,self,"VINJ","N",2*self.dim[1])
-        #self.GND = Port(circuit,self,"GND","N",2*self.dim[1])
+        self.VINJ_b = Port(circuit,self,"VINJ_b","S",2*self.dim[1])
+        self.GND_b = Port(circuit,self,"GND_b","S",2*self.dim[1])
         
         # Add cell to circuit
         circuit.addInstance(self,self.island)
@@ -77,6 +77,10 @@ class STD_IndirectGateSwitch(MUX):
         self.name = "TSMC350nm_IndirectSwitches"
 
         self.VPWR = Port(circuit,self,"VPWR","N",2*self.dim[1])
+        self.RUN_IN = Port(circuit,self,"RUN_IN","N",2*self.dim[1])
+        self.GND_T = Port(circuit,self,"GND_T","N",1*self.dim[1])
+        self.VTUN_T = Port(circuit,self,"VTUN_T","N",1*self.dim[1])
+        self.decode = Port(circuit,self,"decode","N",2*self.dim[1])
         self.VINJ_T = Port(circuit,self,"VINJ_T","N",1*self.dim[1])
         self.GND = Port(circuit,self,"GND","S",1*self.dim[1])
         self.CTRL_B = Port(circuit,self,"CTRL_B","S",2*self.dim[1])

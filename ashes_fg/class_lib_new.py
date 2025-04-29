@@ -53,10 +53,6 @@ class TSMC350nm_4x2_Direct(StandardCell):
 
 class TSMC350nm_4x2_Indirect(StandardCell):
 	def __init__(self,circuit,island=None,dim=(1,1),Vd_P=None,Vd_R=None,Vs=None,VINJ=None,Vsel=None,Vg=None,GND=None,VTUN=None,GND_b=None,Vs_b=None,VINJ_b=None,Vsel_b=None,Vg_b=None,VTUN_b=None):
-<<<<<<< HEAD
-
-=======
->>>>>>> 7ae827ab481a0079a27b9cf3734dd359ef2a2d67
 		# Define variables
 		self.circuit = circuit
 		self.pins = []
@@ -79,10 +75,6 @@ class TSMC350nm_4x2_Indirect(StandardCell):
 		self.Vsel_b = Port(circuit,self,'Vsel_b','S',2*self.dim[1])
 		self.Vg_b = Port(circuit,self,'Vg_b','S',2*self.dim[1])
 		self.VTUN_b = Port(circuit,self,'VTUN_b','S',1*self.dim[1])
-<<<<<<< HEAD
-
-=======
->>>>>>> 7ae827ab481a0079a27b9cf3734dd359ef2a2d67
 		# Initialize ports with given values
 		portsInit = [Vd_P,Vd_R,Vs,VINJ,Vsel,Vg,GND,VTUN,GND_b,Vs_b,VINJ_b,Vsel_b,Vg_b,VTUN_b]
 		i=0
