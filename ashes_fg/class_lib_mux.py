@@ -17,6 +17,10 @@ class STD_GorS_IndirectSwitches(MUX):
         self.Vg_global = Port(circuit,self,"Vg_global","N",2*self.dim[1])
         self.VTUN = Port(circuit,self,"VTUN","N",1*self.dim[1])
         self.VINJ = Port(circuit,self,"VINJ","N",1*self.dim[1])
+        self.Vgrun_r = Port(circuit,self,"Vgrun_r","E",1*self.dim[0])
+        self.AVDD_r = Port(circuit,self,"AVDD_r","E",1*self.dim[0])
+        self.run_r = Port(circuit,self,"run_r","E",1*self.dim[0])
+        self.prog_r = Port(circuit,self,"prog_r","E",1*self.dim[0])
         # Add cell to circuit
         circuit.addInstance(self,self.island)
 
@@ -90,6 +94,9 @@ class STD_IndirectGateSwitch(MUX):
         self.VTUN = Port(circuit,self,"VTUN","S",1*self.dim[1])
         self.VINJ = Port(circuit,self,"VINJ","S",1*self.dim[1])
         self.VDD = Port(circuit,self,"VDD","S",2*self.dim[1])
+        self.PROG = Port(circuit,self,"PROG","W",1*self.dim[0])
+        self.RUN = Port(circuit,self,"RUN","W",1*self.dim[0])
+        self.Vgsel = Port(circuit,self,"Vgsel","W",1*self.dim[0])
 
         # Add cell to circuit
         circuit.addInstance(self,self.island)

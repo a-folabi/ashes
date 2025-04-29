@@ -25,6 +25,7 @@ class TSMC350nm_volatile_swcs(StandardCell):
         self.VDD = Port(circuit,self,"VDD","W",1*self.dim[0])
         self.Vd_P = Port(circuit,self,"Vd_P","W",1*self.dim[0])
         self.Vd_in = Port(circuit,self,"Vd_in","W",8*self.dim[0])
+        self.Vd_o = Port(circuit,self,"Vd_o","E",8*self.dim[0])
         
         
         circuit.addInstance(self,self.island)
@@ -279,8 +280,15 @@ class OutSwitch(StandardCell):
         self.ports = []
         self.island = island
         self.dim = dim
+        
+        self.Vgrun_r = Port(circuit,self,"Vgrun_r","E",1*self.dim[0])
+        self.AVDD_r = Port(circuit,self,"AVDD_r","E",1*self.dim[0])
+        self.run_r = Port(circuit,self,"run_r","E",1*self.dim[0])
+        self.prog_r = Port(circuit,self,"prog_r","E",1*self.dim[0])
 
         self.name = "TSMC350nm_OutMtrx_IndrctSwcs"
+        
+        
 
         # Add cell to circuit
         circuit.addInstance(self,self.island)
