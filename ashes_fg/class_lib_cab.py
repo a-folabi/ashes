@@ -198,6 +198,9 @@ class ST_BMatrix(StandardCell):
         self.In = Port(circuit,self,"Input","W",4*self.dim[0])
         self.P = Port(circuit,self,"P","E",4*self.dim[0])
         self.A = Port(circuit,self,"A","E",4*self.dim[0])
+        self.Prog_b = Port(circuit,self,"Prog_b","S",1*self.dim[1])
+        self.VDD_b = Port(circuit,self,"VDD_b","S",1*self.dim[1])
+        self.GND_b = Port(circuit,self,"GND_b","S",1*self.dim[1])
 
         # Add cell to circuit
         circuit.addInstance(self,self.island)
