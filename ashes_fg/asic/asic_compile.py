@@ -739,7 +739,7 @@ class Port:
         """
         return int(len(self.pins)/self.numPins())
     
-    def printFlat(self,type = "decode"):
+    def printFlat(self,type = "decode",extraIdx = -1):
         """
         Returns Verilog text for a decoder port
         Decoders are a special case
@@ -755,7 +755,11 @@ class Port:
             for j in range(self.numPins()):
                 pin = self.pins[p]
                 if pin.isConnected(): 
-                    line += ", ." + type + "_n" + str(i) + "_" + self.name
+                    line += ", ." + type
+                    if extraIdx > 0:
+                        line += "_n" + str(extraIdx)
+
+                    line += "_n" + str(i) + "_" + self.name
 
                     # Add pin number for ports with size > 1
                     if self.numPins() > 1:
@@ -1004,7 +1008,15 @@ class MUX(StandardCell):
                 if self.type == "switch_ind":
                     text += port.print()
                 else:
-                    text += port.printFlat(type = self.type)
+                    # Temporary check for south pin on gate decoder to put in double notation
+                    if self.type == "decode" and self.getDirection() == "horizontal" and port.location == "S":
+                        if self.bits % 2 == 0:
+                            lastRow = self.bits-1
+                        else:
+                            lastRow = self.bits
+                        text += port.printFlat(type=self.type,extraIdx=lastRow-1)
+                    else:
+                        text += port.printFlat(type = self.type)
                 i+=1
         text += ");"
         return text
