@@ -223,6 +223,8 @@ class frame(StandardCell):
 
         if connection != None:
             newPort.connectPort(connection)
+
+        return newPort
        
     def print(self):
         text = "\t"
