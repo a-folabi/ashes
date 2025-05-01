@@ -6,7 +6,8 @@ import re
 import time
 
 def compile(system, project_name=None, tech_process='privA_65', dbu=1000, track_spacing=250, cell_pitch=22000, x_offset=None, y_offset=None, design_area=(0,0,1,1), location_islands=None):
-	process_params = (tech_process, dbu, track_spacing, x_offset, y_offset, cell_pitch)
+	drainmux_space_isle_idx = None
+	process_params = (tech_process, dbu, track_spacing, x_offset, y_offset, cell_pitch, drainmux_space_isle_idx)
 	pl_start = time.time()
 	gds_synthesis(process_params, design_area, project_name, isle_loc=location_islands)
 	pl_end = time.time()
