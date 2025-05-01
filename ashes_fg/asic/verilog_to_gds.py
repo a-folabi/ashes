@@ -40,7 +40,7 @@ def gds_synthesis(process_params, design_area, proj_name, isle_loc=None, routed_
     ver_file = open(os.path.join('.', proj_name, 'verilog_files', verilog_file_name), 'r')
     ver_file_content = ver_file.read()
     ver_file.close()
-    tech_process, dbu, track_spacing, x_offset, y_offset, cell_pitch = process_params
+    tech_process, dbu, track_spacing, x_offset, y_offset, cell_pitch, drainmux_space_isle_idx = process_params
     
     ast = parse_verilog(ver_file_content)
     module_list = set()
@@ -165,7 +165,7 @@ def gds_synthesis(process_params, design_area, proj_name, isle_loc=None, routed_
     if verbose: print('Old Island Info:')
     if verbose: pprint.pprint(island_info)
     cell_order_in_island = {}
-    island_params = (track_spacing, cell_pitch, cells_only_module)
+    island_params = (track_spacing, cell_pitch, cells_only_module, drainmux_space_isle_idx)
     parse_cell_params = (module_list, pin_list, layer_map, tech_process, dbu, text_layout_path)
     island_text, island_dims = generate_islands(island_info, cell_info, island_place, cell_order_in_island, design_area, frame_module, island_params, parse_cell_params, isle_loc)
     if verbose: 
@@ -422,7 +422,7 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
     '''
     ret_string = []
     x_loc, y_loc, x_base, y_base = 0, 0, 0, 0
-    track_spacing, cell_pitch, cells_only_module = island_params
+    track_spacing, cell_pitch, cells_only_module, drainmux_space_isle_idx = island_params
     module_list, pin_list, layer_map, tech_process, dbu, text_layout_path = parse_cell_params
     rev_layer_map = reverse_pdk_doc(layer_map)
 
@@ -506,12 +506,18 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
                             fixed_row_idx = pin_key.find("row")
                             fixed_row_idx = None if fixed_row_idx == -1 else fixed_row_idx
                             if fixed_row_idx:
-                                fixed_row = int(pin_key[fixed_row_idx+4:])
+                                try:
+                                    fixed_row = int(pin_key[fixed_row_idx+4:])
+                                except:
+                                    raise ParsingError(f'Error found when parsing {pin_key}({pin_val}). Dont forget to append row_# when creating a fixed dimension.')
                                 pin_key = pin_key[:fixed_row_idx]
                             fixed_col_idx = pin_key.find("col")
                             fixed_col_idx = None if fixed_col_idx == -1 else fixed_col_idx
                             if fixed_col_idx:
-                                fixed_col = int(pin_key[fixed_col_idx+4:])
+                                try:
+                                    fixed_col = int(pin_key[fixed_col_idx+4:])
+                                except:
+                                    raise ParsingError(f'Error found when parsing {pin_key}({pin_val}). Dont forget to append col_# when creating a fixed dimension.')
                                 pin_key = pin_key[:fixed_col_idx]
                             if fixed_row is None and fixed_col is None:
                                 raise ParsingError(f"Pins on a matrix need to specify a fixed dimension in their name. {inst.module_name}: {pin_key} {pin_val} is missing row_# or col_# in the pin name.")
@@ -539,7 +545,7 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
                             if shorted_pin:
                                 stop_idx = matrix_col if fixed_row is not None else matrix_row
                                 for shorted_val in range(stop_idx):
-                                    temp_key = (shorted_val, fixed_col) if fixed_col else (fixed_row, shorted_val)
+                                    temp_key = (shorted_val, fixed_col) if fixed_col is not None else (fixed_row, shorted_val)
                                     if temp_key not in temp_nets:
                                         temp_entry = [(pin_key, pin_val)]
                                         temp_nets.update({temp_key: temp_entry})
@@ -863,6 +869,9 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
                 drain_select_width = cell_info[str(vert_switch_array[0][0]['name'])]['width']
                 prog_switch_width = cell_info[str(vert_switch_array[0][1]['name'])]['width']
             drainmux_spacing = 0*dbu #7.5 is okay
+            # Optional parameter to add drainmux spacing to specified island
+            if drainmux_space_isle_idx is not None and int(val) == int(drainmux_space_isle_idx):
+                drainmux_spacing = int(4.2*dbu)
             x_drainmux_offset += drain_select_width + prog_switch_width + drainmux_spacing
             #x_drainmux_offset = round(x_drainmux_offset/track_spacing)*track_spacing
             # Deal with the column widths calculated for matrix islands, append offset to only first column
@@ -952,7 +961,7 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
                     num_decoder_cols_needed = len(horz_switch_array[0]) - num_none_swcs
                     num_decoder_cols_needed = int(np.ceil(num_decoder_cols_needed/2))
                     horz_decoder_array = [row[:num_decoder_cols_needed] for row in horz_decoder_array]
-                gate_decoder_spacing = int(7*dbu) #previous value 15
+                gate_decoder_spacing = int(8.4*dbu) #previous value 15
                 height_accum += cell_height + gate_decoder_spacing
                 for row_idx, row in enumerate(reversed(horz_decoder_array)):
                     for idx, col in enumerate(row):
@@ -1192,6 +1201,9 @@ def generate_frame(cell_order_in_island, cell_info, island_dims, island_place, g
     frame_pin_height = track_spacing
     pin_center_x = frame_left + frame_pin_spacing_horz
     pin_center_y = frame_top - int(track_spacing/2)
+    # create an array for tracking power pins to insert shorting polygons
+    power_pin_list = ['vinj', 'gnd', 'vtun', 'avdd']
+    north_power = [None, None, None, None]
     for pin_item in north_pins:
         pin_left = pin_center_x - int(track_spacing/2)
         pin_right = pin_center_x + int(track_spacing/2)
@@ -1203,6 +1215,31 @@ def generate_frame(cell_order_in_island, cell_info, island_dims, island_place, g
         pin_item['location'] = [pin_left, pin_bot, pin_right, pin_top]
         pin_item['center'] = (pin_center_x, pin_center_y)
         pin_center_x += frame_pin_spacing_horz
+        pin_name = pin_item['name']
+        for pow_idx, power_name in enumerate(power_pin_list):
+            if power_name in pin_name:
+                pow_list = north_power[pow_idx]
+                if pow_list is None:
+                    pin_bot += int(track_spacing/2)
+                    north_power[pow_idx] = [pin_left, pin_bot, pin_right, pin_top, pin_item['layer']]
+                else:
+                    curr_left = north_power[pow_idx][0]
+                    curr_right = north_power[pow_idx][2]
+                    block_left = min(pin_left, curr_left)
+                    block_right = max(pin_right, curr_right)
+                    north_power[pow_idx][0] = block_left
+                    north_power[pow_idx][2] = block_right
+    # update cell order with power polygons, assign to default island 0
+    '''coords_id = len(cell_order_in_island[0]['coords'])
+    val = 0
+    for power_pin in north_power:
+        cell_order_in_island[val]['items'][coords_id] = {}
+        cell_order_in_island[val]['items'][coords_id]['type'] = 'polygon'
+        cell_order_in_island[val]['items'][coords_id]['layer'] = power_pin[4]
+        temp_coord = [power_pin[0], power_pin[1], power_pin[2], power_pin[3]]
+        cell_order_in_island[val]['coords'].append(temp_coord)
+        coords_id += 1'''
+    
     pin_center_x = frame_left + int(track_spacing/2) 
     pin_center_y = frame_top - frame_pin_spacing_vert - int(track_spacing/2)
     for pin_item in west_pins:
@@ -1217,7 +1254,10 @@ def generate_frame(cell_order_in_island, cell_info, island_dims, island_place, g
         pin_item['center'] = (pin_center_x, pin_center_y)
         pin_center_y -= frame_pin_spacing_vert
     pin_center_x = frame_left + frame_pin_spacing_horz
-    pin_center_y = frame_bot + int(track_spacing)
+    pin_center_y = frame_bot + int(track_spacing/2)
+    
+    # insert power pins on the south edge to match
+    south_power = [None, None, None, None]
     for pin_item in south_pins:
         pin_left = pin_center_x - int(track_spacing/2)
         pin_right = pin_center_x + int(track_spacing/2)
@@ -1229,6 +1269,30 @@ def generate_frame(cell_order_in_island, cell_info, island_dims, island_place, g
         pin_item['location'] = [pin_left, pin_bot, pin_right, pin_top]
         pin_item['center'] = (pin_center_x, pin_center_y)
         pin_center_x += frame_pin_spacing_horz
+        pin_name = pin_item['name']
+        for pow_idx, power_name in enumerate(power_pin_list):
+            if power_name in pin_name:
+                pow_list = south_power[pow_idx]
+                if pow_list is None:
+                    pin_top -= int(track_spacing/2)
+                    south_power[pow_idx] = [pin_left, pin_bot, pin_right, pin_top, pin_item['layer']]
+                else:
+                    curr_left = south_power[pow_idx][0]
+                    curr_right = south_power[pow_idx][2]
+                    block_left = min(pin_left, curr_left)
+                    block_right = max(pin_right, curr_right)
+                    south_power[pow_idx][0] = block_left
+                    south_power[pow_idx][2] = block_right
+    # update cell order with power polygons, assign to default island 0
+    '''coords_id = len(cell_order_in_island[0]['coords'])
+    val = 0
+    for power_pin in south_power:
+        cell_order_in_island[val]['items'][coords_id] = {}
+        cell_order_in_island[val]['items'][coords_id]['type'] = 'polygon'
+        cell_order_in_island[val]['items'][coords_id]['layer'] = power_pin[4]
+        temp_coord = [power_pin[0], power_pin[1], power_pin[2], power_pin[3]]
+        cell_order_in_island[val]['coords'].append(temp_coord)
+        coords_id += 1'''
     pin_center_x = frame_right - int(track_spacing/2) 
     pin_center_y = frame_top - frame_pin_spacing_vert - int(track_spacing/2)
     for pin_item in east_pins:
@@ -1281,6 +1345,27 @@ def generate_frame(cell_order_in_island, cell_info, island_dims, island_place, g
         ret_string.append(f'XY: {center_x}, {center_y}\n')
         ret_string.append(f'STRING: "{pin_name}"\n')
         ret_string.append('ENDEL\n')
+    
+    # write out gds for power polygons
+    for power_pin in north_power:
+        draw_layer_type = rev_layer_map[power_pin[4]+'_drawing']['layer_type']
+        draw_layer_type = draw_layer_type.split(',')
+        left, bottom, right, top = power_pin[0], power_pin[1], power_pin[2], power_pin[3]
+        ret_string.append('BOUNDARY\n')
+        ret_string.append(f'LAYER: {draw_layer_type[0]}\n')
+        ret_string.append(f'DATATYPE: {draw_layer_type[1]}\n')
+        ret_string.append(f'XY: {left}, {bottom}, {right}, {bottom}, {right}, {top}, {left}, {top}, {left}, {bottom}\n')
+        ret_string.append('ENDEL\n')
+    for power_pin in south_power:
+        draw_layer_type = rev_layer_map[power_pin[4]+'_drawing']['layer_type']
+        draw_layer_type = draw_layer_type.split(',')
+        left, bottom, right, top = power_pin[0], power_pin[1], power_pin[2], power_pin[3]
+        ret_string.append('BOUNDARY\n')
+        ret_string.append(f'LAYER: {draw_layer_type[0]}\n')
+        ret_string.append(f'DATATYPE: {draw_layer_type[1]}\n')
+        ret_string.append(f'XY: {left}, {bottom}, {right}, {bottom}, {right}, {top}, {left}, {top}, {left}, {bottom}\n')
+        ret_string.append('ENDEL\n')
+
     if verbose:
         print(f'Cell info, Cab frame')
         pprint.pprint(cell_info[frame_name])
@@ -1468,7 +1553,8 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
                 mat_row = item['mat_info']['mat_row']
 
             # Insert blockages between pins around the edges
-            if 'pin_blockage' in item and item['pin_blockage']:
+            pin_exclusion = ['TSMC350nm_4x2_Indirect']
+            if 'pin_blockage' in item and item['pin_blockage'] and item['name'] not in pin_exclusion:
                 # Added a number of times to loop for matrices
                 for inst_idx in insts_list:
                     # For matrices, update the location for the cell being worked on
@@ -1624,16 +1710,16 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
                     def_file.write(f'    RECT ( {block_x1} {block_y1} ) ( {block_x2} {block_y2} ) ;\n')
                     def_file.write(f'  END\n\n')
         # Write blockages for any manually specified cells or islands
-        m3_except = ['TSMC350nm_drainSelect_progrundrains', 'S_BLOCK_SEC1_PINS', 'S_BLOCK_BUFFER', 'S_BLOCK_SPACE_UP_PINS', 'S_BLOCK_CONN_PINS', 'S_BLOCK_SPACE_DOWN_PINS', 'S_BLOCK_SEC2_PINS', 'S_BLOCK_23CONN', 'S_BLOCK_SEC3_PINS']
+        m3_except = ['TSMC350nm_drainSelect_progrundrains', 'S_BLOCK_SEC1_PINS', 'S_BLOCK_BUFFER', 'S_BLOCK_SPACE_UP_PINS', 'S_BLOCK_CONN_PINS', 'S_BLOCK_SPACE_DOWN_PINS', 'S_BLOCK_SEC2_PINS', 'S_BLOCK_23CONN', 'S_BLOCK_SEC3_PINS', 'TSMC350nm_Cap_Bank']
         for val, island in cell_order_in_island.items():
             for idx, item in island['items'].items():
-                if item['name'] in m3_except:
+                if item['type'] in ['cell', 'matrix'] and item['name'] in m3_except:
                     array = island['coords']
                     loc = array[idx]
                     block_x1 = loc[0]
                     block_y1 = loc[1] 
                     block_x2 = loc[2] 
-                    block_y2 = loc[3] 
+                    block_y2 = loc[3] - int(1*dbu)
                     poly_mlayer = metal_layers[stop_layer]
                     def_file.write(f'  - {poly_mlayer}\n')
                     def_file.write(f'    LAYER {poly_mlayer} ;\n')
