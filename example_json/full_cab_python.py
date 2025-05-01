@@ -148,9 +148,9 @@ TA2Cell_Weak__1 = TSMC350nm_TA2Cell_Weak(Top,CABIsland)
 TA2Cell_Weak__1.place([3,19])
 TA2Cell_Weak__1.markCABDevice()
 
-TA2Cell_Strong__0 = TSMC350nm_TA2Cell_Strong(Top,CABIsland)
-TA2Cell_Strong__0.place([4,19])
-TA2Cell_Strong__0.markCABDevice()
+TA2Cell_Strong = TSMC350nm_TA2Cell_Strong(Top,CABIsland)
+TA2Cell_Strong.place([4,19])
+TA2Cell_Strong.markCABDevice()
 
 WTA_IndirectProg = TSMC350nm_4WTA_IndirectProg(Top,CABIsland)
 WTA_IndirectProg.place([5,19])
@@ -215,20 +215,20 @@ TA2Cell_Weak__1.VINJ += TA2Cell_Weak__0.VINJ_b
 TA2Cell_Weak__1.GND += TA2Cell_Weak__0.GND_b
 TA2Cell_Weak__1.VPWR += TA2Cell_Weak__0.VPWR_b
 
-TA2Cell_Strong__0.VD_P += Bswitch2.P[0:2]
-TA2Cell_Strong__0.VIN1_PLUS += Bswitch2.A[0]
-TA2Cell_Strong__0.VIN1_MINUS += Bswitch2.A[1]
-TA2Cell_Strong__0.VIN2_PLUS += Bswitch2.A[2]
-TA2Cell_Strong__0.VIN2_MINUS += Bswitch2.A[3]
-TA2Cell_Strong__0.OUTPUT += CAB_GateSwitch.Input[21:23]
-TA2Cell_Strong__0.Vsel += TA2Cell_Weak__1.Vsel_b[0:2]
-TA2Cell_Strong__0.RUN += TA2Cell_Weak__1.RUN_b
-TA2Cell_Strong__0.Vg += TA2Cell_Weak__1.Vg_b[0:2]
-TA2Cell_Strong__0.PROG += TA2Cell_Weak__1.PROG_b
-TA2Cell_Strong__0.VTUN += TA2Cell_Weak__1.VTUN_b
-TA2Cell_Strong__0.VINJ += TA2Cell_Weak__1.VINJ_b
-TA2Cell_Strong__0.GND += TA2Cell_Weak__1.GND_b
-TA2Cell_Strong__0.VPWR += TA2Cell_Weak__1.VPWR_b
+TA2Cell_Strong.VD_P += Bswitch2.P[0:2]
+TA2Cell_Strong.VIN1_PLUS += Bswitch2.A[0]
+TA2Cell_Strong.VIN1_MINUS += Bswitch2.A[1]
+TA2Cell_Strong.VIN2_PLUS += Bswitch2.A[2]
+TA2Cell_Strong.VIN2_MINUS += Bswitch2.A[3]
+TA2Cell_Strong.OUTPUT += CAB_GateSwitch.Input[21:23]
+TA2Cell_Strong.Vsel += TA2Cell_Weak__1.Vsel_b[0:2]
+TA2Cell_Strong.RUN += TA2Cell_Weak__1.RUN_b
+TA2Cell_Strong.Vg += TA2Cell_Weak__1.Vg_b[0:2]
+TA2Cell_Strong.PROG += TA2Cell_Weak__1.PROG_b
+TA2Cell_Strong.VTUN += TA2Cell_Weak__1.VTUN_b
+TA2Cell_Strong.VINJ += TA2Cell_Weak__1.VINJ_b
+TA2Cell_Strong.GND += TA2Cell_Weak__1.GND_b
+TA2Cell_Strong.VPWR += TA2Cell_Weak__1.VPWR_b
 
 WTA_IndirectProg.VD_P += Bswitch3.P[0:4]
 WTA_IndirectProg.Iin += Bswitch3.A[0:4]
@@ -237,11 +237,11 @@ WTA_IndirectProg.Vmid += CAB_GateSwitch.Input[27]
 WTA_IndirectProg.Vbias += CAB_GateSwitch.Input[28]
 WTA_IndirectProg.Vsel += CABElements_GateSwitch.CTRL_B[0]
 WTA_IndirectProg.Vs += CABElements_GateSwitch.VDD[1]
-WTA_IndirectProg.VINJ += TA2Cell_Strong__0.VINJ_b
-WTA_IndirectProg.Vg += TA2Cell_Strong__0.Vg_b[0]
-WTA_IndirectProg.VTUN += TA2Cell_Strong__0.VTUN_b
-WTA_IndirectProg.GND += TA2Cell_Strong__0.GND_b
-WTA_IndirectProg.PROG += TA2Cell_Strong__0.PROG_b
+WTA_IndirectProg.VINJ += TA2Cell_Strong.VINJ_b
+WTA_IndirectProg.Vg += TA2Cell_Strong.Vg_b[0]
+WTA_IndirectProg.VTUN += TA2Cell_Strong.VTUN_b
+WTA_IndirectProg.GND += TA2Cell_Strong.GND_b
+WTA_IndirectProg.PROG += TA2Cell_Strong.PROG_b
 
 Cap_Bank.VD_P += Bswitch4.P[0:4]
 Cap_Bank.VIN += Bswitch4.A[0:2]

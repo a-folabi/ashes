@@ -7,6 +7,6 @@
     "Amatrix_cols":16,
     "foundry": "TSMC",
     "process_node": "350nm",
-    "cab": ["TA2Cell_Weak__0","TA2Cell_Weak__1","TA2Cell_Strong__0","4WTA_IndirectProg","Cap_Bank","NandPfets","TGate_2nMirror"]
+    "cab": ["TA2Cell_Weak__0","TA2Cell_Weak__1","TA2Cell_Strong","4WTA_IndirectProg","Cap_Bank","NandPfets","TGate_2nMirror"]
 }
 
