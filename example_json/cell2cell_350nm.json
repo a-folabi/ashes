@@ -1,8 +1,12 @@
 {   
+    "_comment1":"Amatrixcol + Bmatrixcol >= CEW_cols+CNS_cols+2",
+    "_comment2":"Num of input from CEW is CEW col-8, Num of input from CNS is CNS col-10",
     "Cblock_rows":20,
     "CEW_cols":14,
     "CNS_cols":18,
+    "Amatrix_cols":16,
     "foundry": "TSMC",
     "process_node": "350nm",
-    "cab": ["TA2Cell_Weak__0","TA2Cell_Weak__1","TA2Cell_Strong","4WTA_IndirectProg","Cap_Bank","NandPfets","TGate_2nMirror"]
+    "cab": ["TA2Cell_Weak__0","TA2Cell_Weak__1","TA2Cell_Strong__0","4WTA_IndirectProg","Cap_Bank","NandPfets","TGate_2nMirror"]
 }
+

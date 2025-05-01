@@ -21,6 +21,7 @@ class STD_GorS_IndirectSwitches(MUX):
         self.AVDD_r = Port(circuit,self,"AVDD_r","E",1*self.dim[0])
         self.run_r = Port(circuit,self,"run_r","E",1*self.dim[0])
         self.prog_r = Port(circuit,self,"prog_r","E",1*self.dim[0])
+        self.run = Port(circuit,self,"run","W",1*self.dim[0])
         # Add cell to circuit
         circuit.addInstance(self,self.island)
 
@@ -40,9 +41,12 @@ class STD_IndirectGateDecoder(MUX):
         self.VGRUN = Port(circuit,self,"VGRUN","N",4*self.dim[1])
         self.RUN_OUT = Port(circuit,self,"RUN_OUT","S",4*self.dim[1])
         self.OUT = Port(circuit,self,"OUT","S",4*self.dim[1])
-        self.Enable = Port(circuit,self,"ENABLE","N",1,static=True)
+        self.ENABLE = Port(circuit,self,"ENABLE","N",1,static=True)
         self.VINJ_b = Port(circuit,self,"VINJ_b","S",2*self.dim[1])
         self.GND_b = Port(circuit,self,"GND_b","S",2*self.dim[1])
+        self.VINJV = Port(circuit,self,"VINJV","N",1,static=True)
+        self.GNDV = Port(circuit,self,"GNDV","N",1,static=True)
+        
         
         # Add cell to circuit
         circuit.addInstance(self,self.island)
@@ -97,6 +101,7 @@ class STD_IndirectGateSwitch(MUX):
         self.PROG = Port(circuit,self,"PROG","W",1*self.dim[0])
         self.RUN = Port(circuit,self,"RUN","W",1*self.dim[0])
         self.Vgsel = Port(circuit,self,"Vgsel","W",1*self.dim[0])
+        self.vgsel_r = Port(circuit,self,"vgsel_r","E",1*self.dim[0])
 
         # Add cell to circuit
         circuit.addInstance(self,self.island)
@@ -135,6 +140,8 @@ class STD_DrainDecoder(MUX):
 
         self.VINJ = Port(circuit,self,"VINJ","N",2*self.dim[1])
         self.GND = Port(circuit,self,"GND","N",2*self.dim[1])
+        self.IN = Port(circuit,self,"IN","N",bits)
+        self.ENABLE = Port(circuit,self,"ENABLE","W",1,static=True)
 
         # Add cell to circuit
         circuit.addInstance(self,self.island)
@@ -193,12 +200,17 @@ class RunDrainSwitch(MUX):
         self.ports = []
         self.island = island
         self.num = num
-        self.dim = (1,self.num)
+        self.dim = (self.num,0)
         self.decoder = True
         self.type = "switch"
         self.switchType = "drain_select"
  
         self.name = "TSMC350nm_drainSelect_progrundrains"
+        
+        self.prog_drainrail = Port(circuit,self,"prog_drainrail","N",1*self.dim[1])
+        self.run_drainrail = Port(circuit,self,"run_drainrail","N",1*self.dim[1])
+        self.VINJ = Port(circuit,self,"VINJ","N",1*self.dim[1])
+        self.GND = Port(circuit,self,"GND","N",1*self.dim[1])
 
         # Add cell to circuit
         circuit.addInstance(self,self.island)

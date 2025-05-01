@@ -735,6 +735,54 @@ class TSMC350nm_NandPfets(StandardCell):
 
 		# Add cell to circuit
 		circuit.addInstance(self,self.island)
+		
+		
+class TSMC350nm_TA2Cell_Direct(StandardCell):
+	def __init__(self,circuit,island=None,dim=(1,1),VD_P=None,VIN1_PLUS=None,VIN1_MINUS=None,VIN2_PLUS=None,VIN2_MINUS=None,OUTPUT=None,VTUN=None,VG=None,Vsel=None,VINJ=None,RUN=None,PROG=None,GND=None,VPWR=None,VTUN_b=None,VG_b=None,Vsel_b=None,VINJ_b=None,RUN_b=None,PROG_b=None,GND_b=None,VPWR_b=None):
+
+		# Define variables
+		self.circuit = circuit
+		self.pins = []
+		self.ports = []
+		self.island = island
+		self.dim = dim
+
+
+		# Define cell information
+		self.name = 'TSMC350nm_TA2Cell_Direct'
+		self.VD_P = Port(circuit,self,'VD_P','W',2*self.dim[0])
+		self.VIN1_PLUS = Port(circuit,self,'VIN1_PLUS','W',1*self.dim[0])
+		self.VIN1_MINUS = Port(circuit,self,'VIN1_MINUS','W',1*self.dim[0])
+		self.VIN2_PLUS = Port(circuit,self,'VIN2_PLUS','W',1*self.dim[0])
+		self.VIN2_MINUS = Port(circuit,self,'VIN2_MINUS','W',1*self.dim[0])
+		self.OUTPUT = Port(circuit,self,'OUTPUT','E',2*self.dim[0])
+		self.VTUN = Port(circuit,self,'VTUN','N',1*self.dim[1])
+		self.VG = Port(circuit,self,'VG','N',1*self.dim[1])
+		self.Vsel = Port(circuit,self,'Vsel','N',1*self.dim[1])
+		self.VINJ = Port(circuit,self,'VINJ','N',1*self.dim[1])
+		self.RUN = Port(circuit,self,'RUN','N',1*self.dim[1])
+		self.PROG = Port(circuit,self,'PROG','N',1*self.dim[1])
+		self.GND = Port(circuit,self,'GND','N',1*self.dim[1])
+		self.VPWR = Port(circuit,self,'VPWR','N',1*self.dim[1])
+		self.VTUN_b = Port(circuit,self,'VTUN_b','S',1*self.dim[1])
+		self.VG_b = Port(circuit,self,'VG_b','S',1*self.dim[1])
+		self.Vsel_b = Port(circuit,self,'Vsel_b','S',1*self.dim[1])
+		self.VINJ_b = Port(circuit,self,'VINJ_b','S',1*self.dim[1])
+		self.RUN_b = Port(circuit,self,'RUN_b','S',1*self.dim[1])
+		self.PROG_b = Port(circuit,self,'PROG_b','S',1*self.dim[1])
+		self.GND_b = Port(circuit,self,'GND_b','S',1*self.dim[1])
+		self.VPWR_b = Port(circuit,self,'VPWR_b','S',1*self.dim[1])
+
+
+		# Initialize ports with given values
+		portsInit = [VD_P,VIN1_PLUS,VIN1_MINUS,VIN2_PLUS,VIN2_MINUS,OUTPUT,VTUN,VG,Vsel,VINJ,RUN,PROG,GND,VPWR,VTUN_b,VG_b,Vsel_b,VINJ_b,RUN_b,PROG_b,GND_b,VPWR_b]
+		i=0
+		for p in self.ports:
+			self.assignPort(p,portsInit[i])
+			i+=1
+
+		# Add cell to circuit
+		circuit.addInstance(self,self.island)
 
 class SHblock1:
 	def __init__(self,input,num_instances='1',type='FPAA',board=['3.0', '3.0a'],SHblock1_ls='0',SHblock1_Ibias='3e-06',SHblock1_cap0_1x_cs='1'):

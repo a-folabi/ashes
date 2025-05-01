@@ -60,7 +60,7 @@ class S_spaceUP(StandardCell):
 
         self.name = "S_BLOCK_SPACE_UP_PINS"
 
-        self.In = Port(circuit,self,"Input","N",2*self.dim[1])
+        self.n = Port(circuit,self,"n","N",4*self.dim[1])
 
         # Add cell to circuit
         circuit.addInstance(self,self.island)
@@ -77,7 +77,7 @@ class S_spaceDOWN(StandardCell):
 
         self.name = "S_BLOCK_SPACE_DOWN_PINS"
 
-        self.In = Port(circuit,self,"Input","N",2*self.dim[1])
+        self.s = Port(circuit,self,"s","S",4*self.dim[1])
 
         # Add cell to circuit
         circuit.addInstance(self,self.island)
@@ -94,7 +94,8 @@ class S_Conn12(StandardCell):
 
         self.name = "S_BLOCK_CONN_PINS"
 
-        self.In = Port(circuit,self,"Input","N",2*self.dim[1])
+        self.n = Port(circuit,self,"n","N",4*self.dim[1])
+        self.s = Port(circuit,self,"s","S",4*self.dim[1])
 
         # Add cell to circuit
         circuit.addInstance(self,self.island)
@@ -201,6 +202,7 @@ class ST_BMatrix(StandardCell):
         self.Prog_b = Port(circuit,self,"Prog_b","S",1*self.dim[1])
         self.VDD_b = Port(circuit,self,"VDD_b","S",1*self.dim[1])
         self.GND_b = Port(circuit,self,"GND_b","S",1*self.dim[1])
+        self.Prog = Port(circuit,self,"Prog","N",1*self.dim[1])
 
         # Add cell to circuit
         circuit.addInstance(self,self.island)
@@ -240,6 +242,10 @@ class DrainCutoff(MUX):
         
         self.PR = Port(circuit,self,"PR","E",4*self.dim[0])
         self.In = Port(circuit,self,"In","E",4*self.dim[0])
+        self.VDD = Port(circuit,self,"VDD","N",1*self.dim[1])
+        self.GND = Port(circuit,self,"GND","N",1*self.dim[1])
+        self.RUN = Port(circuit,self,"RUN","N",1*self.dim[1])
+        
 
         # Add cell to circuit
         circuit.addInstance(self,self.island)
