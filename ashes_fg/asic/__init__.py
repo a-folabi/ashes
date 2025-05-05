@@ -6,7 +6,7 @@ import re
 import time
 
 def compile(system, project_name=None, tech_process='privA_65', dbu=1000, track_spacing=250, cell_pitch=22000, x_offset=None, y_offset=None, design_area=(0,0,1,1), location_islands=None):
-	drainmux_space_isle_idx = None
+	drainmux_space_isle_idx = 0
 	process_params = (tech_process, dbu, track_spacing, x_offset, y_offset, cell_pitch, drainmux_space_isle_idx)
 	pl_start = time.time()
 	gds_synthesis(process_params, design_area, project_name, isle_loc=location_islands)
@@ -24,10 +24,10 @@ def compile(system, project_name=None, tech_process='privA_65', dbu=1000, track_
 		q_params = open(param_file, "w")
 		q_params.write(f"read_lef {lef_file}\n")
 		q_params.write(f"read_def {def_file}\n")
-		q_params.write("passes 70\n")
-		q_params.write(f"cost via {10*base_cost}\n")
-		q_params.write("cost jog 10\n")
-		q_params.write("layers 3\n")
+		#q_params.write("passes 70\n")
+		q_params.write(f"cost via {9*base_cost}\n")
+		#q_params.write("cost jog 10\n")
+		q_params.write("layers 4\n")
 		q_params.write("stage1 mask none\n")
 		q_params.write("stage2 mask none limit 100\n")
 		q_params.write("stage3 mask none\n")

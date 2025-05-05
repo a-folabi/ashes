@@ -46,6 +46,7 @@ class STD_IndirectGateDecoder(MUX):
         self.GND_b = Port(circuit,self,"GND_b","S",2*self.dim[1])
         self.VINJV = Port(circuit,self,"VINJV","N",1,static=True)
         self.GNDV = Port(circuit,self,"GNDV","N",1,static=True)
+        self.IN = Port(circuit,self,"IN","W",bits)
         
         
         # Add cell to circuit

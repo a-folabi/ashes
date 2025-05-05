@@ -1227,4 +1227,81 @@ class vmm_12x4:
 		self.vmm_12x4_in2=vmm_12x4_in2
 		self.vmm_12x4_in3=vmm_12x4_in3
 		self.vmm_12x4_in4=vmm_12x4_in4
+	
+class cab1(StandardCell):
+	def __init__(self,circuit,island=None,dim=(1,1)):
+
+		# Define variables
+		self.circuit = circuit
+		self.pins = []
+		self.ports = []
+		self.island = island
+		self.dim = dim
+
+
+		# Define cell information
+		self.name = 'cab1'
+		
+
+		# Initialize ports with given values
+		portsInit = []
+		i=0
+		for p in self.ports:
+			self.assignPort(p,portsInit[i])
+			i+=1
+
+		# Add cell to circuit
+		circuit.addInstance(self,self.island)
+	
+class cab2(StandardCell):
+	def __init__(self,circuit,island=None,dim=(1,1)):
+
+		# Define variables
+		self.circuit = circuit
+		self.pins = []
+		self.ports = []
+		self.island = island
+		self.dim = dim
+
+
+		# Define cell information
+		self.name = 'cab2'
+		
+
+		# Initialize ports with given values
+		portsInit = []
+		i=0
+		for p in self.ports:
+			self.assignPort(p,portsInit[i])
+			i+=1
+
+		# Add cell to circuit
+		circuit.addInstance(self,self.island)
+		
+		
+class FakeCell(FakeStandardCell):
+	def __init__(self,circuit,island=None,dim=(1,1),FakePort=None):
+
+		# Define variables
+		self.circuit = circuit
+		self.pins = []
+		self.ports = []
+		self.island = island
+		self.dim = dim
+
+
+		# Define cell information
+		self.name = 'FakeCell'
+		self.FakePort = Port(circuit,self,'FakePort','E',1*self.dim[0])
+
+		# Initialize ports with given values
+		portsInit = [FakePort]
+		i=0
+		for p in self.ports:
+			self.assignPort(p,portsInit[i])
+			i+=1
+
+		# Add cell to circuit
+		circuit.addInstance(self,self.island)
+
 

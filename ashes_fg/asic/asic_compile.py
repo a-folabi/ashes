@@ -1020,4 +1020,26 @@ class MUX(StandardCell):
                 i+=1
         text += ");"
         return text
+        
+        
+class FakeStandardCell(StandardCell):
+    def __init__(self,circuit,island,num=1):
+        self.circuit = circuit
+        self.pins = []
+        self.ports = []
+        self.island = island
+        self.num = num
+        self.dim = (0,self.num)
+        self.decoder = True
+        self.type = "MUX"
+        self.switchType = "MUX"
+        self.name = "MUX"
+
+        # Add cell to circuit
+        circuit.addInstance(self,self.island)
+
+
+    def print(self,instanceNum,islandNum,row,col):
+
+        return ''
     
