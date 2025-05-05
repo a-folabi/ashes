@@ -40,8 +40,8 @@ def gds_synthesis(process_params, design_area, proj_name, isle_loc=None, routed_
     ver_file = open(os.path.join('.', proj_name, 'verilog_files', verilog_file_name), 'r')
     ver_file_content = ver_file.read()
     ver_file.close()
-    tech_process, dbu, track_spacing, x_offset, y_offset, cell_pitch, drainmux_space_isle_idx = process_params
-    
+    tech_process, dbu, track_spacing, x_offset, y_offset, cell_pitch, drainmux_space_isle_idx, drainmux_space, gatemux_space_isle_idx, gatemux_space = process_params
+  
     ast = parse_verilog(ver_file_content)
     module_list = set()
     cell_info = {}
@@ -165,7 +165,7 @@ def gds_synthesis(process_params, design_area, proj_name, isle_loc=None, routed_
     if verbose: print('Old Island Info:')
     if verbose: pprint.pprint(island_info)
     cell_order_in_island = {}
-    island_params = (track_spacing, cell_pitch, cells_only_module, drainmux_space_isle_idx)
+    island_params = (track_spacing, cell_pitch, cells_only_module, drainmux_space_isle_idx, drainmux_space, gatemux_space_isle_idx, gatemux_space)
     parse_cell_params = (module_list, pin_list, layer_map, tech_process, dbu, text_layout_path)
     island_text, island_dims = generate_islands(island_info, cell_info, island_place, cell_order_in_island, design_area, frame_module, island_params, parse_cell_params, isle_loc)
     if verbose: 
@@ -426,7 +426,7 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
     '''
     ret_string = []
     x_loc, y_loc, x_base, y_base = 0, 0, 0, 0
-    track_spacing, cell_pitch, cells_only_module, drainmux_space_isle_idx = island_params
+    track_spacing, cell_pitch, cells_only_module, drainmux_space_isle_idx, drainmux_space, gatemux_space_isle_idx, gatemux_space = island_params
     module_list, pin_list, layer_map, tech_process, dbu, text_layout_path = parse_cell_params
     rev_layer_map = reverse_pdk_doc(layer_map)
 
@@ -875,7 +875,7 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
             drainmux_spacing = 0*dbu #7.5 is okay
             # Optional parameter to add drainmux spacing to specified island
             if drainmux_space_isle_idx is not None and int(val) == int(drainmux_space_isle_idx):
-                drainmux_spacing = int(4.2*dbu)
+                drainmux_spacing = int(drainmux_space*dbu)
             x_drainmux_offset += drain_select_width + prog_switch_width + drainmux_spacing
             #x_drainmux_offset = round(x_drainmux_offset/track_spacing)*track_spacing
             # Deal with the column widths calculated for matrix islands, append offset to only first column
@@ -910,6 +910,11 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
             if horz_switch_array:
                 # Deal with horizontal switches
                 gatemux_spacing = int(0*dbu) # 15 had been stable
+
+                # Optional parameter to add gatemux spacing to specified island
+                if gatemux_space_isle_idx is not None and int(val) == int(gatemux_space_isle_idx):
+                    gatemux_spacing = int(gatemux_space*dbu)
+                
                 height_accum += gatemux_spacing
                 for idx, switch in enumerate(horz_switch_array[0]):
                     if switch['name'] is not None:

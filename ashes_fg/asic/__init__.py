@@ -5,9 +5,9 @@ import subprocess
 import re
 import time
 
-def compile(system, project_name=None, tech_process='privA_65', dbu=1000, track_spacing=250, cell_pitch=22000, x_offset=None, y_offset=None, design_area=(0,0,1,1), location_islands=None):
-	drainmux_space_isle_idx = 0
-	process_params = (tech_process, dbu, track_spacing, x_offset, y_offset, cell_pitch, drainmux_space_isle_idx)
+def compile(system, project_name=None, tech_process='privA_65', dbu=1000, track_spacing=250, cell_pitch=22000, x_offset=None, y_offset=None, design_area=(0,0,1,1), location_islands=None,drainmux_space_isle_idx=None, drainmux_space = 4.2, gatemux_space_isle_idx=None, gatemux_space=10):
+	#drainmux_space_isle_idx = 0
+	process_params = (tech_process, dbu, track_spacing, x_offset, y_offset, cell_pitch, drainmux_space_isle_idx, drainmux_space, gatemux_space_isle_idx, gatemux_space)
 	pl_start = time.time()
 	gds_synthesis(process_params, design_area, project_name, isle_loc=location_islands)
 	pl_end = time.time()

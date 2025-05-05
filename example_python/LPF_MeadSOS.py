@@ -85,9 +85,21 @@ CAB_DrainDecoder = STD_DrainDecoder(Top,LPFIsland,bits=drainBits)
 CAB_DrainSelect = RunDrainSwitch(Top,LPFIsland,num=2*numStages)
 CAB_DrainSwitch = DrainCutoff(Top,LPFIsland,num=2*numStages)
 
+# Connect program drains to drain switch
+for i in range(numStages):
+      CAB_DrainSwitch.PR[4*i] += instances[i][0].VD_P[0]
+      CAB_DrainSwitch.PR[(4*i)+1] += instances[i][0].VD_P[1]
+      
+      CAB_DrainSwitch.PR[(4*i)+2] += instances[i][1].VD_P[0]
+      CAB_DrainSwitch.PR[(4*i)+3] += instances[i][1].VD_P[1]
+    
 #GateDecoder = STD_IndirectGateDecoder(Top,LPFIsland,1)
 GateSwitches0 = STD_IndirectGateSwitch(Top,LPFIsland,1)
 GateSwitches = STD_IndirectGateSwitch(Top,LPFIsland,1,col=0)
+
+GateSwitches0.Vg[0] += instances[0][0].Vg[0]
+GateSwitches0.Vg[1] += instances[0][0].Vg[1]
+GateSwitches0.CTRL_B += instances[0][0].Vsel
 
 # Pins
 # -------------------------------------------------------------------------------
@@ -101,4 +113,4 @@ location_islands = ((20000,1000),(0,2000))#<-location for tile v1
 #location_islands=None
 
 
-compile_asic(Top,process="TSMC350nm",fileName="LPF_MeadSOS",p_and_r = True,design_limits = design_limits, location_islands = location_islands)
+compile_asic(Top,process="TSMC350nm",fileName="LPF_MeadSOS",p_and_r = True,design_limits = design_limits, location_islands = location_islands,drainSpaceIdx=0,drainSpace = 100,gateSpaceIdx=0,gateSpace=100)

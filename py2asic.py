@@ -14,8 +14,8 @@ from ashes_fg.asic.asic_systems import *
 #------------------------------cd .., comment line 17 and 18, uncomment line 20, "python py2asic.py" (place Fabric.py to make a final fabric)
 
 
-exec(open("./example_json/cab1.py").read())
-exec(open("./example_json/cab2.py").read())
+#exec(open("./example_json/cab1.py").read())
+#exec(open("./example_json/cab2.py").read())
 #exec(open("~/ashes/example_json/cab_merge.py").read())
 #exec(open("./example_json/Fabric.py").read())
 
@@ -27,7 +27,7 @@ exec(open("./example_json/cab2.py").read())
 
 #exec(open("./example_python/small_fg_island.py").read())
 
-#exec(open("./example_python/LPF_MeadSOS.py").read())
+exec(open("./example_python/LPF_MeadSOS.py").read())
 
 """
 Top = Circuit()

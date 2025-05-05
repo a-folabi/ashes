@@ -9,7 +9,7 @@ from ashes_fg.asic import compile
 
 # Functions
 # ---------------------------------------------------------------------------------------------------------------------------
-def compile_asic(circuit,process="Process",fileName = "compiled",path = "./example_verilog", p_and_r = True, location_islands=None, design_limits = [1e6, 6.1e5]):
+def compile_asic(circuit,process="Process",fileName = "compiled",path = "./example_verilog", p_and_r = True, location_islands=None, design_limits = [1e6, 6.1e5],drainSpaceIdx=None,drainSpace=10,gateSpaceIdx=None,gateSpace=10):
     """
     Main ASIC compilation function
     - Makes Verilog netlist for a given Circuit
@@ -51,7 +51,11 @@ def compile_asic(circuit,process="Process",fileName = "compiled",path = "./examp
         cell_pitch=cell_pitch,
         x_offset=x_offset, y_offset=y_offset,
         design_area=design_area,
-        location_islands=location_islands)
+        location_islands=location_islands,
+        drainmux_space_isle_idx=drainSpaceIdx,
+        drainmux_space = drainSpace,
+        gatemux_space_isle_idx=gateSpaceIdx,
+        gatemux_space = gateSpace)
 
 
 
@@ -198,8 +202,9 @@ class Circuit:
 
                     # Check for non-decoder matrix
                     for p in net.pins:
-                        if p.cell.isMatrix() and isinstance(p.cell,MUX) == False:
-                            net.index = 0
+                        if p.cell != None:
+                            if p.cell.isMatrix() and isinstance(p.cell,MUX) == False:
+                                net.index = 0
 
         for net in self.Nets:
             if net.number == -1:
