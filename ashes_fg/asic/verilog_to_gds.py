@@ -177,7 +177,11 @@ def gds_synthesis(process_params, design_area, proj_name, isle_loc=None, routed_
     # Note how this is different from placing a frame that already exists
     frame_text = None
     if generate_cells_list:
-        frame_text, frame_module = generate_frame(cell_order_in_island, cell_info, island_dims, island_place, generate_cells_list, track_spacing, layer_map)
+        process_misc = (dbu, os.path.join('ashes_fg', 'asic', 'lib', 'tech_lef', f'{tech_process}'))
+        frame_text, frame_module = generate_frame(cell_order_in_island, cell_info, island_dims, island_place, generate_cells_list, track_spacing, layer_map, process_misc)
+        if verbose:
+            print("Post frame generation, relative ordering within islands")
+            pprint.pprint(cell_order_in_island)
 
     txt2gds_path = os.path.join('.','ashes_fg','asic','txt2gds.py')
     if not routed_def:
@@ -1139,11 +1143,12 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
     return ''.join(ret_string), island_dims
 
 
-def generate_frame(cell_order_in_island, cell_info, island_dims, island_place, generate_cells_list, track_spacing, layer_map):
+def generate_frame(cell_order_in_island, cell_info, island_dims, island_place, generate_cells_list, track_spacing, layer_map, process_misc):
     module_inst = generate_cells_list[0]
     ret_string = []
     frame_module = None
     rev_layer_map = reverse_pdk_doc(layer_map)
+    dbu, lef_file = process_misc
     # Figure out width and height
     if verbose: print(f'Island dims\n{island_dims}')
     island_dims_arr = np.array(island_dims)
@@ -1194,7 +1199,7 @@ def generate_frame(cell_order_in_island, cell_info, island_dims, island_place, g
             else:
                 raise ParsingError(f'Pin must have cardinal direction when generating a cab frame {pin_key}')
     # Go through the edges and calculate pin location on each edge. 
-    # Make sure its on grid and spaced well. if we run out of space, throw an error.
+    # Make sure its on grid and spaced in multiples of tracks. if we run out of space, throw an error.
     # Append pin dimensions, pin center
     frame_pin_spacing_horz = int(10*track_spacing)
     frame_pin_spacing_vert = int(10*track_spacing)
@@ -1203,42 +1208,29 @@ def generate_frame(cell_order_in_island, cell_info, island_dims, island_place, g
     pin_center_y = frame_top - int(track_spacing/2)
     # create an array for tracking power pins to insert shorting polygons
     power_pin_list = ['vinj', 'gnd', 'vtun', 'avdd']
-    north_power = [None, None, None, None]
-    for pin_item in north_pins:
-        pin_left = pin_center_x - int(track_spacing/2)
-        pin_right = pin_center_x + int(track_spacing/2)
-        pin_bot = pin_center_y - int(track_spacing + track_spacing/2)
-        pin_top = pin_center_y + int(track_spacing/2)
-        if pin_right > frame_right:
-            pin_item_name = pin_item['name']
-            raise ParsingError(f'Ran out of space when placing {pin_item_name} on the north edge')
-        pin_item['location'] = [pin_left, pin_bot, pin_right, pin_top]
-        pin_item['center'] = (pin_center_x, pin_center_y)
-        pin_center_x += frame_pin_spacing_horz
+    north_power_pins = []
+    north_pins_far_right = None
+    for pin_idx, pin_item in enumerate(north_pins):
+        # exempt power pins from normal pin placement
         pin_name = pin_item['name']
-        for pow_idx, power_name in enumerate(power_pin_list):
-            if power_name in pin_name:
-                pow_list = north_power[pow_idx]
-                if pow_list is None:
-                    pin_bot += int(track_spacing/2)
-                    north_power[pow_idx] = [pin_left, pin_bot, pin_right, pin_top, pin_item['layer']]
-                else:
-                    curr_left = north_power[pow_idx][0]
-                    curr_right = north_power[pow_idx][2]
-                    block_left = min(pin_left, curr_left)
-                    block_right = max(pin_right, curr_right)
-                    north_power[pow_idx][0] = block_left
-                    north_power[pow_idx][2] = block_right
-    # update cell order with power polygons, assign to default island 0
-    '''coords_id = len(cell_order_in_island[0]['coords'])
-    val = 0
-    for power_pin in north_power:
-        cell_order_in_island[val]['items'][coords_id] = {}
-        cell_order_in_island[val]['items'][coords_id]['type'] = 'polygon'
-        cell_order_in_island[val]['items'][coords_id]['layer'] = power_pin[4]
-        temp_coord = [power_pin[0], power_pin[1], power_pin[2], power_pin[3]]
-        cell_order_in_island[val]['coords'].append(temp_coord)
-        coords_id += 1'''
+        no_direction_pin_name = pin_name
+        if pin_name[:2] == 'n_':
+            no_direction_pin_name = pin_name[2:]
+        if no_direction_pin_name not in power_pin_list:
+            pin_left = pin_center_x - int(track_spacing/2)
+            pin_right = pin_center_x + int(track_spacing/2)
+            pin_bot = pin_center_y - int(track_spacing + track_spacing/2)
+            pin_top = pin_center_y + int(track_spacing/2)
+            if pin_right > frame_right:
+                raise ParsingError(f'Ran out of space when placing {pin_name} on the north edge')
+            pin_item['location'] = [pin_left, pin_bot, pin_right, pin_top]
+            pin_item['center'] = (pin_center_x, pin_center_y)
+            pin_center_x += frame_pin_spacing_horz
+            north_pins_far_right = pin_right
+        else:
+            pin_item['pin_idx'] = pin_idx
+            pin_item['name_nodirection'] = no_direction_pin_name
+            north_power_pins.append(pin_item)
     
     pin_center_x = frame_left + int(track_spacing/2) 
     pin_center_y = frame_top - frame_pin_spacing_vert - int(track_spacing/2)
@@ -1253,46 +1245,35 @@ def generate_frame(cell_order_in_island, cell_info, island_dims, island_place, g
         pin_item['location'] = [pin_left, pin_bot, pin_right, pin_top]
         pin_item['center'] = (pin_center_x, pin_center_y)
         pin_center_y -= frame_pin_spacing_vert
+    
     pin_center_x = frame_left + frame_pin_spacing_horz
     pin_center_y = frame_bot + int(track_spacing/2)
-    
     # insert power pins on the south edge to match
-    south_power = [None, None, None, None]
-    for pin_item in south_pins:
-        pin_left = pin_center_x - int(track_spacing/2)
-        pin_right = pin_center_x + int(track_spacing/2)
-        pin_bot = pin_center_y - int(track_spacing/2)
-        pin_top = pin_center_y + int(track_spacing + track_spacing/2)
-        if pin_right > frame_right:
-            pin_item_name = pin_item['name']
-            raise ParsingError(f'Ran out of space when placing {pin_item_name} on the south edge')
-        pin_item['location'] = [pin_left, pin_bot, pin_right, pin_top]
-        pin_item['center'] = (pin_center_x, pin_center_y)
-        pin_center_x += frame_pin_spacing_horz
+    south_power_pins = []
+    south_pins_far_right = None
+    for pin_idx, pin_item in enumerate(south_pins):
+        # exempt power pins from normal pin placement
         pin_name = pin_item['name']
-        for pow_idx, power_name in enumerate(power_pin_list):
-            if power_name in pin_name:
-                pow_list = south_power[pow_idx]
-                if pow_list is None:
-                    pin_top -= int(track_spacing/2)
-                    south_power[pow_idx] = [pin_left, pin_bot, pin_right, pin_top, pin_item['layer']]
-                else:
-                    curr_left = south_power[pow_idx][0]
-                    curr_right = south_power[pow_idx][2]
-                    block_left = min(pin_left, curr_left)
-                    block_right = max(pin_right, curr_right)
-                    south_power[pow_idx][0] = block_left
-                    south_power[pow_idx][2] = block_right
-    # update cell order with power polygons, assign to default island 0
-    '''coords_id = len(cell_order_in_island[0]['coords'])
-    val = 0
-    for power_pin in south_power:
-        cell_order_in_island[val]['items'][coords_id] = {}
-        cell_order_in_island[val]['items'][coords_id]['type'] = 'polygon'
-        cell_order_in_island[val]['items'][coords_id]['layer'] = power_pin[4]
-        temp_coord = [power_pin[0], power_pin[1], power_pin[2], power_pin[3]]
-        cell_order_in_island[val]['coords'].append(temp_coord)
-        coords_id += 1'''
+        no_direction_pin_name = pin_name
+        if pin_name[:2] == 's_':
+            no_direction_pin_name = pin_name[2:]
+        if no_direction_pin_name not in power_pin_list:
+            pin_left = pin_center_x - int(track_spacing/2)
+            pin_right = pin_center_x + int(track_spacing/2)
+            pin_bot = pin_center_y - int(track_spacing/2)
+            pin_top = pin_center_y + int(track_spacing + track_spacing/2)
+            if pin_right > frame_right:
+                pin_item_name = pin_item['name']
+                raise ParsingError(f'Ran out of space when placing {pin_item_name} on the south edge')
+            pin_item['location'] = [pin_left, pin_bot, pin_right, pin_top]
+            pin_item['center'] = (pin_center_x, pin_center_y)
+            pin_center_x += frame_pin_spacing_horz
+            south_pins_far_right = pin_right
+        else:
+            pin_item['pin_idx'] = pin_idx
+            pin_item['name_nodirection'] = no_direction_pin_name
+            south_power_pins.append(pin_item)
+    
     pin_center_x = frame_right - int(track_spacing/2) 
     pin_center_y = frame_top - frame_pin_spacing_vert - int(track_spacing/2)
     for pin_item in east_pins:
@@ -1306,6 +1287,64 @@ def generate_frame(cell_order_in_island, cell_info, island_dims, island_place, g
         pin_item['location'] = [pin_left, pin_bot, pin_right, pin_top]
         pin_item['center'] = (pin_center_x, pin_center_y)
         pin_center_y -= frame_pin_spacing_vert
+    
+    power_pin_doc = {'vinj': {}, 'gnd': {}, 'vtun': {}, 'avdd': {}}
+    # starting from the right side of the frame, start placing the pins on both N and S
+    pin_center_x = frame_right - (2*frame_pin_spacing_horz) - int(track_spacing/2)
+    pin_center_y_top = frame_top - int(track_spacing/2)
+    pin_center_y_bot = frame_bot + int(track_spacing/2)
+    for pin_item in north_power_pins:
+        pin_left = pin_center_x - int(track_spacing/2)
+        pin_right = pin_center_x + int(track_spacing/2)
+        pin_bot = pin_center_y_top - int(track_spacing + track_spacing/2)
+        pin_top = pin_center_y_top + int(track_spacing/2)
+        if pin_left < north_pins_far_right:
+            pin_item_name = pin_item['name']
+            raise ParsingError(f'Ran out of space when placing power pin {pin_item_name} on the north edge')
+        power_pin = pin_item['name_nodirection']
+        pin_idx = pin_item['pin_idx']
+        if power_pin in power_pin_doc:
+            power_pin_doc[power_pin]['center_top'] = (pin_center_x, pin_center_y_top)
+            north_pins[pin_idx]['location'] = [pin_left, pin_bot, pin_right, pin_top]
+            north_pins[pin_idx]['center'] = (pin_center_x, pin_center_y_top)
+            pin_center_x -= frame_pin_spacing_horz
+        else:
+            if verbose: print(f'Warning: no power pin inserted for {pin_item_name}')
+    for pin_item in south_power_pins:
+        power_pin = pin_item['name_nodirection']
+        pin_idx = pin_item['pin_idx']
+        if power_pin in power_pin_doc:
+            pin_center_x = power_pin_doc[power_pin]['center_top'][0]
+            pin_left = pin_center_x - int(track_spacing/2)
+            pin_right = pin_center_x + int(track_spacing/2)
+            pin_bot = pin_center_y_bot - int(track_spacing/2)
+            pin_top = pin_center_y_bot + int(track_spacing + track_spacing/2)
+            south_pins[pin_idx]['location'] = [pin_left, pin_bot, pin_right, pin_top]
+            south_pins[pin_idx]['center'] = (pin_center_x, pin_center_y_bot)
+            power_pin_doc[power_pin]['center_bot'] = (pin_center_x, pin_center_y_bot)
+        else:
+            print(f'Warning: no power pin inserted for {pin_item_name}')
+    # store power rails and insert into island placement
+    coords_id = len(cell_order_in_island[0]['coords'])
+    val = 0
+    for power_pin in power_pin_doc:
+        if power_pin_doc[power_pin]:
+            pin_center_x = power_pin_doc[power_pin]['center_top'][0]
+            rail_width = 3.8*dbu 
+            rail_left = pin_center_x - int(rail_width/2)
+            rail_right = pin_center_x + int(rail_width/2)
+            rail_top = frame_top
+            rail_bot = frame_bot
+            power_pin_doc[power_pin]['dims'] = (rail_left, rail_bot, rail_right, rail_top)
+            power_pin_doc[power_pin]['layer'] = 'METAL4'
+
+            cell_order_in_island[val]['items'][coords_id] = {}
+            cell_order_in_island[val]['items'][coords_id]['type'] = 'polygon'
+            cell_order_in_island[val]['items'][coords_id]['layer'] = 'METAL4'
+            temp_coord = [rail_left, rail_bot, rail_right, rail_top]
+            cell_order_in_island[val]['coords'].append(temp_coord)
+            coords_id += 1
+        
     if verbose:
         print(f'North pins: {north_pins}\nEast pins: {east_pins}\nWest pins: {west_pins}\nSouth pins: {south_pins}')
     # Update cell info for new frame cell
@@ -1347,24 +1386,40 @@ def generate_frame(cell_order_in_island, cell_info, island_dims, island_place, g
         ret_string.append('ENDEL\n')
     
     # write out gds for power polygons
-    for power_pin in north_power:
-        draw_layer_type = rev_layer_map[power_pin[4]+'_drawing']['layer_type']
-        draw_layer_type = draw_layer_type.split(',')
-        left, bottom, right, top = power_pin[0], power_pin[1], power_pin[2], power_pin[3]
-        ret_string.append('BOUNDARY\n')
-        ret_string.append(f'LAYER: {draw_layer_type[0]}\n')
-        ret_string.append(f'DATATYPE: {draw_layer_type[1]}\n')
-        ret_string.append(f'XY: {left}, {bottom}, {right}, {bottom}, {right}, {top}, {left}, {top}, {left}, {bottom}\n')
-        ret_string.append('ENDEL\n')
-    for power_pin in south_power:
-        draw_layer_type = rev_layer_map[power_pin[4]+'_drawing']['layer_type']
-        draw_layer_type = draw_layer_type.split(',')
-        left, bottom, right, top = power_pin[0], power_pin[1], power_pin[2], power_pin[3]
-        ret_string.append('BOUNDARY\n')
-        ret_string.append(f'LAYER: {draw_layer_type[0]}\n')
-        ret_string.append(f'DATATYPE: {draw_layer_type[1]}\n')
-        ret_string.append(f'XY: {left}, {bottom}, {right}, {bottom}, {right}, {top}, {left}, {top}, {left}, {bottom}\n')
-        ret_string.append('ENDEL\n')
+    via_ref = 'M4_M3'
+    via_def = find_via_in_lef(via_ref, lef_file, dbu)
+    for power_pin in power_pin_doc:
+        pin_item = power_pin_doc[power_pin]
+        if pin_item:
+            draw_layer_type = rev_layer_map[pin_item['layer']+'_drawing']['layer_type']
+            draw_layer_type = draw_layer_type.split(',')
+            left, bottom, right, top = pin_item['dims'][0], pin_item['dims'][1], pin_item['dims'][2], pin_item['dims'][3]
+            ret_string.append('BOUNDARY\n')
+            ret_string.append(f'LAYER: {draw_layer_type[0]}\n')
+            ret_string.append(f'DATATYPE: {draw_layer_type[1]}\n')
+            ret_string.append(f'XY: {left}, {bottom}, {right}, {bottom}, {right}, {top}, {left}, {top}, {left}, {bottom}\n')
+            ret_string.append('ENDEL\n')
+            # place vias on the rails
+            rail_center = pin_item['center_top']
+            for via_item in via_def:
+                draw_layer_type = rev_layer_map[via_item[0]+'_drawing']['layer_type']
+                draw_layer_type = draw_layer_type.split(',')
+                left, bottom, right, top = int(rail_center[0] + via_item[1]), int(rail_center[1] + via_item[2]), int(rail_center[0] + via_item[3]), int(rail_center[1] + via_item[4])
+                ret_string.append('BOUNDARY\n')
+                ret_string.append(f'LAYER: {draw_layer_type[0]}\n')
+                ret_string.append(f'DATATYPE: {draw_layer_type[1]}\n')
+                ret_string.append(f'XY: {left}, {bottom}, {right}, {bottom}, {right}, {top}, {left}, {top}, {left}, {bottom}\n')
+                ret_string.append('ENDEL\n')
+            rail_center = pin_item['center_bot']
+            for via_item in via_def:
+                draw_layer_type = rev_layer_map[via_item[0]+'_drawing']['layer_type']
+                draw_layer_type = draw_layer_type.split(',')
+                left, bottom, right, top = int(rail_center[0] + via_item[1]), int(rail_center[1] + via_item[2]), int(rail_center[0] + via_item[3]), int(rail_center[1] + via_item[4])
+                ret_string.append('BOUNDARY\n')
+                ret_string.append(f'LAYER: {draw_layer_type[0]}\n')
+                ret_string.append(f'DATATYPE: {draw_layer_type[1]}\n')
+                ret_string.append(f'XY: {left}, {bottom}, {right}, {bottom}, {right}, {top}, {left}, {top}, {left}, {bottom}\n')
+                ret_string.append('ENDEL\n')
 
     if verbose:
         print(f'Cell info, Cab frame')
