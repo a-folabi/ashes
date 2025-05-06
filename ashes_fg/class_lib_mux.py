@@ -18,6 +18,7 @@ class STD_GorS_IndirectSwitches(MUX):
         self.VTUN = Port(circuit,self,"VTUN","N",1*self.dim[1])
         self.VINJ = Port(circuit,self,"VINJ","N",1*self.dim[1])
         self.Vgrun_r = Port(circuit,self,"Vgrun_r","E",1*self.dim[0])
+        self.Vgrun = Port(circuit,self,"Vgrun","W",1*self.dim[0])
         self.AVDD_r = Port(circuit,self,"AVDD_r","E",1*self.dim[0])
         self.run_r = Port(circuit,self,"run_r","E",1*self.dim[0])
         self.prog_r = Port(circuit,self,"prog_r","E",1*self.dim[0])

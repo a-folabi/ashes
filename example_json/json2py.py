@@ -2,7 +2,6 @@
 #******************************Input from CEW is CEW col-8, Input from CNS is CNS col-10
 #*****************************Amatrix col+ Bmatrix col needs to be >= CEW_col+CNS_col+2
 
-#----------------------------To Do: drain cutoff to matrix connection, pin to drain cutoff connection
 
 import json
 import math
@@ -147,6 +146,11 @@ for cab in cab_list:
     elif 8<Cblock_row_inst*4<17:
         C_drain_bit=4
         f.write("Block_DrainDecode = STD_DrainDecoder(Top,island=BlockIsland,bits=4)\n")
+        f.write("Block_DrainSelect = RunDrainSwitch(Top,island=BlockIsland,num="+str(Cblock_row_inst)+")\n")
+        f.write("Block_DrainCutoff = DrainCutoff(Top,BlockIsland,num="+str(Cblock_row_inst)+")\n")
+    elif 4<Cblock_row_inst*4<9:
+        C_drain_bit=3
+        f.write("Block_DrainDecode = STD_DrainDecoder(Top,island=BlockIsland,bits=3)\n")
         f.write("Block_DrainSelect = RunDrainSwitch(Top,island=BlockIsland,num="+str(Cblock_row_inst)+")\n")
         f.write("Block_DrainCutoff = DrainCutoff(Top,BlockIsland,num="+str(Cblock_row_inst)+")\n")
     
@@ -820,11 +824,25 @@ for cab in cab_list:
             #f.write("Block_GateDecode.RUN_OUT["+str(i*2+1)+"] += Block_GateSwitch.VPWR["+str((Cblock_row_inst+1+i)*2+1)+"]\n")
             
     for i in range(CEW_col-6,CEW_col-2):
-        f.write("Block_GateSwitch.VPWR["+str(i)+"] += Block_GateDecode.RUN_OUT["+str(i)+"]\n")
+        f.write("Block_GateDecode.RUN_OUT["+str(i)+"] += Block_GateSwitch.VPWR["+str(i)+"]\n")
     #for i in range((CEW_col_inst+Cblock_row_inst+5+CNS_col_inst-Cblock_row_inst-2)*2-8,(CEW_col_inst+Cblock_row_inst+5+CNS_col_inst-Cblock_row_inst-2)*2-4)
     for i in range(4):
         f.write("Block_GateDecode.RUN_OUT["+str((CEW_col_inst+Cblock_row_inst+5+CNS_col_inst-Cblock_row_inst-2)*2-8+i)+"] += Block_GateSwitch.VPWR["+str((CEW_col_inst+Cblock_row_inst+5+CNS_col_inst)*2-10+i)+"]\n")
             
+    for i in range(CEW_col-6):
+        f.write("FakeCell"+str(i)+" = FakeCell(Top,CABIsland)\n")
+        f.write("FakeCell"+str(i)+".place([50,"+str(50+i)+"])\n")
+        f.write("Block_GateDecode.RUN_OUT["+str(i)+"] += FakeCell"+str(i)+".FakePort\n")
+    for i in range(CEW_col-2,(CEW_col_inst+Cblock_row_inst+5+CNS_col_inst-Cblock_row_inst-2)*2-8):
+        f.write("FakeCell"+str(i)+" = FakeCell(Top,CABIsland)\n")
+        f.write("FakeCell"+str(i)+".place([50,"+str(50+i)+"])\n")
+        f.write("Block_GateDecode.RUN_OUT["+str(i)+"] += FakeCell"+str(i)+".FakePort\n")
+    for i in range((CEW_col_inst+Cblock_row_inst+5+CNS_col_inst-Cblock_row_inst-2)*2-4,(CEW_col_inst+Cblock_row_inst+5+CNS_col_inst-Cblock_row_inst-2)*2+2):
+        f.write("FakeCell"+str(i)+" = FakeCell(Top,CABIsland)\n")
+        f.write("FakeCell"+str(i)+".place([50,"+str(50+i)+"])\n")
+        f.write("Block_GateDecode.RUN_OUT["+str(i)+"] += FakeCell"+str(i)+".FakePort\n")
+    
+    
     f.write("Block_DrainCutoff.PR += C_EW.Vd_Pl\n")
     f.write("Block_DrainCutoff.In += C_EW.Vd_Rl\n")
     
@@ -892,20 +910,20 @@ for cab in cab_list:
     f.write("CABElements_GateSwitch.prog_r += Block_Switch.Prog_b\n")
     f.write("Block_Switch.GND_b += CABElements_GateSwitch.GND_T\n")
     f.write("Block_Switch.VDD_b += CABElements_GateSwitch.VPWR[1]\n")
-    f.write("Bswitch"+str(Bmatrix_row+1)+".GND_b += CABElements_GateSwitch.GND_T\n")
-    f.write("Bswitch"+str(Bmatrix_row+1)+".VDD_b += CABElements_GateSwitch.VPWR[1]\n")
-    f.write("Bswitch"+str(Bmatrix_row+1)+".Prog_b += CABElements_GateSwitch.PROG\n")
-    f.write("Oswitch.GND_b += CABElements_GateSwitch.GND_T\n")
-    f.write("Oswitch.VDD_b += CABElements_GateSwitch.VPWR[1]\n")
-    f.write("Oswitch.Prog_b += CABElements_GateSwitch.PROG\n")
+    f.write("Bswitch0.GND += CABElements_GateSwitch.GND_T\n")
+    f.write("Bswitch0.VDD += CABElements_GateSwitch.VPWR[1]\n")
+    f.write("Bswitch0.Prog += CABElements_GateSwitch.PROG\n")
+    f.write("Oswitch.GND += Bswitch"+str(Bmatrix_row+1)+".GND_b\n")
+    f.write("Oswitch.VDD += Bswitch"+str(Bmatrix_row+1)+".VDD_b\n")
+    f.write("Oswitch.Prog += Bswitch"+str(Bmatrix_row+1)+".Prog_b\n")
     f.write("CABElements_GateSwitch.RUN_IN[1] += CAB_GateSwitch.Vgrun_r\n")
     f.write("CABElements_GateSwitch.RUN_IN[0] += CAB_GateSwitch.Vgrun_r\n")
     for i in range(CEW_col+2):
-        f.write("Block_GateSwitch.RUN_IN["+str(i)+"] += CAB_GateSwitch.Vgrun_r\n")
-    f.write("Block_GateSwitch.RUN_IN["+str(CEW_col+2+Cblock_row_inst*2+2)+"] += CAB_GateSwitch.Vgrun_r\n")
-    f.write("Block_GateSwitch.RUN_IN["+str(CEW_col+2+Cblock_row_inst*2+3)+"] += CAB_GateSwitch.Vgrun_r\n")
+        f.write("Block_GateSwitch.RUN_IN["+str(i)+"] += CAB_GateSwitch.Vgrun\n")
+    f.write("Block_GateSwitch.RUN_IN["+str(CEW_col+2+Cblock_row_inst*2+2)+"] += CAB_GateSwitch.Vgrun\n")
+    f.write("Block_GateSwitch.RUN_IN["+str(CEW_col+2+Cblock_row_inst*2+3)+"] += CAB_GateSwitch.Vgrun\n")
     for i in range(CEW_col+2+Cblock_row_inst*2+2+2+2,CEW_col+2+Cblock_row_inst*2+2+2+CNS_col+4):
-        f.write("Block_GateSwitch.RUN_IN["+str(i)+"] += CAB_GateSwitch.Vgrun_r\n")
+        f.write("Block_GateSwitch.RUN_IN["+str(i)+"] += CAB_GateSwitch.Vgrun\n")
     
         
         
