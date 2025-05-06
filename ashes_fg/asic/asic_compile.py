@@ -9,7 +9,7 @@ from ashes_fg.asic import compile
 
 # Functions
 # ---------------------------------------------------------------------------------------------------------------------------
-def compile_asic(circuit,process="Process",fileName = "compiled",path = "./example_verilog", p_and_r = True, location_islands=None, design_limits = [1e6, 6.1e5]):
+def compile_asic(circuit,process="Process",fileName = "compiled",path = "./example_verilog", p_and_r = True, location_islands=None, design_limits = [1e6, 6.1e5],drainSpaceIdx=None,drainSpace=10,gateSpaceIdx=None,gateSpace=10):
     """
     Main ASIC compilation function
     - Makes Verilog netlist for a given Circuit
@@ -51,7 +51,11 @@ def compile_asic(circuit,process="Process",fileName = "compiled",path = "./examp
         cell_pitch=cell_pitch,
         x_offset=x_offset, y_offset=y_offset,
         design_area=design_area,
-        location_islands=location_islands)
+        location_islands=location_islands,
+        drainmux_space_isle_idx=drainSpaceIdx,
+        drainmux_space = drainSpace,
+        gatemux_space_isle_idx=gateSpaceIdx,
+        gatemux_space = gateSpace)
 
 
 
@@ -198,8 +202,9 @@ class Circuit:
 
                     # Check for non-decoder matrix
                     for p in net.pins:
-                        if p.cell.isMatrix() and isinstance(p.cell,MUX) == False:
-                            net.index = 0
+                        if p.cell != None:
+                            if p.cell.isMatrix() and isinstance(p.cell,MUX) == False:
+                                net.index = 0
 
         for net in self.Nets:
             if net.number == -1:
@@ -1021,6 +1026,73 @@ class MUX(StandardCell):
         text += ");"
         return text
         
+class PortDecoderBit(Port):
+    """
+    Logical grouping of pins
+    Contains
+    - Pins (list)
+    - Cell (single)
+    
+    *Special case of port for decoder bits - handles unique printing scenario
+    """
+    def __init__(self,circuit,cell,name,location,pinNumber,static = False):
+        self.circuit = circuit
+        self.name = name
+        self.location = location
+        self.cell = cell
+        self.isStatic = static
+
+        # 0 pinNumber not allowed, means MUX cell trying to instantiate with dimension of 0
+        if pinNumber == 0:
+            pinNumber += 1
+
+        #Generate pins equal to pinNumber
+        self.pins = []
+        for i in range(int(pinNumber)):
+            self.pins.append(Pin(circuit,self,cell))
+
+        #If port belongs to a cell
+        if cell != None:
+            # Add pins to cell's list
+            self.cell.addPins(self.pins)
+            # Add self to cell's list
+            self.cell.addPort(self)
+
+    def printFlat(self,type = "decode",extraIdx = -1):
+        """
+        Returns Verilog text for a decoder port
+        Decoders are a special case
+        - Vectors flattened
+        - Indices in pin name
+
+        *Handles special case of decoder bits
+        """
+        line = ""
+        idx = 0
+        # For each bit in the decoder
+        # Assuming b[0] = LSB
+        for b in range(self.cell.bits):
+            bitNum = self.cell.bits-b # Starting from MSB
+            pin = self.pins[bitNum-1]
+            if pin.isConnected():
+                line += ", ." + type
+
+                if self.cell.getDirection() == "horizontal":
+                    line += "_n" + str(idx) + "_n0_" + self.name
+                elif self.cell.getDirection() == "vertical":
+                    line += "_n" + str(idx) + "_" + self.name
+
+                line += "_" + str((bitNum+1)%2) + "_"
+
+                line += "("
+                line += pin.print()
+                line += ")"
+
+            # Check if we're moving onto next row/column
+            if bitNum%2 == 1:
+                idx += 2
+
+        return line 
         
 class FakeStandardCell(StandardCell):
     def __init__(self,circuit,island,num=1):
