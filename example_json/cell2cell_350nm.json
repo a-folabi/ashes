@@ -4,18 +4,12 @@
     "_comment2":"Num of input from CEW is CEW col-8, Num of input from CNS is CNS col-10",
     "foundry": "TSMC",
     "process_node": "350nm",
-    "cab1": ["TA2Cell_NoFG__0","TA2Cell_NoFG__1","TGate_2nMirror__0","TGate_2nMirror__1","NandPfets"],
+    "cab1": ["TA2Cell_Weak__0","TA2Cell_Weak__1","TA2Cell_Strong","Cap_Bank","4WTA_IndirectProg","NandPfets","TGate_2nMirror"],
     "cab1_Cblock_rows":20,
-    "cab1_CEW_cols":12,
-    "cab1_CNS_cols":12,
+    "cab1_CEW_cols":14,
+    "cab1_CNS_cols":18,
     "cab1_Amatrix_cols":16,
-    "cab2": ["TA2Cell_Weak","TA2Cell_Strong","Cap_Bank","4WTA_IndirectProg","NandPfets"],
-    "cab2_Cblock_rows":20,
-    "cab2_CEW_cols":12,
-    "cab2_CNS_cols":12,
-    "cab2_Amatrix_cols":14,
-    "col_cab1":[1],
-    "col_cab2":[2,3,4,5,6,7]
+    "col_cab1":[1,2,3,4,5,6,7]
 
 }
 

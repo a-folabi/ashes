@@ -176,7 +176,7 @@ for cab in cab_list:
     
     #CAB switches
     for block in block_list:
-        if "4WTA_IndirectProg" in block or "TA2Cell_Direct" in block: 
+        if "4WTA_IndirectProg" in block or "TA2Cell_Direct" in block or "Amplifier9T_FGInput_Bias" in block: 
             f.write("Bswitch"+str(block_list.index(block))+" = ST_BMatrix_NoSwitch(Top,CABIsland)\n")
             f.write("Bswitch"+str(block_list.index(block))+".place(["+str(block_list.index(block))+","+str(Amatrix_col+Bmatrix_col)+"])\n")
             f.write("Bswitch"+str(block_list.index(block))+".markAbut()\n\n")
@@ -254,35 +254,71 @@ for cab in cab_list:
             
     
     feedback_counter=0
+    prog_offset_flag = 1
+    input_offset_flag = 1
     for block in block_list:
         f.write("\n")
         CAB_net_counter = block_list.index(block)
+        cell_input_count = 0
         for lib_block in lib:
             if block[-1].isnumeric():
                 if block.split("__")[0] == lib_block:
-                    port_counter=0
+                    if input_offset_flag == 0:
+                        port_counter=0 
+                    else:
+                        port_counter=1
                     for port in lib[block.split("__")[0]]["W"]:
-                        if port == "VD_P":
-                            f.write(block+".VD_P += Bswitch"+str(CAB_net_counter)+".P\n")
-                        elif port == "VD_P[0:1]":
-                            f.write(block+".VD_P += Bswitch"+str(CAB_net_counter)+".P[0:2]\n")
-                        elif port == "VD_P[0:2]":
-                            f.write(block+".VD_P += Bswitch"+str(CAB_net_counter)+".P[0:3]\n")
-                        elif port == "VD_P[0:3]":
-                            f.write(block+".VD_P += Bswitch"+str(CAB_net_counter)+".P[0:4]\n")
+                        if prog_offset_flag == 0:
+                            if port == "VD_P":
+                                f.write(block+".VD_P += Bswitch"+str(CAB_net_counter)+".P\n")
+                            elif port == "VD_P[0:1]":
+                                f.write(block+".VD_P += Bswitch"+str(CAB_net_counter)+".P[0:2]\n")
+                            elif port == "VD_P[0:2]":
+                                f.write(block+".VD_P += Bswitch"+str(CAB_net_counter)+".P[0:3]\n")
+                            elif port == "VD_P[0:3]":
+                                f.write(block+".VD_P += Bswitch"+str(CAB_net_counter)+".P[0:4]\n")
                         else:
-                            if "[0:1]" in port:
+                            if port == "VD_P":
+                                f.write(block+".VD_P += Bswitch"+str(CAB_net_counter)+".P[1]\n")
+                            elif port == "VD_P[0:1]":
+                                f.write(block+".VD_P += Bswitch"+str(CAB_net_counter)+".P[1:3]\n")
+                            elif port == "VD_P[0:2]":
+                                f.write(block+".VD_P += Bswitch"+str(CAB_net_counter)+".P[1:4]\n")
+                            elif port == "VD_P[0:3]":
+                                for k in range(3):
+                                    f.write(block+".VD_P"+str(k)+" += Bswitch"+str(CAB_net_counter)+".P["+str(k+1)+"]\n")
+                                f.write(block+".VD_P[3] += Bswitch"+str(CAB_net_counter+1)+".P[0]\n")
+                        if input_offset_flag == 0:
+                            if "[0:1]" in port and "VD_P" not in port:
                                 f.write(block+"."+port.split("[")[0]+" += Bswitch"+str(CAB_net_counter)+".A["+str(port_counter)+":"+str(port_counter+2)+"]\n")
                                 port_counter += 2
-                            elif "[0:2]" in port:
+                            elif "[0:2]" in port and "VD_P" not in port:
                                 f.write(block+"."+port.split("[")[0]+" += Bswitch"+str(CAB_net_counter)+".A["+str(port_counter)+":"+str(port_counter+3)+"]\n")
                                 port_counter += 3
-                            elif "[0:3]" in port:
+                            elif "[0:3]" in port and "VD_P" not in port:
                                 f.write(block+"."+port.split("[")[0]+" += Bswitch"+str(CAB_net_counter)+".A["+str(port_counter)+":"+str(port_counter+4)+"]\n")
                                 port_counter += 4
-                            else:
+                            elif "VD_P" not in port:
                                 f.write(block+"."+port.split("[")[0]+" += Bswitch"+str(CAB_net_counter)+".A["+str(port_counter)+"]\n")
                                 port_counter += 1
+                        else:
+                            if "[0:1]" in port and "VD_P" not in port:
+                                f.write(block+"."+port.split("[")[0]+" += Bswitch"+str(CAB_net_counter)+".A["+str(port_counter)+":"+str(port_counter+2)+"]\n")
+                                port_counter += 2
+                            elif "[0:2]" in port and "VD_P" not in port:
+                                f.write(block+"."+port.split("[")[0]+" += Bswitch"+str(CAB_net_counter)+".A["+str(port_counter)+":"+str(port_counter+3)+"]\n")
+                                port_counter += 3
+                            elif "[0:3]" in port and "VD_P" not in port:
+                                for j in range(3):
+                                    f.write(block+"."+port.split("[")[0]+"["+str(j)+"] += Bswitch"+str(CAB_net_counter)+".A["+str(j+1)+"]\n")
+                                f.write(block+"."+port.split("[")[0]+"[3] += Bswitch"+str(CAB_net_counter+1)+".A[0]\n")
+                                port_counter += 4
+                            elif "VD_P" not in port:
+                                if port_counter != 4:
+                                    f.write(block+"."+port.split("[")[0]+" += Bswitch"+str(CAB_net_counter)+".A["+str(port_counter)+"]\n")
+                                    port_counter += 1
+                                else:
+                                    f.write(block+"."+port.split("[")[0]+" += Bswitch"+str(CAB_net_counter+1)+".A[0]\n")
                     for feedback_port in lib[block.split("__")[0]]["E"]:
                         if "[0:1]" in feedback_port:
                             f.write(block+"."+feedback_port.split("[")[0]+" += CAB_GateSwitch.Input["+str(Amatrix_col*2+Bmatrix_feedback_offset+feedback_counter)+":"+str(Amatrix_col*2+Bmatrix_feedback_offset+feedback_counter+2)+"]\n")
@@ -481,33 +517,79 @@ for cab in cab_list:
                                         f.write(block+".VPWR += "+block_list[block_list.index(block)-1]+".VPWR_b\n")
                                     else:
                                         f.write(block+".VPWR += CABElements_GateSwitch.VDD[1]\n")
-                                    
+                    for countport in lib[block.split("__")[0]]["W"]:
+                        if countport == "VD_P" or countport == "VD_P[0:1]" or countport == "VD_P[0:2]":
+                            prog_offset_flag = 0
+                    for countinput in lib[block.split("__")[0]]["W"]:
+                        if "[0:1]" in countinput and "VD_P" not in countinput:
+                            cell_input_count += 2
+                        elif "[0:2]" in countinput and "VD_P" not in countinput:
+                            cell_input_count += 3
+                        elif "[0:3]" in countinput and "VD_P" not in countinput:
+                            cell_input_count += 4
+                        elif "VD_P" not in countinput:
+                            cell_input_count += 1
+                    if cell_input_count != 4:
+                        input_offset_flag = 0
                                 
             else:
                 if block == lib_block:
-                    port_counter=0
+                    if input_offset_flag == 0:
+                        port_counter=0 
+                    else:
+                        port_counter=1
                     for port in lib[block]["W"]:
-                        if port == "VD_P":
-                            f.write(block+".VD_P += Bswitch"+str(CAB_net_counter)+".P\n")
-                        elif port == "VD_P[0:1]":
-                            f.write(block+".VD_P += Bswitch"+str(CAB_net_counter)+".P[0:2]\n")
-                        elif port == "VD_P[0:2]":
-                            f.write(block+".VD_P += Bswitch"+str(CAB_net_counter)+".P[0:3]\n")
-                        elif port == "VD_P[0:3]":
-                            f.write(block+".VD_P += Bswitch"+str(CAB_net_counter)+".P[0:4]\n")
+                        if prog_offset_flag == 0:
+                            if port == "VD_P":
+                                f.write(block+".VD_P += Bswitch"+str(CAB_net_counter)+".P\n")
+                            elif port == "VD_P[0:1]":
+                                f.write(block+".VD_P += Bswitch"+str(CAB_net_counter)+".P[0:2]\n")
+                            elif port == "VD_P[0:2]":
+                                f.write(block+".VD_P += Bswitch"+str(CAB_net_counter)+".P[0:3]\n")
+                            elif port == "VD_P[0:3]":
+                                f.write(block+".VD_P += Bswitch"+str(CAB_net_counter)+".P[0:4]\n")
                         else:
-                            if "[0:1]" in port:
+                            if port == "VD_P":
+                                f.write(block+".VD_P += Bswitch"+str(CAB_net_counter)+".P[1]\n")
+                            elif port == "VD_P[0:1]":
+                                f.write(block+".VD_P += Bswitch"+str(CAB_net_counter)+".P[1:3]\n")
+                            elif port == "VD_P[0:2]":
+                                f.write(block+".VD_P += Bswitch"+str(CAB_net_counter)+".P[1:4]\n")
+                            elif port == "VD_P[0:3]":
+                                for k in range(3):
+                                    f.write(block+".VD_P"+str(k)+" += Bswitch"+str(CAB_net_counter)+".P["+str(k+1)+"]\n")
+                                f.write(block+".VD_P[3] += Bswitch"+str(CAB_net_counter+1)+".P[0]\n")
+                        if input_offset_flag == 0:
+                            if "[0:1]" in port and "VD_P" not in port:
                                 f.write(block+"."+port.split("[")[0]+" += Bswitch"+str(CAB_net_counter)+".A["+str(port_counter)+":"+str(port_counter+2)+"]\n")
                                 port_counter += 2
-                            elif "[0:2]" in port:
+                            elif "[0:2]" in port and "VD_P" not in port:
                                 f.write(block+"."+port.split("[")[0]+" += Bswitch"+str(CAB_net_counter)+".A["+str(port_counter)+":"+str(port_counter+3)+"]\n")
                                 port_counter += 3
-                            elif "[0:3]" in port:
+                            elif "[0:3]" in port and "VD_P" not in port:
                                 f.write(block+"."+port.split("[")[0]+" += Bswitch"+str(CAB_net_counter)+".A["+str(port_counter)+":"+str(port_counter+4)+"]\n")
                                 port_counter += 4
-                            else:
+                            elif "VD_P" not in port:
                                 f.write(block+"."+port.split("[")[0]+" += Bswitch"+str(CAB_net_counter)+".A["+str(port_counter)+"]\n")
                                 port_counter += 1
+                        else:
+                            if "[0:1]" in port and "VD_P" not in port:
+                                f.write(block+"."+port.split("[")[0]+" += Bswitch"+str(CAB_net_counter)+".A["+str(port_counter)+":"+str(port_counter+2)+"]\n")
+                                port_counter += 2
+                            elif "[0:2]" in port and "VD_P" not in port:
+                                f.write(block+"."+port.split("[")[0]+" += Bswitch"+str(CAB_net_counter)+".A["+str(port_counter)+":"+str(port_counter+3)+"]\n")
+                                port_counter += 3
+                            elif "[0:3]" in port and "VD_P" not in port:
+                                for j in range(3):
+                                    f.write(block+"."+port.split("[")[0]+"["+str(j)+"] += Bswitch"+str(CAB_net_counter)+".A["+str(j+1)+"]\n")
+                                f.write(block+"."+port.split("[")[0]+"[3] += Bswitch"+str(CAB_net_counter+1)+".A[0]\n")
+                                port_counter += 4
+                            elif "VD_P" not in port:
+                                if port_counter != 4:
+                                    f.write(block+"."+port.split("[")[0]+" += Bswitch"+str(CAB_net_counter)+".A["+str(port_counter)+"]\n")
+                                    port_counter += 1
+                                else:
+                                    f.write(block+"."+port.split("[")[0]+" += Bswitch"+str(CAB_net_counter+1)+".A[0]\n")
                     for feedback_port in lib[block]["E"]:
                         if "[0:1]" in feedback_port:
                             f.write(block+"."+feedback_port.split("[")[0]+" += CAB_GateSwitch.Input["+str(Amatrix_col*2+Bmatrix_feedback_offset+feedback_counter)+":"+str(Amatrix_col*2+Bmatrix_feedback_offset+feedback_counter+2)+"]\n")
@@ -713,13 +795,26 @@ for cab in cab_list:
                                         f.write(block+".VPWR += "+block_list[block_list.index(block)-1]+".VPWR_b\n")
                                     else:
                                         f.write(block+".VPWR += CABElements_GateSwitch.VDD[1]\n")
-    
+                    for countport in lib[block]["W"]:
+                        if countport == "VD_P" or countport == "VD_P[0:1]" or countport == "VD_P[0:2]":
+                            prog_offset_flag = 0
+                    for countinput in lib[block]["W"]:
+                        if "[0:1]" in countinput and "VD_P" not in countinput:
+                            cell_input_count += 2
+                        elif "[0:2]" in countinput and "VD_P" not in countinput:
+                            cell_input_count += 3
+                        elif "[0:3]" in countinput and "VD_P" not in countinput:
+                            cell_input_count += 4
+                        elif "VD_P" not in countinput:
+                            cell_input_count += 1
+                    if cell_input_count != 4:
+                        input_offset_flag = 0
             
     #C to cab connections
     f.write("\n")
     #First column of Amatrix = VDD+GND
     f.write("CAB_GateSwitch.Input[0] += CABElements_GateSwitch.VPWR[0]\n")
-    f.write("CABElements_GateSwitch.VPWR[1] += CABElements_GateSwitch.VPWR[0]\n")
+    #f.write("CABElements_GateSwitch.VPWR[1] += CABElements_GateSwitch.VPWR[0]\n")
     
     #CEW -> A switch
     f.write("C_EW.Vsel_b += CAB_GateSwitch.Vsel[0:"+str(CEW_col)+"]\n")
@@ -904,15 +999,18 @@ for cab in cab_list:
     #------------------------------------f.write("CABElements_GateSwitch.VDD[1] += BtoOut.AVDD_r\n")
     #------------------------------f.write("CABElements_GateSwitch.RUN += BtoOut.run_r\n")
     #-----------------------------------f.write("CABElements_GateSwitch.PROG += BtoOut.prog_r\n")
-    f.write("CABElements_GateSwitch.VDD[1] += CAB_GateSwitch.AVDD_r\n")
+    f.write("CABElements_GateSwitch.VPWR[1] += CAB_GateSwitch.AVDD_r\n")
+    f.write("CABElements_GateSwitch.VPWR[0] += CAB_GateSwitch.AVDD_r\n")
     f.write("CABElements_GateSwitch.PROG += CAB_GateSwitch.prog_r\n")
+    f.write("Block_GateSwitch.prog_r += Block_Switch.Prog\n")
     f.write("CABElements_GateSwitch.RUN += CAB_GateSwitch.run_r\n")
+    f.write("CAB_GateSwitch.run_r += Block_GateSwitch.run_r\n")
     f.write("CABElements_GateSwitch.prog_r += Block_Switch.Prog_b\n")
     f.write("Block_Switch.GND_b += CABElements_GateSwitch.GND_T\n")
     f.write("Block_Switch.VDD_b += CABElements_GateSwitch.VPWR[1]\n")
     f.write("Bswitch0.GND += CABElements_GateSwitch.GND_T\n")
     f.write("Bswitch0.VDD += CABElements_GateSwitch.VPWR[1]\n")
-    f.write("Bswitch0.Prog += CABElements_GateSwitch.PROG\n")
+    f.write("Bswitch0.Prog += CAB_GateSwitch.prog_r\n")
     f.write("Oswitch.GND += Bswitch"+str(Bmatrix_row+1)+".GND_b\n")
     f.write("Oswitch.VDD += Bswitch"+str(Bmatrix_row+1)+".VDD_b\n")
     f.write("Oswitch.Prog += Bswitch"+str(Bmatrix_row+1)+".Prog_b\n")
@@ -932,7 +1030,8 @@ for cab in cab_list:
     
     #N ports
     f.write('outerFrame.createPort("N","gateEN",connection = Block_GateDecode.ENABLE)\n')
-    #--------------------------------------------------wait for pranav update on decoder IN-----------------------------------------------
+    for i in range(C_gate_bit):
+        f.write('outerFrame.createPort("N","gatebit'+str(C_gate_bit-1-i)+'",connection = Block_GateDecode.IN['+str(C_gate_bit-1-i)+'])\n')
     f.write('outerFrame.createPort("N","programdrain",connection = Block_DrainSelect.prog_drainrail)\n')
     f.write("Block_DrainSelect.prog_drainrail += CAB_DrainSelect.prog_drainrail\n")
     f.write('outerFrame.createPort("N","rundrain",connection = Block_DrainSelect.run_drainrail)\n')
@@ -962,19 +1061,19 @@ for cab in cab_list:
     f.write('outerFrame.createPort("N","s'+str(Cblock_row_inst*4-3)+'",connection = Conn_'+str(Cblock_row_inst-1)+'.n[1])\n')
     f.write('outerFrame.createPort("N","s'+str(Cblock_row_inst*4-2)+'",connection = Conn_'+str(Cblock_row_inst-1)+'.n[2])\n')
     f.write('outerFrame.createPort("N","s'+str(Cblock_row_inst*4-1)+'",connection = Conn_'+str(Cblock_row_inst-1)+'.n[3])\n')
-    f.write('outerFrame.createPort("N","prog",connection = CABElements_GateSwitch.prog_r)\n')
-    f.write('CABElements_GateSwitch.prog_r += Block_Switch.Prog\n')
-    f.write('outerFrame.createPort("N","run",connection = Block_GateSwitch.RUN)\n')
+    f.write('outerFrame.createPort("N","prog",connection = Block_Switch.Prog)\n')
+    f.write('outerFrame.createPort("N","run",connection = Block_GateSwitch.run_r)\n')
     f.write('Block_GateSwitch.RUN += Block_DrainCutoff.RUN\n')
     f.write('Block_GateSwitch.RUN += CAB_GateSwitch.run\n')
     f.write('CAB_GateSwitch.run += CAB_DrainSwitch.RUN\n')
-    f.write('outerFrame.createPort("N","vgsel",connection = CABElements_GateSwitch.Vgsel)\n')
-    f.write("CABElements_GateSwitch.Vgsel += Block_GateSwitch.vgsel_r\n")
+    f.write('outerFrame.createPort("N","vgsel",connection = Block_GateSwitch.vgsel_r)\n')
+    f.write("CABElements_GateSwitch.vgsel_r += Block_GateSwitch.vgsel_r\n")
+
     
     #S ports
     f.write('outerFrame.createPort("S","gateEN",connection = Block_GateDecode.ENABLE)\n')
-    #--------------------------------------------------wait for pranav update on decoder IN-----------------------------------------------
-    
+    for i in range(C_gate_bit):
+        f.write('outerFrame.createPort("S","gatebit'+str(C_gate_bit-1-i)+'",connection = Block_GateDecode.IN['+str(C_gate_bit-1-i)+'])\n')
     f.write('outerFrame.createPort("S","programdrain",connection = Block_DrainSelect.prog_drainrail)\n')
     f.write('outerFrame.createPort("S","rundrain",connection = Block_DrainSelect.run_drainrail)\n')
     for i in range(4):
@@ -998,9 +1097,9 @@ for cab in cab_list:
         f.write('outerFrame.createPort("S","s'+str(i*4+1)+'",connection = SpaceDown_'+str(i)+'.s[1])\n')
         f.write('outerFrame.createPort("S","s'+str(i*4+2)+'",connection = SpaceDown_'+str(i)+'.s[2])\n')
         f.write('outerFrame.createPort("S","s'+str(i*4+3)+'",connection = SpaceDown_'+str(i)+'.s[3])\n')
-    f.write('outerFrame.createPort("S","prog",connection = CABElements_GateSwitch.prog_r)\n')
-    f.write('outerFrame.createPort("S","run",connection = Block_GateSwitch.RUN)\n')
-    f.write('outerFrame.createPort("S","vgsel",connection = CABElements_GateSwitch.Vgsel)\n')
+    f.write('outerFrame.createPort("S","prog",connection = Oswitch.Prog_b)\n')
+    f.write('outerFrame.createPort("S","run",connection = CAB_GateSwitch.run_r)\n')
+    f.write('outerFrame.createPort("S","vgsel",connection = CABElements_GateSwitch.vgsel_r)\n')
         
     #W ports
     for i in range(4):
@@ -1014,8 +1113,8 @@ for cab in cab_list:
         f.write('outerFrame.createPort("W","drainbit'+str(C_drain_bit-1-i)+'",connection = Block_DrainDecode.IN['+str(C_drain_bit-1-i)+'])\n')
     for i in range(Cblock_row):
         f.write('outerFrame.createPort("W","s'+str(i)+'",connection = Block_DrainCutoff.In['+str(i)+'])\n')
-    for i in range(C_gate_bit):
-        f.write('outerFrame.createPort("W","drainbit'+str(C_gate_bit+C_drain_bit-1-i)+'",connection = CAB_DrainDecoder.IN['+str(C_gate_bit-1-i)+'])\n')
+    for i in range(CAB_drain_bit):
+        f.write('outerFrame.createPort("W","drainbit'+str(CAB_drain_bit+C_drain_bit-1-i)+'",connection = CAB_DrainDecoder.IN['+str(CAB_drain_bit-1-i)+'])\n')
     f.write('outerFrame.createPort("W","drainEN",connection = CAB_DrainDecoder.ENABLE)\n')
     
     
@@ -1034,8 +1133,8 @@ for cab in cab_list:
         f.write('outerFrame.createPort("E","drainbit'+str(C_drain_bit-1-i)+'",connection = Block_DrainDecode.IN['+str(C_drain_bit-1-i)+'])\n')
     for i in range(Cblock_row):
         f.write('outerFrame.createPort("E","s'+str(i)+'",connection = Block_Switch.A['+str(i)+'])\n')
-    for i in range(C_gate_bit):
-        f.write('outerFrame.createPort("E","drainbit'+str(C_gate_bit+C_drain_bit-1-i)+'",connection = CAB_DrainDecoder.IN['+str(C_gate_bit-1-i)+'])\n')
+    for i in range(CAB_drain_bit):
+        f.write('outerFrame.createPort("E","drainbit'+str(CAB_drain_bit+C_drain_bit-1-i)+'",connection = CAB_DrainDecoder.IN['+str(CAB_drain_bit-1-i)+'])\n')
     f.write('outerFrame.createPort("E","drainEN",connection = CAB_DrainDecoder.ENABLE)\n')
     f.write('CAB_DrainDecoder.ENABLE += Block_DrainDecode.ENABLE\n')
     
