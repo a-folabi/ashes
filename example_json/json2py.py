@@ -353,7 +353,7 @@ for cab in cab_list:
                             elif top_port == "VTUN":
                                 f.write(block+"."+top_port.split("[")[0]+" += CABElements_GateSwitch.VTUN\n")
                             elif top_port == "GND":
-                                f.write(block+"."+top_port.split("[")[0]+" += CABElements_GateSwitch.GND[0]\n")
+                                f.write(block+"."+top_port.split("[")[0]+" += CABElements_GateSwitch.GND_T\n")
                             elif top_port == "VPWR":
                                 f.write(block+"."+top_port.split("[")[0]+" += CABElements_GateSwitch.VDD[1]\n")
                     else:
@@ -836,26 +836,26 @@ for cab in cab_list:
     f.write("SEC1.VINJ_b += CAB_GateSwitch.VINJ["+str(CEW_col_inst)+"]\n")
     f.write("SEC1.VTUN_b += CAB_GateSwitch.VTUN["+str(CEW_col_inst)+"]\n")
     f.write("SEC1.GND_b[1] += CAB_GateSwitch.GND["+str(CEW_col_inst)+"]\n")
-    f.write("SEC1.Vsel_b[0] += CAB_GateSwitch.Vsel["+str(CEW_col+1)+"]\n")
-    f.write("SEC1.Vsel_b[1] += CAB_GateSwitch.Vsel["+str(CEW_col)+"]\n")
-    f.write("SEC1.Vg_b[0] += CAB_GateSwitch.Vg_global["+str(CEW_col+1)+"]\n")
-    f.write("SEC1.Vg_b[1] += CAB_GateSwitch.Vg_global["+str(CEW_col)+"]\n")
+    f.write("SEC1.Vsel_b[0] += CAB_GateSwitch.Vsel["+str(CEW_col)+"]\n")
+    f.write("SEC1.Vsel_b[1] += CAB_GateSwitch.Vsel["+str(CEW_col+1)+"]\n")
+    f.write("SEC1.Vg_b[0] += CAB_GateSwitch.Vg_global["+str(CEW_col)+"]\n")
+    f.write("SEC1.Vg_b[1] += CAB_GateSwitch.Vg_global["+str(CEW_col+1)+"]\n")
     
     f.write("SEC2.VINJ_b += CAB_GateSwitch.VINJ["+str(CEW_col_inst+1)+"]\n")
     f.write("SEC2.VTUN_b += CAB_GateSwitch.VTUN["+str(CEW_col_inst+1)+"]\n")
     f.write("SEC2.GND_b[1] += CAB_GateSwitch.GND["+str(CEW_col_inst+1)+"]\n")
-    f.write("SEC2.Vsel_b[0] += CAB_GateSwitch.Vsel["+str(CEW_col+3)+"]\n")
-    f.write("SEC2.Vsel_b[1] += CAB_GateSwitch.Vsel["+str(CEW_col+2)+"]\n")
-    f.write("SEC2.Vg_b[0] += CAB_GateSwitch.Vg_global["+str(CEW_col+3)+"]\n")
-    f.write("SEC2.Vg_b[1] += CAB_GateSwitch.Vg_global["+str(CEW_col+2)+"]\n")
+    f.write("SEC2.Vsel_b[0] += CAB_GateSwitch.Vsel["+str(CEW_col+2)+"]\n")
+    f.write("SEC2.Vsel_b[1] += CAB_GateSwitch.Vsel["+str(CEW_col+3)+"]\n")
+    f.write("SEC2.Vg_b[0] += CAB_GateSwitch.Vg_global["+str(CEW_col+2)+"]\n")
+    f.write("SEC2.Vg_b[1] += CAB_GateSwitch.Vg_global["+str(CEW_col+3)+"]\n")
     
     f.write("SEC3.VINJ_b += CAB_GateSwitch.VINJ["+str(CEW_col_inst+2)+"]\n")
     f.write("SEC3.VTUN_b += CAB_GateSwitch.VTUN["+str(CEW_col_inst+2)+"]\n")
     f.write("SEC3.GND_b[1] += CAB_GateSwitch.GND["+str(CEW_col_inst+2)+"]\n")
-    f.write("SEC3.Vsel_b[0] += CAB_GateSwitch.Vsel["+str(CEW_col+5)+"]\n")
-    f.write("SEC3.Vsel_b[1] += CAB_GateSwitch.Vsel["+str(CEW_col+4)+"]\n")
-    f.write("SEC3.Vg_b[0] += CAB_GateSwitch.Vg_global["+str(CEW_col+5)+"]\n")
-    f.write("SEC3.Vg_b[1] += CAB_GateSwitch.Vg_global["+str(CEW_col+4)+"]\n")
+    f.write("SEC3.Vsel_b[0] += CAB_GateSwitch.Vsel["+str(CEW_col+4)+"]\n")
+    f.write("SEC3.Vsel_b[1] += CAB_GateSwitch.Vsel["+str(CEW_col+5)+"]\n")
+    f.write("SEC3.Vg_b[0] += CAB_GateSwitch.Vg_global["+str(CEW_col+4)+"]\n")
+    f.write("SEC3.Vg_b[1] += CAB_GateSwitch.Vg_global["+str(CEW_col+5)+"]\n")
     
     
     #CNS -> CAB Gate Switch
@@ -1001,6 +1001,9 @@ for cab in cab_list:
     #-----------------------------------f.write("CABElements_GateSwitch.PROG += BtoOut.prog_r\n")
     f.write("CABElements_GateSwitch.VPWR[1] += CAB_GateSwitch.AVDD_r\n")
     f.write("CABElements_GateSwitch.VPWR[0] += CAB_GateSwitch.AVDD_r\n")
+    f.write("Block_Switch.VDD += Block_GateSwitch.VINJ_T["+str(CEW_col_inst+Cblock_row_inst+5+CNS_col_inst-1)+"]\n")
+    f.write("Block_Switch.GND += Block_GateSwitch.GND_T["+str(CEW_col_inst+Cblock_row_inst+5+CNS_col_inst-1)+"]\n")
+    f.write("Oswitch.GND_b += Outmatrix.GND_b["+str(Bmatrix_col*2-1)+"]\n")
     f.write("CABElements_GateSwitch.PROG += CAB_GateSwitch.prog_r\n")
     f.write("Block_GateSwitch.prog_r += Block_Switch.Prog\n")
     f.write("CABElements_GateSwitch.RUN += CAB_GateSwitch.run_r\n")
