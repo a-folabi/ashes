@@ -4,6 +4,7 @@ import ashes_fg.fpaa.verilog2blif as vb
 import ashes_fg.fpaa.gen_pads_30a
 import ashes_fg.fpaa.gen_pads_30
 import ashes_fg.fpaa.blif_to_switches as bs
+import ashes_fg.fpaa.program_fpaa as pf
 from ashes_fg.fpaa.Make_ProgramList_CompileAssembly import compile as ca
 
 import os
@@ -21,4 +22,4 @@ def compile(system, project_name, chip_num, board_type = '3.0a'):
     bs.blif2swcs(sys_name, project_name, board_type, out_path)
     ca(project_name, board_type, chip_num)
     os.chdir(f'{out_path}')
-    #os.system('python /home/ubuntu/ashes/ashes_fg/fpaa/program_fpaa.py')
+    pf.main()
