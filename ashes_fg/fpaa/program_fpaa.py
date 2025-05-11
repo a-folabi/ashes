@@ -2671,7 +2671,7 @@ def main():
 				raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 		except subprocess.CalledProcessError:
 			print("failed: trying again")
-	os.system("sleep 30")
+	os.system("sleep 2")
 	while True: 
 		try:
 			proc = subprocess.run(["sudo tclsh /home/ubuntu/rasp30/prog_assembly/libs/tcl/read_mem2_NoRelease.tcl -start_address 0x6000 -length 1000 -output_file_name output_vector"], shell=True, capture_output=True, text=True)
@@ -2686,4 +2686,4 @@ def main():
 				raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
 		except subprocess.CalledProcessError:
 			print("failed: trying again")
-	os.system("sleep 30")
+	os.system("sleep 2")
