@@ -6,22 +6,22 @@ def compile(project_name, board_type, chip_num):
 	path = os.path.join("/home/ubuntu/ashes/",project_name)
 	extension = ".swcs"
 	
-	if      board_type == '3.0a': brdtype = '_30a';
-	elif board_type == '3.0n': brdtype = '_30n';
-	elif board_type == '3.0h': brdtype = '_30h';
-	elif board_type == '':     brdtype = '';
+	if   board_type == '3.0a': brdtype = '_30a'
+	elif board_type == '3.0n': brdtype = '_30n'
+	elif board_type == '3.0h': brdtype = '_30h'
+	elif board_type == '3.0':     brdtype = ''
 	else:                         
 		print("Please select the FPAA board that you are using. \nNo Selected FPAA Board \nerror")
 		exit()
 	print(path)
 	
-	os.system(f"cp ~/rasp30/prog_assembly/libs/chip_parameters/chip_para/chip_para_debug.asm {path}/chip_para_debug.asm");
-	os.system(f"cp ~/rasp30/prog_assembly/libs/chip_parameters/chip_para/chip_para_TR_chip{chip_num}{brdtype}.asm {path}/chip_para_TR.asm");
-	os.system(f"cp ~/rasp30/prog_assembly/libs/chip_parameters/chip_para/chip_para_SP_chip{chip_num}{brdtype}.asm {path}/chip_para_SP.asm");
-	os.system(f"cp ~/rasp30/prog_assembly/libs/chip_parameters/chip_para/chip_para_RI_chip{chip_num}{brdtype}.asm {path}/chip_para_RI.asm");
-	os.system(f"cp ~/rasp30/prog_assembly/libs/chip_parameters/chip_para/chip_para_CP_chip{chip_num}{brdtype}.asm {path}/chip_para_CP.asm");
-	os.system(f"cp ~/rasp30/prog_assembly/libs/chip_parameters/chip_para/chip_para_FP_chip{chip_num}{brdtype}.asm {path}/chip_para_FP.asm");
-	os.system(f"cp ~/rasp30/prog_assembly/libs/chip_parameters/Vd_table/Vd_table_30mV_chip{chip_num}{brdtype} {path}/Vd_table_30mV");
+	os.system(f"cp ~/rasp30/prog_assembly/libs/chip_parameters/chip_para/chip_para_debug.asm {path}/chip_para_debug.asm")
+	os.system(f"cp ~/rasp30/prog_assembly/libs/chip_parameters/chip_para/chip_para_TR_chip{chip_num}{brdtype}.asm {path}/chip_para_TR.asm")
+	os.system(f"cp ~/rasp30/prog_assembly/libs/chip_parameters/chip_para/chip_para_SP_chip{chip_num}{brdtype}.asm {path}/chip_para_SP.asm")
+	os.system(f"cp ~/rasp30/prog_assembly/libs/chip_parameters/chip_para/chip_para_RI_chip{chip_num}{brdtype}.asm {path}/chip_para_RI.asm")
+	os.system(f"cp ~/rasp30/prog_assembly/libs/chip_parameters/chip_para/chip_para_CP_chip{chip_num}{brdtype}.asm {path}/chip_para_CP.asm")
+	os.system(f"cp ~/rasp30/prog_assembly/libs/chip_parameters/chip_para/chip_para_FP_chip{chip_num}{brdtype}.asm {path}/chip_para_FP.asm")
+	os.system(f"cp ~/rasp30/prog_assembly/libs/chip_parameters/Vd_table/Vd_table_30mV_chip{chip_num}{brdtype} {path}/Vd_table_30mV")
 	
 	#//exec("~/rasp30/prog_assembly/libs/scilab_code/characterization/char_diodeADC.sce",-1);
 	
@@ -155,9 +155,9 @@ def compile(project_name, board_type, chip_num):
 	
 	
 	for i in range(n):
-		if target_list_copy[i][2] < 1*10**(-9):
+		if target_list_copy[i][2] < 1e-9:
 			target_list_copy[i][2] = target_list_copy[i][2]*kappa_constant
-		if target_list_copy[i][2] > 10*10**(-6):
+		if target_list_copy[i][2] > 10e-6:
 			target_list_copy[i][2] = target_list_copy[i][2]/kappa_constant
 	#print(target_list_copy)
 	
@@ -189,18 +189,18 @@ def compile(project_name, board_type, chip_num):
 	temp2_tunnel_revtun=' '; 
 	temp2_highaboveVt_swc=' '
 	temp2_highaboveVt_ota=' '
-	temp2_aboveVt_swc=' '; temp2_aboveVt_ota=' '; temp2_aboveVt_otaref=' '; temp2_aboveVt_mite=' '; temp2_aboveVt_dirswc=' ';
-	temp2_subVt_swc=' '; temp2_subVt_ota=' '; temp2_subVt_otaref=' '; temp2_subVt_mite=' '; temp2_subVt_dirswc=' ';
-	temp2_lowsubVt_swc=' ';temp2_lowsubVt_ota=' ';temp2_lowsubVt_otaref=' ';temp2_lowsubVt_mite=' ';temp2_lowsubVt_dirswc=' ';
-	n_target_tunnel_revtun=0;
-	n_target_highaboveVt_swc=0;n_target_highaboveVt_ota=0;
-	n_target_aboveVt_swc=0;n_target_aboveVt_ota=0;n_target_aboveVt_otaref=0;n_target_aboveVt_mite=0;n_target_aboveVt_dirswc=0;
-	n_target_subVt_swc=0;n_target_subVt_ota=0;n_target_subVt_otaref=0;n_target_subVt_mite=0;n_target_subVt_dirswc=0;
-	n_target_lowsubVt_swc=0;n_target_lowsubVt_ota=0;n_target_lowsubVt_otaref=0;n_target_lowsubVt_mite=0;n_target_lowsubVt_dirswc=0;
-	target_l_highaboveVt_swc=np.empty(shape=(2, 3));target_l_highaboveVt_ota=np.empty(shape=(2, 3));
-	target_l_aboveVt_swc=np.empty(shape=(2, 3));target_l_aboveVt_ota=np.empty(shape=(2, 3));target_l_aboveVt_otaref=np.empty(shape=(2, 3));target_l_aboveVt_mite=np.empty(shape=(2, 3));target_l_aboveVt_dirswc=np.empty(shape=(2, 3));
-	target_l_subVt_swc=np.empty(shape=(2, 3));target_l_subVt_ota=np.empty(shape=(2, 3));target_l_subVt_otaref=np.empty(shape=(2, 3));target_l_subVt_mite=np.empty(shape=(2, 3));target_l_subVt_dirswc=np.empty(shape=(2, 3));
-	target_l_lowsubVt_swc=np.empty(shape=(2, 3));target_l_lowsubVt_ota=np.empty(shape=(2, 3));target_l_lowsubVt_otaref=np.empty(shape=(2, 3));target_l_lowsubVt_mite=np.empty(shape=(2, 3));target_l_lowsubVt_dirswc=np.empty(shape=(2, 3));
+	temp2_aboveVt_swc=' '; temp2_aboveVt_ota=' '; temp2_aboveVt_otaref=' '; temp2_aboveVt_mite=' '; temp2_aboveVt_dirswc=' '
+	temp2_subVt_swc=' '; temp2_subVt_ota=' '; temp2_subVt_otaref=' '; temp2_subVt_mite=' '; temp2_subVt_dirswc=' '
+	temp2_lowsubVt_swc=' ';temp2_lowsubVt_ota=' ';temp2_lowsubVt_otaref=' ';temp2_lowsubVt_mite=' ';temp2_lowsubVt_dirswc=' '
+	n_target_tunnel_revtun=0
+	n_target_highaboveVt_swc=0;n_target_highaboveVt_ota=0
+	n_target_aboveVt_swc=0;n_target_aboveVt_ota=0;n_target_aboveVt_otaref=0;n_target_aboveVt_mite=0;n_target_aboveVt_dirswc=0
+	n_target_subVt_swc=0;n_target_subVt_ota=0;n_target_subVt_otaref=0;n_target_subVt_mite=0;n_target_subVt_dirswc=0
+	n_target_lowsubVt_swc=0;n_target_lowsubVt_ota=0;n_target_lowsubVt_otaref=0;n_target_lowsubVt_mite=0;n_target_lowsubVt_dirswc=0
+	target_l_highaboveVt_swc=np.empty(shape=(2, 3));target_l_highaboveVt_ota=np.empty(shape=(2, 3))
+	target_l_aboveVt_swc=np.empty(shape=(2, 3));target_l_aboveVt_ota=np.empty(shape=(2, 3));target_l_aboveVt_otaref=np.empty(shape=(0, 3));target_l_aboveVt_mite=np.empty(shape=(2, 3));target_l_aboveVt_dirswc=np.empty(shape=(2, 3))
+	target_l_subVt_swc=np.empty(shape=(2, 3));target_l_subVt_ota=np.empty(shape=(2, 3));target_l_subVt_otaref=np.empty(shape=(2, 3));target_l_subVt_mite=np.empty(shape=(2, 3));target_l_subVt_dirswc=np.empty(shape=(2, 3))
+	target_l_lowsubVt_swc=np.empty(shape=(2, 3));target_l_lowsubVt_ota=np.empty(shape=(2, 3));target_l_lowsubVt_otaref=np.empty(shape=(2, 3));target_l_lowsubVt_mite=np.empty(shape=(2, 3));target_l_lowsubVt_dirswc=np.empty(shape=(2, 3))
 	print(n)
 	print(target_listArray)
 	
@@ -671,7 +671,7 @@ def diodeADC_i2v(Isat, chip_num, brdtype):
 	kappa=EKV_diodeADC_para[2]
 	Slope_v2h=EKV_diodeADC_para[3]	
 	Offset_v2h=EKV_diodeADC_para[4]
-	Vfg=vdd-(((np.log(np.exp(np.sqrt(Isat/Is))-1)*(2*0.0258)/kappa)+VT)*2)/2;
+	Vfg=vdd-(((np.log(np.exp(np.sqrt(Isat/Is))-1)*(2*0.0258)/kappa)+VT)*2)/2
 	return Vfg
 def diodeADC_v2h(Vfg, chip_num, brdtype):
 	vdd=2.5;
