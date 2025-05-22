@@ -783,7 +783,278 @@ class TSMC350nm_TA2Cell_Direct(StandardCell):
 
 		# Add cell to circuit
 		circuit.addInstance(self,self.island)
+		
+		
 
+class TSMC350nm_Amplifier9T_FGBias(StandardCell):
+	def __init__(self,circuit,island=None,dim=(1,1),VD_P=None,VD_R=None,VIN_MINUS=None,VIN_PLUS=None,Vout=None,Vsel=None,VTUN=None,PROG=None,Vg=None,VINJ=None,VPWR=None,GND=None,Vsel_b=None,VTUN_b=None,PROG_b=None,Vg_b=None,VINJ_b=None,VPWR_b=None,GND_b=None):
+
+		# Define variables
+		self.circuit = circuit
+		self.pins = []
+		self.ports = []
+		self.island = island
+		self.dim = dim
+
+
+		# Define cell information
+		self.name = 'TSMC350nm_Amplifier9T_FGBias'
+		self.VD_P = Port(circuit,self,'VD_P','W',1*self.dim[0])
+		self.VD_R = Port(circuit,self,'VD_R','W',1*self.dim[0])
+		self.VIN_MINUS = Port(circuit,self,'VIN_MINUS','W',1*self.dim[0])
+		self.VIN_PLUS = Port(circuit,self,'VIN_PLUS','W',1*self.dim[0])
+		self.Vout = Port(circuit,self,'Vout','E',1*self.dim[0])
+		self.Vsel = Port(circuit,self,'Vsel','N',1*self.dim[1])
+		self.VTUN = Port(circuit,self,'VTUN','N',1*self.dim[1])
+		self.PROG = Port(circuit,self,'PROG','N',1*self.dim[1])
+		self.Vg = Port(circuit,self,'Vg','N',1*self.dim[1])
+		self.VINJ = Port(circuit,self,'VINJ','N',1*self.dim[1])
+		self.VPWR = Port(circuit,self,'VPWR','N',1*self.dim[1])
+		self.GND = Port(circuit,self,'GND','N',1*self.dim[1])
+		self.Vsel_b = Port(circuit,self,'Vsel_b','S',1*self.dim[1])
+		self.VTUN_b = Port(circuit,self,'VTUN_b','S',1*self.dim[1])
+		self.PROG_b = Port(circuit,self,'PROG_b','S',1*self.dim[1])
+		self.Vg_b = Port(circuit,self,'Vg_b','S',1*self.dim[1])
+		self.VINJ_b = Port(circuit,self,'VINJ_b','S',1*self.dim[1])
+		self.VPWR_b = Port(circuit,self,'VPWR_b','S',1*self.dim[1])
+		self.GND_b = Port(circuit,self,'GND_b','S',1*self.dim[1])
+
+
+		# Initialize ports with given values
+		portsInit = [VD_P,VD_R,VIN_MINUS,VIN_PLUS,Vout,Vsel,VTUN,PROG,Vg,VINJ,VPWR,GND,Vsel_b,VTUN_b,PROG_b,Vg_b,VINJ_b,VPWR_b,GND_b]
+		i=0
+		for p in self.ports:
+			self.assignPort(p,portsInit[i])
+			i+=1
+
+		# Add cell to circuit
+		circuit.addInstance(self,self.island)
+
+class TSMC350nm_Amplifier9T_FGInputs_Bias(StandardCell):
+	def __init__(self,circuit,island=None,dim=(1,1),VD_P=None,Vin_PLUS=None,Vin_MINUS=None,Vout=None,VINJ=None,Vsel=None,Vg=None,VTUN=None,PROG=None,VPWR=None,GND=None,VINJ_b=None,Vsel_b=None,Vg_b=None,VTUN_b=None,PROG_b=None,VPWR_b=None,GND_b=None):
+
+		# Define variables
+		self.circuit = circuit
+		self.pins = []
+		self.ports = []
+		self.island = island
+		self.dim = dim
+
+
+		# Define cell information
+		self.name = 'TSMC350nm_Amplifier9T_FGInputs_Bias'
+		self.VD_P = Port(circuit,self,'VD_P','W',2*self.dim[0])
+		self.Vin_PLUS = Port(circuit,self,'Vin_PLUS','W',1*self.dim[0])
+		self.Vin_MINUS = Port(circuit,self,'Vin_MINUS','W',1*self.dim[0])
+		self.Vout = Port(circuit,self,'Vout','E',1*self.dim[0])
+		self.VINJ = Port(circuit,self,'VINJ','N',1*self.dim[1])
+		self.Vsel = Port(circuit,self,'Vsel','N',2*self.dim[1])
+		self.Vg = Port(circuit,self,'Vg','N',2*self.dim[1])
+		self.VTUN = Port(circuit,self,'VTUN','N',1*self.dim[1])
+		self.PROG = Port(circuit,self,'PROG','N',1*self.dim[1])
+		self.VPWR = Port(circuit,self,'VPWR','N',1*self.dim[1])
+		self.GND = Port(circuit,self,'GND','N',1*self.dim[1])
+		self.VINJ_b = Port(circuit,self,'VINJ_b','S',1*self.dim[1])
+		self.Vsel_b = Port(circuit,self,'Vsel_b','S',2*self.dim[1])
+		self.Vg_b = Port(circuit,self,'Vg_b','S',2*self.dim[1])
+		self.VTUN_b = Port(circuit,self,'VTUN_b','S',1*self.dim[1])
+		self.PROG_b = Port(circuit,self,'PROG_b','S',1*self.dim[1])
+		self.VPWR_b = Port(circuit,self,'VPWR_b','S',1*self.dim[1])
+		self.GND_b = Port(circuit,self,'GND_b','S',1*self.dim[1])
+
+
+		# Initialize ports with given values
+		portsInit = [VD_P,Vin_PLUS,Vin_MINUS,Vout,VINJ,Vsel,Vg,VTUN,PROG,VPWR,GND,VINJ_b,Vsel_b,Vg_b,VTUN_b,PROG_b,VPWR_b,GND_b]
+		i=0
+		for p in self.ports:
+			self.assignPort(p,portsInit[i])
+			i+=1
+
+		# Add cell to circuit
+		circuit.addInstance(self,self.island)
+
+class TSMC350nm_Capacitor_400ff_x4(StandardCell):
+	def __init__(self,circuit,island=None,dim=(1,1),A=None,B=None):
+
+		# Define variables
+		self.circuit = circuit
+		self.pins = []
+		self.ports = []
+		self.island = island
+		self.dim = dim
+
+
+		# Define cell information
+		self.name = 'TSMC350nm_Capacitor_400ff_x4'
+		self.A = Port(circuit,self,'A','W',4*self.dim[0])
+		self.B = Port(circuit,self,'B','E',4*self.dim[0])
+
+
+		# Initialize ports with given values
+		portsInit = [A,B]
+		i=0
+		for p in self.ports:
+			self.assignPort(p,portsInit[i])
+			i+=1
+
+		# Add cell to circuit
+		circuit.addInstance(self,self.island)
+
+class TSMC350nm_Resistors_x4(StandardCell):
+	def __init__(self,circuit,island=None,dim=(1,1),A=None,B=None):
+
+		# Define variables
+		self.circuit = circuit
+		self.pins = []
+		self.ports = []
+		self.island = island
+		self.dim = dim
+
+
+		# Define cell information
+		self.name = 'TSMC350nm_Resistors_x4'
+		self.A = Port(circuit,self,'A','W',4*self.dim[0])
+		self.B = Port(circuit,self,'B','E',4*self.dim[0])
+
+
+		# Initialize ports with given values
+		portsInit = [A,B]
+		i=0
+		for p in self.ports:
+			self.assignPort(p,portsInit[i])
+			i+=1
+
+		# Add cell to circuit
+		circuit.addInstance(self,self.island)
+
+class TSMC350nm_TobiElement_x4(StandardCell):
+	def __init__(self,circuit,island=None,dim=(1,1),A=None,B=None,GND=None,VPWR=None,GND_b=None,VPWR_b=None):
+
+		# Define variables
+		self.circuit = circuit
+		self.pins = []
+		self.ports = []
+		self.island = island
+		self.dim = dim
+
+
+		# Define cell information
+		self.name = 'TSMC350nm_TobiElement_x4'
+		self.A = Port(circuit,self,'A','W',4*self.dim[0])
+		self.B = Port(circuit,self,'B','E',4*self.dim[0])
+		self.GND = Port(circuit,self,'GND','N',1*self.dim[1])
+		self.VPWR = Port(circuit,self,'VPWR','N',1*self.dim[1])
+		self.GND_b = Port(circuit,self,'GND_b','S',1*self.dim[1])
+		self.VPWR_b = Port(circuit,self,'VPWR_b','S',1*self.dim[1])
+
+
+		# Initialize ports with given values
+		portsInit = [A,B,GND,VPWR,GND_b,VPWR_b]
+		i=0
+		for p in self.ports:
+			self.assignPort(p,portsInit[i])
+			i+=1
+
+		# Add cell to circuit
+		circuit.addInstance(self,self.island)
+		
+		
+class TSMC350nm_NeuralNetworkProgActFunc(StandardCell):
+	def __init__(self,circuit,island=None,dim=(1,1),I1_P=None,I1_N=None,I3_P=None,I3_N=None,V4=None,V1=None,V2=None,V3=None,VG_P=None,VG_N=None,VC=None,WTA=None,VG_PFET=None,WTA_=None,GND=None,VPWR=None,VG_P_b=None,VG_N_b=None,VC_b=None,WTA_b=None,VG_PFET_b=None,WTA__b=None,GND_b=None,VPWR_b=None):
+
+		# Define variables
+		self.circuit = circuit
+		self.pins = []
+		self.ports = []
+		self.island = island
+		self.dim = dim
+
+
+		# Define cell information
+		self.name = 'TSMC350nm_NeuralNetworkProgActFunc'
+		self.I1_P = Port(circuit,self,'I1_P','W',1*self.dim[0])
+		self.I1_N = Port(circuit,self,'I1_N','W',1*self.dim[0])
+		self.I3_P = Port(circuit,self,'I3_P','W',1*self.dim[0])
+		self.I3_N = Port(circuit,self,'I3_N','W',1*self.dim[0])
+		self.V4 = Port(circuit,self,'V4','E',1*self.dim[0])
+		self.V1 = Port(circuit,self,'V1','E',1*self.dim[0])
+		self.V2 = Port(circuit,self,'V2','E',1*self.dim[0])
+		self.V3 = Port(circuit,self,'V3','E',1*self.dim[0])
+		self.VG_P = Port(circuit,self,'VG_P','N',1*self.dim[1])
+		self.VG_N = Port(circuit,self,'VG_N','N',1*self.dim[1])
+		self.VC = Port(circuit,self,'VC','N',1*self.dim[1])
+		self.WTA = Port(circuit,self,'WTA','N',1*self.dim[1])
+		self.VG_PFET = Port(circuit,self,'VG_PFET','N',1*self.dim[1])
+		self.WTA_ = Port(circuit,self,'WTA_','N',1*self.dim[1])
+		self.GND = Port(circuit,self,'GND','N',1*self.dim[1])
+		self.VPWR = Port(circuit,self,'VPWR','N',1*self.dim[1])
+		self.VG_P_b = Port(circuit,self,'VG_P_b','S',1*self.dim[1])
+		self.VG_N_b = Port(circuit,self,'VG_N_b','S',1*self.dim[1])
+		self.VC_b = Port(circuit,self,'VC_b','S',1*self.dim[1])
+		self.WTA_b = Port(circuit,self,'WTA_b','S',1*self.dim[1])
+		self.VG_PFET_b = Port(circuit,self,'VG_PFET_b','S',1*self.dim[1])
+		self.WTA__b = Port(circuit,self,'WTA__b','S',1*self.dim[1])
+		self.GND_b = Port(circuit,self,'GND_b','S',1*self.dim[1])
+		self.VPWR_b = Port(circuit,self,'VPWR_b','S',1*self.dim[1])
+
+
+		# Initialize ports with given values
+		portsInit = [I1_P,I1_N,I3_P,I3_N,V4,V1,V2,V3,VG_P,VG_N,VC,WTA,VG_PFET,WTA_,GND,VPWR,VG_P_b,VG_N_b,VC_b,WTA_b,VG_PFET_b,WTA__b,GND_b,VPWR_b]
+		i=0
+		for p in self.ports:
+			self.assignPort(p,portsInit[i])
+			i+=1
+
+		# Add cell to circuit
+		circuit.addInstance(self,self.island)
+		
+		
+class TSMC350nm_Modulation(StandardCell):
+	def __init__(self,circuit,island=None,dim=(1,1),I1_P=None,I1_N=None,I3_P=None,I3_N=None,V4=None,V1=None,V2=None,V3=None,VG_P=None,VG_N=None,VC=None,GND=None,VPWR=None,VG_P_b=None,VG_N_b=None,VC_b=None,GND_b=None,VPWR_b=None):
+
+		# Define variables
+		self.circuit = circuit
+		self.pins = []
+		self.ports = []
+		self.island = island
+		self.dim = dim
+
+
+		# Define cell information
+		self.name = 'TSMC350nm_Modulation'
+		self.I1_P = Port(circuit,self,'I1_P','W',1*self.dim[0])
+		self.I1_N = Port(circuit,self,'I1_N','W',1*self.dim[0])
+		self.I3_P = Port(circuit,self,'I3_P','W',1*self.dim[0])
+		self.I3_N = Port(circuit,self,'I3_N','W',1*self.dim[0])
+		self.V4 = Port(circuit,self,'V4','E',1*self.dim[0])
+		self.V1 = Port(circuit,self,'V1','E',1*self.dim[0])
+		self.V2 = Port(circuit,self,'V2','E',1*self.dim[0])
+		self.V3 = Port(circuit,self,'V3','E',1*self.dim[0])
+		self.VG_P = Port(circuit,self,'VG_P','N',1*self.dim[1])
+		self.VG_N = Port(circuit,self,'VG_N','N',1*self.dim[1])
+		self.VC = Port(circuit,self,'VC','N',1*self.dim[1])
+		self.GND = Port(circuit,self,'GND','N',1*self.dim[1])
+		self.VPWR = Port(circuit,self,'VPWR','N',1*self.dim[1])
+		self.VG_P_b = Port(circuit,self,'VG_P_b','S',1*self.dim[1])
+		self.VG_N_b = Port(circuit,self,'VG_N_b','S',1*self.dim[1])
+		self.VC_b = Port(circuit,self,'VC_b','S',1*self.dim[1])
+		self.GND_b = Port(circuit,self,'GND_b','S',1*self.dim[1])
+		self.VPWR_b = Port(circuit,self,'VPWR_b','S',1*self.dim[1])
+
+
+		# Initialize ports with given values
+		portsInit = [I1_P,I1_N,I3_P,I3_N,V4,V1,V2,V3,VG_P,VG_N,VC,GND,VPWR,VG_P_b,VG_N_b,VC_b,GND_b,VPWR_b]
+		i=0
+		for p in self.ports:
+			self.assignPort(p,portsInit[i])
+			i+=1
+
+		# Add cell to circuit
+		circuit.addInstance(self,self.island)
+
+
+		
+		
 class SHblock1:
 	def __init__(self,input,num_instances='1',type='FPAA',board=['3.0', '3.0a'],SHblock1_ls='0',SHblock1_Ibias='3e-06',SHblock1_cap0_1x_cs='1'):
 		self.input=input
@@ -1229,7 +1500,7 @@ class vmm_12x4:
 		self.vmm_12x4_in4=vmm_12x4_in4
 	
 class cab1(StandardCell):
-	def __init__(self,circuit,island=None,dim=(1,1)):
+	def __init__(self,circuit,island=None,dim=(1,1),e_cns0=None,e_cns1=None,e_cns2=None,e_cns3=None,e_vgrun=None,e_vtun=None,e_vinj=None,e_gnd=None,e_avdd=None,e_drainbit2=None,e_drainbit1=None,e_drainbit0=None,e_s0=None,e_s1=None,e_s2=None,e_s3=None,e_s4=None,e_s5=None,e_s6=None,e_s7=None,e_drainbit8=None,e_drainbit7=None,e_drainbit6=None,e_drainbit5=None,e_drainbit4=None,e_drainbit3=None,e_drainEN=None,w_cns0=None,w_cns1=None,w_cns2=None,w_cns3=None,w_vgrun=None,w_vtun=None,w_vinj=None,w_gnd=None,w_avdd=None,w_drainbit2=None,w_drainbit1=None,w_drainbit0=None,w_s0=None,w_s1=None,w_s2=None,w_s3=None,w_s4=None,w_s5=None,w_s6=None,w_s7=None,w_drainbit8=None,w_drainbit7=None,w_drainbit6=None,w_drainbit5=None,w_drainbit4=None,w_drainbit3=None,w_drainEN=None):
 
 		# Define variables
 		self.circuit = circuit
@@ -1241,10 +1512,65 @@ class cab1(StandardCell):
 
 		# Define cell information
 		self.name = 'cab1'
+		self.e_cns0 = Port(circuit,self,'e_cns0','E',1*self.dim[0])
+		self.e_cns1 = Port(circuit,self,'e_cns1','E',1*self.dim[0])
+		self.e_cns2 = Port(circuit,self,'e_cns2','E',1*self.dim[0])
+		self.e_cns3 = Port(circuit,self,'e_cns3','E',1*self.dim[0])
+		self.e_vgrun = Port(circuit,self,'e_vgrun','E',1*self.dim[0])
+		self.e_vtun = Port(circuit,self,'e_vtun','E',1*self.dim[0])
+		self.e_vinj = Port(circuit,self,'e_vinj','E',1*self.dim[0])
+		self.e_gnd = Port(circuit,self,'e_gnd','E',1*self.dim[0])
+		self.e_avdd = Port(circuit,self,'e_avdd','E',1*self.dim[0])
+		self.e_drainbit2 = Port(circuit,self,'e_drainbit2','E',1*self.dim[0])
+		self.e_drainbit1 = Port(circuit,self,'e_drainbit1','E',1*self.dim[0])
+		self.e_drainbit0 = Port(circuit,self,'e_drainbit0','E',1*self.dim[0])
+		self.e_s0 = Port(circuit,self,'e_s0','E',1*self.dim[0])
+		self.e_s1 = Port(circuit,self,'e_s1','E',1*self.dim[0])
+		self.e_s2 = Port(circuit,self,'e_s2','E',1*self.dim[0])
+		self.e_s3 = Port(circuit,self,'e_s3','E',1*self.dim[0])
+		self.e_s4 = Port(circuit,self,'e_s4','E',1*self.dim[0])
+		self.e_s5 = Port(circuit,self,'e_s5','E',1*self.dim[0])
+		self.e_s6 = Port(circuit,self,'e_s6','E',1*self.dim[0])
+		self.e_s7 = Port(circuit,self,'e_s7','E',1*self.dim[0])
+		self.e_drainbit8 = Port(circuit,self,'e_drainbit8','E',1*self.dim[0])
+		self.e_drainbit7 = Port(circuit,self,'e_drainbit7','E',1*self.dim[0])
+		self.e_drainbit6 = Port(circuit,self,'e_drainbit6','E',1*self.dim[0])
+		self.e_drainbit5 = Port(circuit,self,'e_drainbit5','E',1*self.dim[0])
+		self.e_drainbit4 = Port(circuit,self,'e_drainbit4','E',1*self.dim[0])
+		self.e_drainbit3 = Port(circuit,self,'e_drainbit3','E',1*self.dim[0])
+		self.e_drainEN = Port(circuit,self,'e_drainEN','E',1*self.dim[0])
+		
+		self.w_cns0 = Port(circuit,self,'w_cns0','W',1*self.dim[0])
+		self.w_cns1 = Port(circuit,self,'w_cns1','W',1*self.dim[0])
+		self.w_cns2 = Port(circuit,self,'w_cns2','W',1*self.dim[0])
+		self.w_cns3 = Port(circuit,self,'w_cns3','W',1*self.dim[0])
+		self.w_vgrun = Port(circuit,self,'w_vgrun','W',1*self.dim[0])
+		self.w_vtun = Port(circuit,self,'w_vtun','W',1*self.dim[0])
+		self.w_vinj = Port(circuit,self,'w_vinj','W',1*self.dim[0])
+		self.w_gnd = Port(circuit,self,'w_gnd','W',1*self.dim[0])
+		self.w_avdd = Port(circuit,self,'w_avdd','W',1*self.dim[0])
+		self.w_drainbit2 = Port(circuit,self,'w_drainbit2','W',1*self.dim[0])
+		self.w_drainbit1 = Port(circuit,self,'w_drainbit1','W',1*self.dim[0])
+		self.w_drainbit0 = Port(circuit,self,'w_drainbit0','W',1*self.dim[0])
+		self.w_s0 = Port(circuit,self,'w_s0','W',1*self.dim[0])
+		self.w_s1 = Port(circuit,self,'w_s1','W',1*self.dim[0])
+		self.w_s2 = Port(circuit,self,'w_s2','W',1*self.dim[0])
+		self.w_s3 = Port(circuit,self,'w_s3','W',1*self.dim[0])
+		self.w_s4 = Port(circuit,self,'w_s4','W',1*self.dim[0])
+		self.w_s5 = Port(circuit,self,'w_s5','W',1*self.dim[0])
+		self.w_s6 = Port(circuit,self,'w_s6','W',1*self.dim[0])
+		self.w_s7 = Port(circuit,self,'w_s7','W',1*self.dim[0])
+		self.w_drainbit8 = Port(circuit,self,'w_drainbit8','W',1*self.dim[0])
+		self.w_drainbit7 = Port(circuit,self,'w_drainbit7','W',1*self.dim[0])
+		self.w_drainbit6 = Port(circuit,self,'w_drainbit6','W',1*self.dim[0])
+		self.w_drainbit5 = Port(circuit,self,'w_drainbit5','W',1*self.dim[0])
+		self.w_drainbit4 = Port(circuit,self,'w_drainbit4','W',1*self.dim[0])
+		self.w_drainbit3 = Port(circuit,self,'w_drainbit3','W',1*self.dim[0])
+		self.w_drainEN = Port(circuit,self,'w_drainEN','W',1*self.dim[0])
 		
 
 		# Initialize ports with given values
-		portsInit = []
+		portsInit = [e_cns0,e_cns1,e_cns2,e_cns3,e_vgrun,e_vtun,e_vinj,e_gnd,e_avdd,e_drainbit2,e_drainbit1,e_drainbit0,e_s0,e_s1,e_s2,e_s3,e_s4,e_s5,e_s6,e_s7,e_drainbit8,e_drainbit7,e_drainbit6,e_drainbit5,e_drainbit4,e_drainbit3,e_drainEN,w_cns0,w_cns1,w_cns2,w_cns3,w_vgrun,w_vtun,w_vinj,w_gnd,w_avdd,w_drainbit2,w_drainbit1,w_drainbit0,w_s0,w_s1,w_s2,w_s3,w_s4,w_s5,w_s6,w_s7,w_drainbit8,w_drainbit7,w_drainbit6,w_drainbit5,w_drainbit4,w_drainbit3,w_drainEN]
 		i=0
 		for p in self.ports:
 			self.assignPort(p,portsInit[i])
@@ -1254,7 +1580,7 @@ class cab1(StandardCell):
 		circuit.addInstance(self,self.island)
 	
 class cab2(StandardCell):
-	def __init__(self,circuit,island=None,dim=(1,1)):
+	def __init__(self,circuit,island=None,dim=(1,1),e_cns0=None,e_cns1=None,e_cns2=None,e_cns3=None,e_vgrun=None,e_vtun=None,e_vinj=None,e_gnd=None,e_avdd=None,e_drainbit2=None,e_drainbit1=None,e_drainbit0=None,e_s0=None,e_s1=None,e_s2=None,e_s3=None,e_s4=None,e_s5=None,e_s6=None,e_s7=None,e_drainbit8=None,e_drainbit7=None,e_drainbit6=None,e_drainbit5=None,e_drainbit4=None,e_drainbit3=None,e_drainEN=None,w_cns0=None,w_cns1=None,w_cns2=None,w_cns3=None,w_vgrun=None,w_vtun=None,w_vinj=None,w_gnd=None,w_avdd=None,w_drainbit2=None,w_drainbit1=None,w_drainbit0=None,w_s0=None,w_s1=None,w_s2=None,w_s3=None,w_s4=None,w_s5=None,w_s6=None,w_s7=None,w_drainbit8=None,w_drainbit7=None,w_drainbit6=None,w_drainbit5=None,w_drainbit4=None,w_drainbit3=None,w_drainEN=None):
 
 		# Define variables
 		self.circuit = circuit
@@ -1266,10 +1592,65 @@ class cab2(StandardCell):
 
 		# Define cell information
 		self.name = 'cab2'
+
+		self.e_cns0 = Port(circuit,self,'e_cns0','E',1*self.dim[0])
+		self.e_cns1 = Port(circuit,self,'e_cns1','E',1*self.dim[0])
+		self.e_cns2 = Port(circuit,self,'e_cns2','E',1*self.dim[0])
+		self.e_cns3 = Port(circuit,self,'e_cns3','E',1*self.dim[0])
+		self.e_vgrun = Port(circuit,self,'e_vgrun','E',1*self.dim[0])
+		self.e_vtun = Port(circuit,self,'e_vtun','E',1*self.dim[0])
+		self.e_vinj = Port(circuit,self,'e_vinj','E',1*self.dim[0])
+		self.e_gnd = Port(circuit,self,'e_gnd','E',1*self.dim[0])
+		self.e_avdd = Port(circuit,self,'e_avdd','E',1*self.dim[0])
+		self.e_drainbit2 = Port(circuit,self,'e_drainbit2','E',1*self.dim[0])
+		self.e_drainbit1 = Port(circuit,self,'e_drainbit1','E',1*self.dim[0])
+		self.e_drainbit0 = Port(circuit,self,'e_drainbit0','E',1*self.dim[0])
+		self.e_s0 = Port(circuit,self,'e_s0','E',1*self.dim[0])
+		self.e_s1 = Port(circuit,self,'e_s1','E',1*self.dim[0])
+		self.e_s2 = Port(circuit,self,'e_s2','E',1*self.dim[0])
+		self.e_s3 = Port(circuit,self,'e_s3','E',1*self.dim[0])
+		self.e_s4 = Port(circuit,self,'e_s4','E',1*self.dim[0])
+		self.e_s5 = Port(circuit,self,'e_s5','E',1*self.dim[0])
+		self.e_s6 = Port(circuit,self,'e_s6','E',1*self.dim[0])
+		self.e_s7 = Port(circuit,self,'e_s7','E',1*self.dim[0])
+		self.e_drainbit8 = Port(circuit,self,'e_drainbit8','E',1*self.dim[0])
+		self.e_drainbit7 = Port(circuit,self,'e_drainbit7','E',1*self.dim[0])
+		self.e_drainbit6 = Port(circuit,self,'e_drainbit6','E',1*self.dim[0])
+		self.e_drainbit5 = Port(circuit,self,'e_drainbit5','E',1*self.dim[0])
+		self.e_drainbit4 = Port(circuit,self,'e_drainbit4','E',1*self.dim[0])
+		self.e_drainbit3 = Port(circuit,self,'e_drainbit3','E',1*self.dim[0])
+		self.e_drainEN = Port(circuit,self,'e_drainEN','E',1*self.dim[0])
 		
+		self.w_cns0 = Port(circuit,self,'w_cns0','W',1*self.dim[0])
+		self.w_cns1 = Port(circuit,self,'w_cns1','W',1*self.dim[0])
+		self.w_cns2 = Port(circuit,self,'w_cns2','W',1*self.dim[0])
+		self.w_cns3 = Port(circuit,self,'w_cns3','W',1*self.dim[0])
+		self.w_vgrun = Port(circuit,self,'w_vgrun','W',1*self.dim[0])
+		self.w_vtun = Port(circuit,self,'w_vtun','W',1*self.dim[0])
+		self.w_vinj = Port(circuit,self,'w_vinj','W',1*self.dim[0])
+		self.w_gnd = Port(circuit,self,'w_gnd','W',1*self.dim[0])
+		self.w_avdd = Port(circuit,self,'w_avdd','W',1*self.dim[0])
+		self.w_drainbit2 = Port(circuit,self,'w_drainbit2','W',1*self.dim[0])
+		self.w_drainbit1 = Port(circuit,self,'w_drainbit1','W',1*self.dim[0])
+		self.w_drainbit0 = Port(circuit,self,'w_drainbit0','W',1*self.dim[0])
+		self.w_s0 = Port(circuit,self,'w_s0','W',1*self.dim[0])
+		self.w_s1 = Port(circuit,self,'w_s1','W',1*self.dim[0])
+		self.w_s2 = Port(circuit,self,'w_s2','W',1*self.dim[0])
+		self.w_s3 = Port(circuit,self,'w_s3','W',1*self.dim[0])
+		self.w_s4 = Port(circuit,self,'w_s4','W',1*self.dim[0])
+		self.w_s5 = Port(circuit,self,'w_s5','W',1*self.dim[0])
+		self.w_s6 = Port(circuit,self,'w_s6','W',1*self.dim[0])
+		self.w_s7 = Port(circuit,self,'w_s7','W',1*self.dim[0])
+		self.w_drainbit8 = Port(circuit,self,'w_drainbit8','W',1*self.dim[0])
+		self.w_drainbit7 = Port(circuit,self,'w_drainbit7','W',1*self.dim[0])
+		self.w_drainbit6 = Port(circuit,self,'w_drainbit6','W',1*self.dim[0])
+		self.w_drainbit5 = Port(circuit,self,'w_drainbit5','W',1*self.dim[0])
+		self.w_drainbit4 = Port(circuit,self,'w_drainbit4','W',1*self.dim[0])
+		self.w_drainbit3 = Port(circuit,self,'w_drainbit3','W',1*self.dim[0])
+		self.w_drainEN = Port(circuit,self,'w_drainEN','W',1*self.dim[0])
 
 		# Initialize ports with given values
-		portsInit = []
+		portsInit = [e_cns0,e_cns1,e_cns2,e_cns3,e_vgrun,e_vtun,e_vinj,e_gnd,e_avdd,e_drainbit2,e_drainbit1,e_drainbit0,e_s0,e_s1,e_s2,e_s3,e_s4,e_s5,e_s6,e_s7,e_drainbit8,e_drainbit7,e_drainbit6,e_drainbit5,e_drainbit4,e_drainbit3,e_drainEN,w_cns0,w_cns1,w_cns2,w_cns3,w_vgrun,w_vtun,w_vinj,w_gnd,w_avdd,w_drainbit2,w_drainbit1,w_drainbit0,w_s0,w_s1,w_s2,w_s3,w_s4,w_s5,w_s6,w_s7,w_drainbit8,w_drainbit7,w_drainbit6,w_drainbit5,w_drainbit4,w_drainbit3,w_drainEN]
 		i=0
 		for p in self.ports:
 			self.assignPort(p,portsInit[i])

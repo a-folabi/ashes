@@ -22,6 +22,7 @@ class TSMC350nm_volatile_swcs(StandardCell):
         self.CLK = Port(circuit,self,"CLK","W",1*self.dim[0])
         self.Q = Port(circuit,self,"Q","E",1*self.dim[0])
         self.com = Port(circuit,self,"com","W",1*self.dim[0])
+        self.RESET = Port(circuit,self,"RESET","W",1*self.dim[0])
         self.VDD = Port(circuit,self,"VDD","W",1*self.dim[0])
         self.Vd_P = Port(circuit,self,"Vd_P","W",1*self.dim[0])
         self.Vd_in = Port(circuit,self,"Vd_in","W",8*self.dim[0])
@@ -134,6 +135,7 @@ class S_SEC1(StandardCell):
         self.Vg_b = Port(circuit,self,"Vg_b","S",2*self.dim[1])
         self.VTUN_b = Port(circuit,self,"VTUN_b","S",1*self.dim[1])
         self.GND_b = Port(circuit,self,"GND_b","S",2*self.dim[1])
+        
 
         # Add cell to circuit
         circuit.addInstance(self,self.island)
@@ -177,6 +179,7 @@ class S_SEC3(StandardCell):
         self.Vg_b = Port(circuit,self,"Vg_b","S",2*self.dim[1])
         self.VTUN_b = Port(circuit,self,"VTUN_b","S",1*self.dim[1])
         self.GND_b = Port(circuit,self,"GND_b","S",2*self.dim[1])
+
 
 
         # Add cell to circuit
@@ -254,6 +257,8 @@ class DrainCutoff(MUX):
         self.VDD = Port(circuit,self,"VDD","N",1*self.dim[1])
         self.GND = Port(circuit,self,"GND","N",1*self.dim[1])
         self.RUN = Port(circuit,self,"RUN","N",1*self.dim[1])
+        self.VDD_b = Port(circuit,self,"VDD_b","S",1*self.dim[1])
+        self.GND_b = Port(circuit,self,"GND_b","S",1*self.dim[1])
         
 
         # Add cell to circuit

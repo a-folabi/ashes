@@ -94,8 +94,8 @@ class STD_IndirectGateSwitch(MUX):
         self.VINJ_T = Port(circuit,self,"VINJ_T","N",1*self.dim[1])
         self.GND = Port(circuit,self,"GND","S",1*self.dim[1])
         self.CTRL_B = Port(circuit,self,"CTRL_B","S",2*self.dim[1])
-        self.run_r = Port(circuit,self,"run_r","E",1*self.dim[1])
-        self.prog_r = Port(circuit,self,"prog_r","E",1*self.dim[1])
+        self.run_r = Port(circuit,self,"run_r","E",1*self.dim[0])
+        self.prog_r = Port(circuit,self,"prog_r","E",1*self.dim[0])
         self.Vg = Port(circuit,self,"Vg","S",2*self.dim[1])
         self.VTUN = Port(circuit,self,"VTUN","S",1*self.dim[1])
         self.VINJ = Port(circuit,self,"VINJ","S",1*self.dim[1])
@@ -213,6 +213,8 @@ class RunDrainSwitch(MUX):
         self.run_drainrail = Port(circuit,self,"run_drainrail","N",1*self.dim[1])
         self.VINJ = Port(circuit,self,"VINJ","N",1*self.dim[1])
         self.GND = Port(circuit,self,"GND","N",1*self.dim[1])
+        self.VINJ_b = Port(circuit,self,"VINJ_b","S",1*self.dim[1])
+        self.GND_b = Port(circuit,self,"GND_b","S",1*self.dim[1])
 
         # Add cell to circuit
         circuit.addInstance(self,self.island)
