@@ -1,5 +1,4 @@
 import ashes_fg as af
-from ashes_fg.examples import the_small_asic_v2
 
 import os
 import shutil
@@ -25,7 +24,7 @@ location_islands = None
 design_area = (0, 0, 1e6, 6.1e5, x_offset, y_offset)
 location_islands = ((20600, 363500), (20600, 20000)) #<-location for tile v1
 
-af.asic.compile(the_small_asic_v2, 
+af.asic.compile(None, 
 project_name=test_project, 
 tech_process=tech_process, 
 dbu=dbu, 
